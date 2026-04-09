@@ -1,4 +1,4 @@
-import { Universidad } from "./universidad";
+import type { Universidad } from "./universidad";
 
 export interface Usuario {
     _id: string;
