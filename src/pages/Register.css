@@ -1,0 +1,82 @@
+/* --- Register.css --- */
+
+/* Contenedor principal con efecto cristal */
+.register-container {
+  background: rgba(20, 22, 35, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 400px;
+  margin: 4rem auto; /* Lo centra en la pantalla */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.register-container h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+/* Estructura del formulario */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #8b949e;
+}
+
+/* Estilo de los inputs (cajas de texto) */
+.register-form input {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.register-form input:focus {
+  border-color: #8a2be2;
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+}
+
+/* Botón principal */
+.register-btn {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.1s ease;
+  margin-top: 15px;
+}
+
+.register-btn:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+}
+
+.register-btn:active {
+  transform: scale(0.98);
+}
