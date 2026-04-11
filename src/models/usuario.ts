@@ -3,6 +3,7 @@ import type { Universidad } from "./universidad";
 export interface Usuario {
     _id: string;
     nombre: string;
+    avatarUrl?: string; // URL de la imagen de avatar del usuario
     email: string;
     password: string;
     rol: 'admin' | 'user';

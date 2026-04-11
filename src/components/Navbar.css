@@ -1,0 +1,131 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background: rgba(10, 11, 16, 0.85); /* Fons fosc amb transparència */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    padding: 0 40px;
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1100; /* Per sobre de la Sidebar */
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .brand-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent-purple);
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+  
+  .profile-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Espai entre el nom i la foto */
+    cursor: pointer;
+  }
+  
+  /* Estil per al nom que acabem d'afegir */
+  .user-nav-name {
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    /* Evitem que el nom es trenqui en dues línies si és molt llarg */
+    white-space: nowrap; 
+  }
+  
+  .profile-trigger {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border-subtle);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s;
+    object-fit: cover;
+  }
+  
+  .profile-trigger:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-purple);
+  }
+  
+  /* --- Dropdown Menu --- */
+  .dropdown-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: 220px;
+    background: #161b22;
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    padding: 8px 0;
+    z-index: 1200;
+    text-align: left;
+  }
+  
+  .dropdown-header {
+    padding: 12px 16px;
+  }
+  
+  .user-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-main);
+  }
+  
+  .user-email {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+  }
+  
+  .dropdown-divider {
+    border: 0;
+    border-top: 1px solid var(--border-subtle);
+    margin: 8px 0;
+  }
+  
+  .dropdown-item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    padding: 10px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .dropdown-item:hover {
+    background: var(--card-bg);
+    color: var(--accent-purple);
+  }
+  
+  .dropdown-item.logout {
+    color: #ff5555;
+  }
+  
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1150;
+    background: transparent;
+  }

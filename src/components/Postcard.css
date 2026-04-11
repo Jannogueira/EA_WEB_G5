@@ -1,0 +1,111 @@
+.post-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    width: 450px;
+    /* Canviem height: 450px per min-height o auto */
+    height: auto; 
+    max-height: 700px; /* Opcional: posar un límit perquè no creixi infinitament */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-bottom: 25px;
+  }
+  
+  .post-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Evita que el header s'enculli */
+  }
+  
+  .author-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+  
+  .author-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  /* CONTENIDOR DE LA IMATGE: Ara quadra amb els 450px d'ample */
+  .post-image-container {
+    width: 100%;    /* Ocupa tot l'ample de la carta (450px) */
+    height: 250px;  /* Altura fixa per a la imatge */
+    overflow: hidden;
+    flex-shrink: 0; /* Evita que la imatge s'enculli per culpa dels comentaris */
+  }
+  
+  .post-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover; /* Omple l'espai sense deformar */
+    object-position: center;
+  }
+  
+  .post-content {
+    padding: 15px;
+    /* Treiem l'overflow-y: auto si volem que la carta creixi amb el text */
+  }
+  
+  .post-actions {
+    margin-bottom: 8px;
+  }
+  
+  .post-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 15px;
+    font-size: 18px;
+    transition: transform 0.2s;
+  }
+  
+  .post-actions button:hover {
+    transform: scale(1.1);
+  }
+  
+  .post-caption {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  
+  .post-comments {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-subtle);
+    max-height: 200px; /* Si hi ha 50 comentaris, que surti scroll aquí */
+    overflow-y: auto;
+  }
+  
+  .comment-item {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+  
+  /* Input a la part inferior */
+  .comment-input-area {
+    margin-top: auto; /* L'empeny al final del contenidor de text */
+    padding-top: 5px;
+  }
+  
+  .comment-input-area input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 0;
+    outline: none;
+    color: white;
+    font-size: 0.85rem;
+  }
+  
+  .comment-input-area input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }

@@ -1,0 +1,54 @@
+/* Sidebar fix a l'esquerra */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #0f111a; /* Un pel més clar que el fons per contrastar */
+    border-right: 1px solid var(--border-subtle);
+    padding: 2rem 1rem;
+    padding-top: 90px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  
+  .sidebar-title {
+    color: var(--accent-purple);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    padding-left: 20px;
+  }
+  
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Botons verticals */
+  .sidebar-btn {
+    background: transparent;
+    color: var(--text-main);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .sidebar-btn:hover {
+    background: var(--card-bg);
+    color: var(--accent-purple);
+    padding-left: 20px; /* Petit efecte de moviment */
+  }
+  
+  /* AIXÒ ÉS CRUCIAL: El contingut de la dreta s'ha de moure */
+  .content-area {
+    margin-left: 250px; /* Mateix ample que el sidebar */
+    width: calc(100% - 250px);
+  }
