@@ -1,8 +1,22 @@
 import axios, { CanceledError } from 'axios';
 
-export default axios.create({
-  baseURL: 'http://localhost:1337' // <-- ¡ruta del backend! 
-  //withCredentials: true, // <-- cookies del refreshToken de omar
-})
+const apiClient = axios.create({
+  baseURL: 'http://localhost:1337'
+});
 
+// Interceptor para añadir el token a todas las peticiones
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;
 export { CanceledError };
