@@ -1,28 +1,50 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Home, Compass, GraduationCap, BookOpen, MessageSquare } from "lucide-react";
 import "./Sidebar.css";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <aside className="sidebar">
-      <h2 className="sidebar-title">Menú</h2>
-
       <nav className="sidebar-nav">
-        <button className="sidebar-btn" onClick={() => navigate("/home")}>
-          Home
+        <button 
+          className={`sidebar-btn ${isActive("/home") ? "active" : ""}`} 
+          onClick={() => navigate("/home")}
+        >
+          <Home size={20} className="btn-icon" />
+          <span className="btn-text">Inicio</span>
         </button>
-        <button className="sidebar-btn" onClick={() => navigate("/home")}>
-          Explore
+        <button 
+          className={`sidebar-btn ${isActive("/explore") ? "active" : ""}`} 
+          onClick={() => navigate("/home")}
+        >
+          <Compass size={20} className="btn-icon" />
+          <span className="btn-text">Explorar</span>
         </button>
-        <button className="sidebar-btn" onClick={() => navigate("/home")}>
-          University
+        <button 
+          className={`sidebar-btn ${isActive("/university") ? "active" : ""}`} 
+          onClick={() => navigate("/home")}
+        >
+          <GraduationCap size={20} className="btn-icon" />
+          <span className="btn-text">Universidad</span>
         </button>
-        <button className="sidebar-btn" onClick={() => navigate("/home")}>
-          Classes
+        <button 
+          className={`sidebar-btn ${isActive("/classes") ? "active" : ""}`} 
+          onClick={() => navigate("/home")}
+        >
+          <BookOpen size={20} className="btn-icon" />
+          <span className="btn-text">Clases</span>
         </button>
-        <button className="sidebar-btn" onClick={() => navigate("/home")}>
-          Chat
+        <button 
+          className={`sidebar-btn ${isActive("/chat") ? "active" : ""}`} 
+          onClick={() => navigate("/home")}
+        >
+          <MessageSquare size={20} className="btn-icon" />
+          <span className="btn-text">Mensajes</span>
         </button>
       </nav>
     </aside>

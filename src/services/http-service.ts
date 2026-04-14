@@ -41,7 +41,12 @@ class HttpService {
 
     return apiClient.put(this.endpoint + "/" + entityId, payload);
   }
+
+  patch(id: string | number, data: any) {
+    return apiClient.patch(this.endpoint + "/" + id, data);
+  }
 }
+
 
 const create = (endpoint: string) => new HttpService(endpoint);
 

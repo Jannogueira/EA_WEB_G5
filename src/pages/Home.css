@@ -1,112 +1,93 @@
 /* --- LAYOUT ESTRUCTURAL --- */
 
 .home-wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: var(--bg-dark); /* Utilitza la variable del teu App.css */
-  }
-  
-  .main-layout {
-    display: flex;
-    flex: 1;
-    margin-top: 65px; /* Alçada exacta de la Navbar per evitar solapaments */
-  }
-  
-  /* --- SIDEBAR (Fixat a l'esquerra) --- */
-  .sidebar {
-    width: 250px;
-    height: calc(100vh - 65px); /* Alçada total menys la Navbar */
-    background: rgba(15, 17, 26, 0.95);
-    border-right: 1px solid var(--border-subtle);
-    position: fixed;
-    left: 0;
-    top: 65px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1rem;
-  }
-  
-  /* --- ÀREA DE CONTINGUT (Scrollable) --- */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #000000);
+  background-attachment: fixed;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  margin-top: 65px;
+  width: 100%;
+}
+
+/* --- ÀREA DE CONTINGUT (Scrollable) --- */
+.content-area {
+  flex: 1;
+  margin-left: 280px; /* Space for the floating sidebar */
+  padding: 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.feed-container {
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feed-header {
+  text-align: left;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+.page-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1.2;
+  background: linear-gradient(to right, #fff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 0.2rem 0;
+  letter-spacing: -0.04em;
+}
+
+.page-subtitle {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* --- LLISTA DE POSTS --- */
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
   .content-area {
-    flex: 1;
-    margin-left: 250px; /* Deixa espai per al Sidebar fix */
+    margin-left: 100px;
     padding: 2rem;
-    display: flex;
-    justify-content: center; /* Centra el feed horitzontalment */
   }
-  
-  .feed-container {
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    margin-left: 0;
+    padding: 1rem;
     width: 100%;
-    max-width: 600px; /* Ample ideal perquè el feed no sigui massa ample */
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .feed-header {
-    text-align: left;
-    margin-bottom: 1rem;
   }
   
   .page-title {
     font-size: 2rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin: 0;
   }
-  
-  .page-subtitle {
-    color: var(--text-muted);
-    font-size: 1rem;
-    margin-top: 0.5rem;
-  }
-  
-  /* --- LLISTA DE POSTS --- */
-  .posts-list {
-    display: flex;
-    flex-direction: column;
-    gap: 30px; /* Espai entre cada Postcard */
-    align-items: center;
-  }
-  
-  /* --- AJUSTOS PER AL POSTCARD (Sobreestil) --- */
-  /* Això assegura que les cartes de 450px que hem definit es vegin bé aquí */
-  .post-card {
-    background: var(--card-bg) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-subtle);
-    width: 450px; /* L'ample que volies */
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, border-color 0.3s ease;
-  }
-  
-  .post-card:hover {
-    border-color: var(--accent-purple);
-    transform: translateY(-4px);
-  }
-  
-  /* --- RESPONSIVE --- */
-  @media (max-width: 900px) {
-    .sidebar {
-      width: 80px; /* Sidebar col·lapsat en pantalles petites */
-    }
-    .sidebar-btn span {
-      display: none; /* Amaga el text dels botons */
-    }
-    .content-area {
-      margin-left: 80px;
-    }
-  }
-  
-  @media (max-width: 600px) {
-    .post-card {
-      width: 100%; /* Les cartes ocupen tot l'ample en mòbils */
-    }
-    .content-area {
-      padding: 1rem;
-    }
-  }
+}
