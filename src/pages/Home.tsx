@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -7,26 +7,31 @@ import type { Post } from "../models/post";
 import type { Usuario } from "../models/usuario";
 
 const Home: React.FC = () => {
+  const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
+
+  useEffect(() => {
+    const userJson = localStorage.getItem('usuario');
+    if (userJson) {
+      setUsuario(JSON.parse(userJson));
+    }
+  }, []);
+
   return (
     <div className="home-wrapper">
-      {/* 1. Navbar: fixa a dalt de tot, cobrint tot l'ample */}
-      <Navbar usuario={mockUser} />
+      <Navbar usuario={usuario} />
 
       <div className="main-layout">
-        {/* 2. Sidebar: fixa a l'esquerra sota la navbar */}
         <Sidebar />
 
-        {/* 3. Àrea de contingut: es desplaça a la dreta del sidebar */}
         <div className="content-area">
           <main className="feed-container">
             <header className="feed-header">
-              <h1 className="page-title">Home</h1>
-              <p className="page-subtitle">Discover</p>
+              <h1 className="page-title">Feed</h1>
+              <p className="page-subtitle">Explora lo que está pasando en Univy</p>
             </header>
 
             <div className="posts-list">
               {MOCK_POSTS.map((post) => (
-                /* Cada carta de post amb mida de 450px definida al CSS */
                 <Postcard key={post._id} post={post} />
               ))}
             </div>
@@ -39,22 +44,7 @@ const Home: React.FC = () => {
 
 export default Home;
 
-
-//-----BORRAR DESPUÉS CUANDO LO TENGAMOS EN BBDD-----/ /
-
-// --- Mock User (L'usuari que està loguejat) ---
-const mockUser: Usuario = {
-  _id: "u123",
-  nombre: "Marc Estudiant",
-  email: "marc@universitat.edu",
-  password: "", // No es mostra mai
-  rol: "user",
-  activo: true,
-  avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marc",
-  //universidad: { _id: "uni1", nombre: "UPC", ubicacion: "Barcelona" }
-};
-
-// --- Mock Posts (Dades de la base de dades) ---
+// --- Mock Posts (Para demostración visual) ---
 const MOCK_POSTS: Post[] = [
   {
     _id: 1,
@@ -66,16 +56,15 @@ const MOCK_POSTS: Post[] = [
       rol: "user",
       activo: true,
       avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ana",
-      //universidad: { _id: "uni1", nombre: "UPC", ubicacion: "Barcelona" }
     },
     imageUrl: "https://images.pexels.com/photos/14424025/pexels-photo-14424025.jpeg",
-    caption: "Estudiant a la biblioteca de l'escola! 📚 #UPC #Exàmens",
+    caption: "Estudiando en la biblioteca! 📚 #Exámenes",
     likes: 45,
     comments: [
       {
         _id: 101,
-        usuario: mockUser,
-        texto: "Molts ànims, Ana! Jo hi vaig demà."
+        usuario: { _id: "u123", nombre: "Tú", email: "tu@mail.com", password: "", rol: "user", activo: true, avatarUrl: "" },
+        texto: "¡Mucho ánimo!"
       }
     ]
   },
@@ -91,8 +80,9 @@ const MOCK_POSTS: Post[] = [
       avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Luis"
     },
     imageUrl: "https://images.pexels.com/photos/30002394/pexels-photo-30002394.jpeg",
-    caption: "Primer dia de pràctiques acabat. Molt content amb l'equip! ✅",
+    caption: "Primer día de prácticas superado ✅",
     likes: 120,
     comments: []
   }
 ];
+

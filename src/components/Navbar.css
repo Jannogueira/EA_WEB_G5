@@ -1,131 +1,183 @@
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 65px;
-    background: rgba(10, 11, 16, 0.85); /* Fons fosc amb transparència */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    padding: 0 40px;
-    box-sizing: border-box;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1100; /* Per sobre de la Sidebar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: rgba(15, 17, 26, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  padding: 0 50px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.brand-name {
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.05em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.brand-name:hover {
+  opacity: 0.8;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 12px;
+  border-radius: 40px;
+  transition: background 0.3s ease;
+}
+
+.profile-container:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.user-info-brief {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.user-nav-name {
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: -2px;
+}
+
+.user-nav-email {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.profile-initial-trigger {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.profile-initial-trigger:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Dropdown Menu --- */
+
+.dropdown-menu {
+  position: absolute;
+  top: 75px;
+  right: 0;
+  width: 240px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  z-index: 1200;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+  padding: 8px 12px 14px 12px;
+}
+
+.user-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f8fafc;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 4px 0 0 0;
+}
+
+.dropdown-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 8px 0;
+}
+
+.dropdown-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  padding: 12px 16px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(167, 139, 250, 0.1);
+  color: #a78bfa;
+}
+
+.dropdown-item.logout {
+  color: #fca5a5;
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1150;
+  background: transparent;
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 20px;
   }
-  
-  .navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .brand-name {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--accent-purple);
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 10px var(--accent-glow);
-  }
-  
-  .profile-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Espai entre el nom i la foto */
-    cursor: pointer;
-  }
-  
-  /* Estil per al nom que acabem d'afegir */
-  .user-nav-name {
-    color: var(--text-main);
-    font-size: 0.9rem;
-    font-weight: 500;
-    /* Evitem que el nom es trenqui en dues línies si és molt llarg */
-    white-space: nowrap; 
-  }
-  
-  .profile-trigger {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--border-subtle);
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s;
-    object-fit: cover;
-  }
-  
-  .profile-trigger:hover {
-    transform: scale(1.05);
-    border-color: var(--accent-purple);
-  }
-  
-  /* --- Dropdown Menu --- */
-  .dropdown-menu {
-    position: absolute;
-    top: 55px;
-    right: 0;
-    width: 220px;
-    background: #161b22;
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    padding: 8px 0;
-    z-index: 1200;
-    text-align: left;
-  }
-  
-  .dropdown-header {
-    padding: 12px 16px;
-  }
-  
-  .user-name {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--text-main);
-  }
-  
-  .user-email {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin: 2px 0 0 0;
-  }
-  
-  .dropdown-divider {
-    border: 0;
-    border-top: 1px solid var(--border-subtle);
-    margin: 8px 0;
-  }
-  
-  .dropdown-item {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    padding: 10px 16px;
-    text-align: left;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-  
-  .dropdown-item:hover {
-    background: var(--card-bg);
-    color: var(--accent-purple);
-  }
-  
-  .dropdown-item.logout {
-    color: #ff5555;
-  }
-  
-  .menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1150;
-    background: transparent;
-  }
+}

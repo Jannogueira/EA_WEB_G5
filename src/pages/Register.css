@@ -13,41 +13,48 @@
 /* Contenedor principal con efecto cristal */
 .register-container {
   background: rgba(20, 22, 35, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 3rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 3.5rem;
   width: 100%;
-  max-width: 450px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  max-width: 480px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
   text-align: center;
   color: #ffffff;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  animation: fadeIn 0.6s ease-out;
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.register-container h2 {
+.register-title {
   margin-top: 0;
-  margin-bottom: 2rem;
-  font-size: 2.2rem;
-  font-weight: 700;
-  background: linear-gradient(to right, #fff, #a78bfa);
+  margin-bottom: 0.5rem;
+  font-size: 2.4rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #ffffff, #a78bfa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
+}
+
+.register-subtitle {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
 }
 
 /* Estructura del formulario */
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .form-group {
@@ -57,33 +64,49 @@
 }
 
 .form-group label {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
   font-size: 0.85rem;
-  font-weight: 500;
-  color: #94a3b8;
-  margin-left: 0.2rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-left: 0.4rem;
+  letter-spacing: 0.02em;
 }
 
-/* Estilo de los inputs */
-.register-form input {
-  background: rgba(15, 17, 26, 0.4);
+/* Estilo de los inputs y select */
+.register-form input,
+.select-input {
+  background: rgba(15, 17, 26, 0.5);
   color: #f8fafc;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 14px 18px;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 14px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.register-form input:focus {
+.select-input {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+  padding-right: 3rem;
+}
+
+.select-input option {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+.register-form input:focus,
+.select-input:focus {
   border-color: #8b5cf6;
-  background: rgba(15, 17, 26, 0.6);
+  background: rgba(15, 17, 26, 0.7);
   box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
-}
-
-.register-form input:hover {
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Botón principal */
@@ -91,41 +114,44 @@
   background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
   color: white;
   border: none;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 14px;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 1.5rem;
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
 }
 
-.register-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+.register-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.4);
   filter: brightness(1.1);
 }
 
-.register-btn:active {
-  transform: translateY(0);
+.register-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .login-link-section {
-  margin-top: 2rem;
-  font-size: 0.95rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
   color: #94a3b8;
 }
 
 .login-link {
   color: #a78bfa;
   text-decoration: none;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  margin-left: 0.6rem;
+  transition: all 0.2s ease;
 }
 
 .login-link:hover {
-  color: #c4b5fd;
-  text-decoration: underline;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
 }
