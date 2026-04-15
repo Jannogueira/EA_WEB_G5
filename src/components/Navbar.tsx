@@ -41,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
                 <p className="user-email">{usuario?.email}</p>
               </div>
               <hr className="dropdown-divider" />
-              <button className="dropdown-item" onClick={() => navigate("/home")}>
+              <button className="dropdown-item" onClick={() => navigate("/profile")}>
                 Perfil
               </button>
               <button className="dropdown-item logout" onClick={handleLogout}>
