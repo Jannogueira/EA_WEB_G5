@@ -12,10 +12,19 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    authService.logout();
-    navigate("/login");
-  };
+const handleLogout = async (e: React.MouseEvent) => {
+  e.preventDefault();
+  e.stopPropagation(); // Evita que se cierre el menú antes de tiempo
+
+  console.log("Cerrando sesión en el servidor...");
+  
+  // Esperamos a que la petición de logout termine
+  await authService.logout();
+  
+  // Cerramos el menú y redirigimos
+  setMenuOpen(false);
+  navigate("/login");
+};
 
   // Obtener la inicial del nombre en mayúscula
   const userInitial = usuario?.nombre ? usuario.nombre.charAt(0).toUpperCase() : "?";
@@ -58,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
         </div>
       </div>
       
-      {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />}
+      {/*menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />*/}
     </nav>
   );
 };

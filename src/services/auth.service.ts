@@ -25,9 +25,17 @@ const register = async (userData: any) => {
   return response.data;
 };
 
-const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('usuario');
+const logout = async () => {
+  try {
+    // 1. Avisamos al backend para que destruya la cookie del refresh token
+    await apiClient.post('/auth/logout');
+  } catch (error) {
+    console.error('Error al cerrar sesión en el servidor:', error);
+  } finally {
+    // 2. Pase lo que pase, limpiamos el Access Token y el Usuario del frontend
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+  }
 };
 
 export default {
