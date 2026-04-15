@@ -21,6 +21,15 @@ class PostService {
   getAll() {
     return create(this.endpoint).getAll<Post>();
   }
+
+  darleLike(postId: string) {
+    return apiClient.patch<Post>(`${this.endpoint}/${postId}/like`);
+  }
+
+  getPostById(postId: string) {
+    return apiClient.get<Post>(`${this.endpoint}/${postId}`);
+  }
+
 }
 
 export default new PostService();
