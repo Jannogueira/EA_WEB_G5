@@ -27,7 +27,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     try {
       await PostService.createPost({
         ...formData,
-        usuario: userId
+//        usuario: userId
       });
       alert("¡Publicación compartida!");
       onPostCreated();

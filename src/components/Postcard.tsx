@@ -1,59 +1,143 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Postcard.css";
 import type { Post } from "../models/post";
+import CommentService from "../services/comment.service";
+import PostService from "../services/post.service";
 
 const Postcard: React.FC<{ post: Post }> = ({ post }) => {
-  const [likes, setLikes] = useState(post.likes);
-  const [showComments, setShowComments] = useState(false); // Estat per mostrar/amagar
+  const [currentPost, setCurrentPost] = useState<Post>({
+    ...post,
+    comments: post.comments ?? [],
+    likes: post.likes ?? [],
+  });
 
-  const userAvatar = post.usuario.avatarUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${post.usuario.nombre}`;
+  const [showComments, setShowComments] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [loadingComment, setLoadingComment] = useState(false);
+
+  useEffect(() => {
+    setCurrentPost({
+      ...post,
+      comments: post.comments ?? [],
+      likes: post.likes ?? [],
+    });
+  }, [post]);
+
+  const userAvatar =
+    currentPost.usuario?.avatarUrl || "default-avatar-url.png";
+
+  const handleLike = async () => {
+    try {
+      const response = await PostService.darleLike(currentPost._id);
+
+      setCurrentPost((prev) => ({
+        ...prev,
+        likes: response.data.likes,
+      }));
+    } catch (err) {
+      console.error("Error liking the post", err);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!commentText.trim()) return;
+
+    try {
+      setLoadingComment(true);
+      //const user = JSON.parse(localStorage.getItem("usuario") || "{}");
+
+      const response = await CommentService.create({
+        //usuario: user._id,
+        post: currentPost._id,
+        texto: commentText,
+      });
+
+      setCurrentPost((prev) => ({
+        ...prev,
+        comments: [...(prev.comments || []), response.data],
+      }));
+
+      setCommentText("");
+    } catch (err) {
+      console.error("Error creating comment", err);
+    } finally {
+      setLoadingComment(false);
+    }
+  };
 
   return (
     <div className="post-card">
       <div className="post-header">
-        <img src={userAvatar} alt={post.usuario.nombre} className="author-avatar" />
+        <img
+          src={userAvatar}
+          alt={currentPost.usuario?.nombre || "Usuario"}
+          className="author-avatar"
+        />
+
         <div className="author-info">
-          <h3 className="author-name">{post.usuario.nombre}</h3>
-          {post.usuario.universidad && <span className="author-uni">{post.usuario.universidad.nombre}</span>}
+          <h3 className="author-name">
+            {currentPost.usuario?.nombre || "Usuario"}
+          </h3>
         </div>
       </div>
 
-      {post.imageUrl && (
+      {currentPost.imageUrl && (
         <div className="post-image-container">
-          <img src={post.imageUrl} alt="Post" className="post-image" />
+          <img
+            src={currentPost.imageUrl}
+            alt="Post content"
+            className="post-image"
+          />
         </div>
       )}
 
       <div className="post-content">
         <div className="post-actions">
-          <button onClick={() => setLikes(likes + 1)} className="like-button">
-            ❤️ {likes}
+          <button onClick={handleLike} className="like-button">
+            ❤️ {currentPost.likes?.length || 0}
           </button>
-          {/* Al clicar el botó de comentaris, canviem l'estat */}
-          <button className="comment-button" onClick={() => setShowComments(!showComments)}>
-            💬 {post.comments.length}
+
+          <button
+            onClick={() => setShowComments(!showComments)}
+            className="comment-button"
+          >
+            💬 {currentPost.comments?.length || 0}
           </button>
         </div>
 
         <div className="post-caption">
-          <strong>{post.usuario.nombre}</strong> {post.caption}
+          <strong>{currentPost.usuario?.nombre || "Usuario"}</strong>{" "}
+          {currentPost.caption}
         </div>
 
-        {/* NOMÉS es mostren si l'estat showComments és true */}
-        {showComments && post.comments.length > 0 && (
+        {showComments && (
           <div className="post-comments">
-            {post.comments.map((comment) => (
-              <p key={comment._id} className="comment-item">
-                <strong>{comment.usuario.nombre}</strong> {comment.texto}
+            {currentPost.comments?.map((c) => (
+              <p key={c._id} className="comment-item">
+                <strong>
+                  {typeof c.usuario === "object"
+                    ? c.usuario.nombre
+                    : "Usuario"}
+                </strong>{" "}
+                {c.texto}
               </p>
             ))}
-          </div>
-        )}
-        
-        {/* L'input també el podem amagar o deixar-lo sempre visible */}
-        {showComments && (
-          <div className="comment-input-area">
-            <input type="text" placeholder="Escriu un comentari..." />
+
+            <div className="comment-input-area">
+              <input
+                type="text"
+                value={commentText}
+                placeholder="Escribe un comentario..."
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && handleAddComment()
+                }
+              />
+
+              <button onClick={handleAddComment} disabled={loadingComment}>
+                {loadingComment ? "..." : "Enviar"}
+              </button>
+            </div>
           </div>
         )}
       </div>

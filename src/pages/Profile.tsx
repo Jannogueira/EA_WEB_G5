@@ -117,7 +117,7 @@ const Profile: React.FC = () => {
                     <img src={post.imageUrl} alt="Post" className="univy-grid-img" />
                     <div className="univy-grid-hover">
                       <div className="hover-stats">
-                        <span>❤️ {post.likes}</span>
+                        <span>❤️ {post.likes.length}</span>
                         <span>💬 {post.comments.length}</span>
                       </div>
                     </div>
