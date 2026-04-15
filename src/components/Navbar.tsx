@@ -56,13 +56,8 @@ const handleLogout = async (e: React.MouseEvent) => {
                 <p className="user-email">{usuario?.email}</p>
               </div>
               <hr className="dropdown-divider" />
-<<<<<<< HEAD
               <button className="dropdown-item" onClick={() => navigate("/profile")}>
                 Perfil
-=======
-              <button className="dropdown-item" onClick={() => navigate("/home")}>
-                Mi Perfil
->>>>>>> d30391c5a8c7bff1ff53149259ae91274d482f4f
               </button>
               <button className="dropdown-item logout" onClick={handleLogout}>
                 Cerrar Sesión
