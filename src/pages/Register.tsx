@@ -25,12 +25,12 @@ const Register = () => {
       console.log("2. Llamando a Axios...");
       const respuesta = await usuarioService.create(formData);
       
-      // 👇 ¡ESTO ES LO MÁS IMPORTANTE!
+      //
       console.log("3. ¡Axios terminó! Esta es la respuesta mágica:", respuesta); 
       
       alert("¡Registro exitoso!");
     } catch (error) {
-      console.error('💥 Error registering user:', error);
+      console.error('Error registering user:', error);
     }
   };
 
