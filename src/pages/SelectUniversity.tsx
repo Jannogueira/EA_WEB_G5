@@ -41,7 +41,7 @@ const SelectUniversity = () => {
     setLoading(true);
     try {
       // Realizar el PATCH al usuario
-      const response = await usuarioService.patch(user._id, { universidad: selectedUni });
+      const response = await usuarioService.updateSelf({ universidad: selectedUni });
       
       // Actualizar el usuario en localStorage con los nuevos datos recibidos
       localStorage.setItem('usuario', JSON.stringify(response.data));

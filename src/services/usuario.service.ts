@@ -4,7 +4,7 @@ import apiClient from "./api-client";
 const service = create("/usuarios");
 
 export const updateSelf = (data: any) => {
-  return apiClient.patch("/usuarios/profile/self", data);
+  return apiClient.patch("/auth/me", data);
 };
 
 const exportedService = { ...service, updateSelf };
