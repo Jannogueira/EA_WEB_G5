@@ -8,6 +8,8 @@ import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import type { Usuario } from "../models/usuario";
 
+import { Rocket, Heart, MessageCircle, FolderOpen, X } from "lucide-react";
+
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
@@ -89,7 +91,7 @@ const Profile: React.FC = () => {
                   <div className="user-bio-univy">
                     <span className="full-name-label">{usuario?.nombre}</span>
                     <p className="bio-description">
-                      Estudiante en Univy | Apasionado por la tecnología 🚀
+                      Estudiante en Univy | Apasionado por la tecnología <Rocket size={16} className="inline-icon" />
                     </p>
                     {usuario?.email && <p className="bio-contact">{usuario.email}</p>}
                   </div>
@@ -117,8 +119,8 @@ const Profile: React.FC = () => {
                     <img src={post.imageUrl} alt="Post" className="univy-grid-img" />
                     <div className="univy-grid-hover">
                       <div className="hover-stats">
-                        <span>❤️ {post.likes.length}</span>
-                        <span>💬 {post.comments.length}</span>
+                        <span className="stat-item"><Heart size={18} fill="white" /> {post.likes.length}</span>
+                        <span className="stat-item"><MessageCircle size={18} fill="white" /> {post.comments.length}</span>
                       </div>
                     </div>
                   </div>
@@ -126,7 +128,7 @@ const Profile: React.FC = () => {
               </div>
             ) : (
               <div className="empty-state">
-                <span className="empty-icon">📂</span>
+                <span className="empty-icon"><FolderOpen size={48} /></span>
                 <h3>Aún no has compartido nada</h3>
               </div>
             )}
@@ -138,7 +140,7 @@ const Profile: React.FC = () => {
       {selectedPost && (
         <div className="post-modal-overlay" onClick={() => setSelectedPost(null)}>
           <div className="post-modal-container" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-x" onClick={() => setSelectedPost(null)}>✕</button>
+            <button className="modal-close-x" onClick={() => setSelectedPost(null)}><X size={24} /></button>
             <Postcard post={selectedPost} />
           </div>
         </div>

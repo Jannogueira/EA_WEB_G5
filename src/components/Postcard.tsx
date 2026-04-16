@@ -4,6 +4,8 @@ import type { Post } from "../models/post";
 import CommentService from "../services/comment.service";
 import PostService from "../services/post.service";
 
+import { Heart, MessageCircle, SendHorizonal } from "lucide-react";
+
 const Postcard: React.FC<{ post: Post }> = ({ post }) => {
   const [currentPost, setCurrentPost] = useState<Post>({
     ...post,
@@ -94,14 +96,16 @@ const Postcard: React.FC<{ post: Post }> = ({ post }) => {
       <div className="post-content">
         <div className="post-actions">
           <button onClick={handleLike} className="like-button">
-            ❤️ {currentPost.likes?.length || 0}
+            <Heart size={20} className={currentPost.likes?.length ? "liked" : ""} />
+            <span>{currentPost.likes?.length || 0}</span>
           </button>
 
           <button
             onClick={() => setShowComments(!showComments)}
             className="comment-button"
           >
-            💬 {currentPost.comments?.length || 0}
+            <MessageCircle size={20} />
+            <span>{currentPost.comments?.length || 0}</span>
           </button>
         </div>
 
@@ -134,8 +138,13 @@ const Postcard: React.FC<{ post: Post }> = ({ post }) => {
                 }
               />
 
-              <button onClick={handleAddComment} disabled={loadingComment}>
-                {loadingComment ? "..." : "Enviar"}
+              <button 
+                onClick={handleAddComment} 
+                disabled={loadingComment || !commentText.trim()}
+                className="send-comment-btn"
+                title="Enviar comentario"
+              >
+                {loadingComment ? "..." : <SendHorizonal size={18} />}
               </button>
             </div>
           </div>

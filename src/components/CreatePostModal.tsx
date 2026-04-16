@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./CreatePostModal.css";
 import PostService from "../services/post.service";
-import { ImagePlus, Send } from "lucide-react";
+import { ImagePlus, Send, X } from "lucide-react";
 
 interface CreatePostModalProps {
   onClose: () => void;
@@ -45,7 +45,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       <div className="create-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header-modern">
           <h2>Nueva Publicación</h2>
-          <button className="close-x-btn" aria-label="Cerrar" onClick={onClose}>✕</button>
+          <button className="close-x-btn" aria-label="Cerrar" onClick={onClose}>
+            <X size={20} />
+          </button>
         </header>
 
         <form className="create-post-form" onSubmit={handleSubmit}>

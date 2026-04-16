@@ -89,6 +89,11 @@
   transition: all 0.2s ease;
 }
 
+.post-actions button .liked {
+  color: #ef4444;
+  fill: #ef4444;
+}
+
 .post-actions button:hover {
   background: rgba(167, 139, 250, 0.2);
   transform: scale(1.05);
@@ -124,10 +129,13 @@
 
 .comment-input-area {
   margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .comment-input-area input {
-  width: 100%;
+  flex: 1;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -144,4 +152,35 @@
 
 .comment-input-area input::placeholder {
   color: #64748b;
+}
+
+.send-comment-btn {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.send-comment-btn:hover:not(:disabled) {
+  background: #a78bfa;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.send-comment-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.95);
+}
+
+.send-comment-btn:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+  cursor: not-allowed;
 }
