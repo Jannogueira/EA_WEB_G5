@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreatePostModal.css";
 import PostService from "../services/post.service";
+import { ImagePlus, Send } from "lucide-react";
 
 interface CreatePostModalProps {
   onClose: () => void;
@@ -45,7 +46,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       <div className="create-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header-modern">
           <h2>Nueva Publicación</h2>
-          <button className="close-x-btn" onClick={onClose}>✕</button>
+          <button className="close-x-btn" aria-label="Cerrar" onClick={onClose}>✕</button>
         </header>
 
         <form className="create-post-form" onSubmit={handleSubmit}>
@@ -54,8 +55,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
               <img src={formData.imageUrl} alt="Preview" className="img-preview" />
             ) : (
               <div className="img-placeholder">
-                <span>📷</span>
-                <p>La vista previa aparecerá aquí</p>
+                <ImagePlus size={48} strokeWidth={1.5} />
+                <p>La vista previa de tu imagen aparecerá aquí</p>
               </div>
             )}
           </div>
@@ -90,7 +91,14 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
               className="publish-btn-premium"
               disabled={loading || !formData.imageUrl}
             >
-              {loading ? "Compartiendo..." : "Publicar"}
+              {loading ? (
+                "Compartiendo..."
+              ) : (
+                <>
+                  <span>Publicar</span>
+                  <Send size={18} />
+                </>
+              )}
             </button>
           </div>
         </form>

@@ -76,14 +76,26 @@
 }
 
 .img-placeholder {
-  text-align: center;
-  color: #334155;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #475569;
+  padding: 40px;
+  transition: all 0.3s ease;
 }
 
-.img-placeholder span {
-  font-size: 4rem;
-  display: block;
-  margin-bottom: 12px;
+.img-placeholder svg {
+  color: #6366f1;
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.3));
+}
+
+.img-placeholder p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  max-width: 200px;
+  line-height: 1.4;
 }
 
 /* --- Input Section --- */
@@ -115,12 +127,15 @@
 .form-group-modern textarea {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 14px;
   color: white;
   font-size: 0.95rem;
+  font-family: inherit;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group-modern input:focus,
@@ -130,28 +145,38 @@
 }
 
 .publish-btn-premium {
-  margin-top: auto;
-  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  margin-top: 10px;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   color: white;
   border: none;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 14px;
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .publish-btn-premium:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.4);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+  filter: brightness(1.1);
+}
+
+.publish-btn-premium:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
 }
 
 .publish-btn-premium:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
-  filter: grayscale(1);
+  filter: grayscale(0.8);
+  box-shadow: none;
 }
 
 /* --- Responsive --- */
