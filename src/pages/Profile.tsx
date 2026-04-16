@@ -4,6 +4,7 @@ import "./Profile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import PostService from "../services/post.service";
+import { getFollowers, getFollowing } from "../services/usuario.service";
 import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
@@ -15,6 +16,8 @@ const Profile: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   useEffect(() => {
     if (!usuario?._id) return;
@@ -31,7 +34,21 @@ const Profile: React.FC = () => {
       }
     };
 
+    const fetchFollowData = async () => {
+      try {
+        const [followersRes, followingRes] = await Promise.all([
+          getFollowers(usuario._id),
+          getFollowing(usuario._id)
+        ]);
+        setFollowersCount(Array.isArray(followersRes.data) ? followersRes.data.length : 0);
+        setFollowingCount(Array.isArray(followingRes.data) ? followingRes.data.length : 0);
+      } catch (error) {
+        console.error("Error fetching follow data:", error);
+      }
+    };
+
     fetchUserPosts();
+    fetchFollowData();
   }, [usuario?._id]);
 
   return (
@@ -72,6 +89,12 @@ const Profile: React.FC = () => {
                   <div className="profile-social-stats">
                     <div>
                       <span className="stat-num">{posts.length}</span> posts
+                    </div>
+                    <div>
+                      <span className="stat-num">{followersCount}</span> seguidores
+                    </div>
+                    <div>
+                      <span className="stat-num">{followingCount}</span> seguidos
                     </div>
                   </div>
 

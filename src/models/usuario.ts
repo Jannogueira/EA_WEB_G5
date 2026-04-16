@@ -10,4 +10,6 @@ export interface Usuario {
     rol: 'admin' | 'user';
     universidad?: Universidad;
     activo: boolean;
+    seguidores?: string[];
+    seguidos?: string[];
 }
