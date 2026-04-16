@@ -3,7 +3,7 @@ import PostService from "../services/post.service";
 import CommentService from "../services/comment.service";
 import type { Post } from "../models/post";
 
-function usePost(initialPost: Post) {
+export default function usePost(initialPost: Post) {
   const [post, setPost] = useState<Post>({
     ...initialPost,
     comments: initialPost.comments ?? [],
@@ -65,5 +65,3 @@ function usePost(initialPost: Post) {
     error,
   };
 }
-
-export default usePost;

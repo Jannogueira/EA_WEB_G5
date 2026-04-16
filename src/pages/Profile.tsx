@@ -1,45 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./Profile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import PostService from "../services/post.service";
-import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
+import { getUsers } from "../services/usuario.service";
+import type { Usuario } from "../models/usuario";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { usuario } = useUser();
 
+  const [profileUser, setProfileUser] = useState<Usuario | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const isOwnProfile = !id || id === usuario?._id;
 
   useEffect(() => {
-    if (!usuario?._id) return;
-
-    const fetchUserPosts = async () => {
+    const fetchProfile = async () => {
       try {
-        const { request } = PostService.getPostsByUserId(usuario._id);
-        const response = await request;
-        setPosts(response.data);
+        // 👤 MY PROFILE
+        if (isOwnProfile && usuario) {
+          setProfileUser(usuario);
+
+          const { request } = PostService.getPostsByUserId(usuario._id);
+          const res = await request;
+          setPosts(res.data);
+        }
+
+        // 👤 OTHER USER PROFILE
+        else if (id) {
+          const userRes = await getUsers(); // better: getUserById (see note below)
+          const foundUser = userRes.data.find((u: Usuario) => u._id === id);
+
+          setProfileUser(foundUser || null);
+
+          const { request } = PostService.getPostsByUserId(id);
+          const res = await request;
+          setPosts(res.data);
+        }
+
       } catch (error) {
-        console.error("Error fetching user posts:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserPosts();
-  }, [usuario?._id]);
+    fetchProfile();
+  }, [id, usuario]);
+
+  if (!profileUser) return <p>Cargando perfil...</p>;
 
   return (
     <div className="profile-wrapper">
       <Navbar usuario={usuario || undefined} />
 
       <div className="main-layout">
-        <Sidebar aria-label="Navegación principal" />
+        <Sidebar />
 
         <div className="content-area">
           <main className="profile-univy-container">
@@ -50,7 +72,7 @@ const Profile: React.FC = () => {
 
                 <div className="avatar-gradient-border">
                   <div className="profile-avatar-xl">
-                    {usuario?.nombre?.charAt(0).toUpperCase() || "?"}
+                    {profileUser.nombre?.charAt(0).toUpperCase() || "?"}
                   </div>
                 </div>
 
@@ -58,15 +80,17 @@ const Profile: React.FC = () => {
 
                   <div className="username-row">
                     <h1 className="profile-display-name">
-                      {usuario?.nombre || "Cargando..."}
+                      {profileUser.nombre}
                     </h1>
 
-                    <button
-                      className="edit-profile-btn-premium"
-                      onClick={() => navigate("/profile/edit")}
-                    >
-                      Editar perfil
-                    </button>
+                    {isOwnProfile && (
+                      <button
+                        className="edit-profile-btn-premium"
+                        onClick={() => navigate("/profile/edit")}
+                      >
+                        Editar perfil
+                      </button>
+                    )}
                   </div>
 
                   <div className="profile-social-stats">
@@ -76,13 +100,15 @@ const Profile: React.FC = () => {
                   </div>
 
                   <div className="user-bio-univy">
-                    <p className="full-name-label">{usuario?.nombre}</p>
-                    {usuario?.descripcion && (
+                    <p className="full-name-label">{profileUser.nombre}</p>
+
+                    {profileUser.descripcion && (
                       <p className="bio-description">
-                        {usuario.descripcion}
+                        {profileUser.descripcion}
                       </p>
                     )}
-                    <p className="bio-contact">{usuario?.email}</p>
+
+                    <p className="bio-contact">{profileUser.email}</p>
                   </div>
 
                 </div>
@@ -91,52 +117,22 @@ const Profile: React.FC = () => {
 
             {/* POSTS */}
             {loading ? (
-              <div className="state-message">
-                Cargando publicaciones...
-              </div>
+              <div className="state-message">Cargando publicaciones...</div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (
-                  <div
-                    key={post._id}
-                    className="univy-grid-item"
-                    onClick={() => setSelectedPost(post)}
-                  >
-                    <img
-                      src={post.imageUrl}
-                      className="univy-grid-img"
-                    />
+                  <div key={post._id} className="univy-grid-item">
+                    <img src={post.imageUrl} className="univy-grid-img" />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="empty-state">
-                No posts yet
-              </div>
+              <div className="empty-state">No posts yet</div>
             )}
 
           </main>
         </div>
       </div>
-
-      {/* MODAL */}
-      {selectedPost && (
-        <div
-          className="post-modal-overlay"
-          onClick={() => setSelectedPost(null)}
-        >
-          <div className="post-modal-container">
-            <button
-              className="modal-close-x"
-              onClick={() => setSelectedPost(null)}
-            >
-              ✕
-            </button>
-
-            <Postcard post={selectedPost} />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

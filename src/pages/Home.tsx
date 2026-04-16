@@ -3,13 +3,12 @@ import "./Home.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Postcard from "../components/Postcard";
-
-import useProfile from "../hooks/useUser";
-import useUser from "../hooks/usePosts";
+import useUser from "../hooks/useUser";
+import usePosts from "../hooks/usePosts";
 
 const Home: React.FC = () => {
-  const { usuario } = useProfile();
-  const { posts, loading, error } = useUser();
+  const { usuario } = useUser();
+  const { posts, loading, error } = usePosts();
 
   return (
     <div className="home-wrapper">
