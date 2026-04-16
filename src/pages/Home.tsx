@@ -27,7 +27,7 @@ const Home: React.FC = () => {
         setPosts(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
-        setError("Error cargando posts");
+        setError("Error cargando posts");a
       } finally {
         setLoading(false);
       }

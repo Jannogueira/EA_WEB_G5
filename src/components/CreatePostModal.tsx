@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreatePostModal.css";
-import PostService from "../services/post.service";
+import useCreatePost from "../hooks/useCreatePost";
+
 import { ImagePlus, Send, X } from "lucide-react";
 
 interface CreatePostModalProps {
@@ -9,7 +10,8 @@ interface CreatePostModalProps {
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreated }) => {
-  const [loading, setLoading] = useState(false);
+  const { createPost, loading } = useCreatePost();
+
   const [formData, setFormData] = useState({
     imageUrl: "",
     caption: ""
@@ -22,21 +24,14 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
-      await PostService.createPost({
-        ...formData,
-//        usuario: userId
-      });
-      alert("¡Publicación compartida!");
+      await createPost(formData);
+
       onPostCreated();
       onClose();
-    } catch (error) {
-      console.error("Error creating post:", error);
+    } catch {
       alert("Error al crear la publicación.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -70,18 +65,16 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
                 name="imageUrl" 
                 value={formData.imageUrl} 
                 onChange={handleChange}
-                placeholder="https://images.pexels.com/..."
                 required 
               />
             </div>
 
             <div className="form-group-modern">
-              <label>Pie de foto (Caption)</label>
+              <label>Pie de foto</label>
               <textarea 
                 name="caption" 
                 value={formData.caption} 
                 onChange={handleChange}
-                placeholder="Escribe algo interesante sobre esta foto..."
                 rows={4}
                 required
               />
@@ -92,9 +85,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
               className="publish-btn-premium"
               disabled={loading || !formData.imageUrl}
             >
-              {loading ? (
-                "Compartiendo..."
-              ) : (
+              {loading ? "Compartiendo..." : (
                 <>
                   <span>Publicar</span>
                   <Send size={18} />

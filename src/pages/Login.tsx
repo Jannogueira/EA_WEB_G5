@@ -1,38 +1,37 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import authService from '../services/auth.service';
-import './Login.css'; 
+import useAuth from '../hooks/useAuth';
+import './Login.css';
 
 const Login = () => {
+  const { login, loading } = useAuth();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
   };
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); 
-    setLoading(true);
-    
+    e.preventDefault();
+
     try {
-      const data = await authService.login(formData.email, formData.password); // data es todos los datos que devuelve la peticion
-      console.log("Login exitoso. Token guardado.");
+      await login(formData.email, formData.password);
       navigate('/home');
     } catch (error: any) {
-      console.error("Error en login:", error);
-      const errorMsg = error.response?.data?.message || "Error al conectar con el servidor";
+      const errorMsg =
+        error.response?.data?.message ||
+        "Error al conectar con el servidor";
+
       alert("Fallo el inicio de sesión: " + errorMsg);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -40,49 +39,30 @@ const Login = () => {
     <div className="login-page">
       <div className="login-container">
         <h2>Iniciar Sesión</h2>
-        
-        <form className="login-form" onSubmit={handleLogin}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input 
-              type="email" 
-              id="email"
-              name="email"
-              placeholder="correo@ejemplo.com"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={loading}
-              required 
-            />
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
-            <input 
-              type="password" 
-              id="password"
-              name="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              disabled={loading}
-              required 
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="login-btn" 
+        <form onSubmit={handleLogin}>
+          <input
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
             disabled={loading}
-          >
+            placeholder="correo@ejemplo.com"
+          />
+
+          <input
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            disabled={loading}
+          />
+
+          <button disabled={loading}>
             {loading ? "Cargando..." : "Entrar"}
           </button>
         </form>
 
-        <div className="register-link-section">
-          <span>¿Aún no tienes cuenta?</span>
-          <Link to="/register" className="register-link">Regístrate aquí</Link>
-        </div>
+        <Link to="/register">Regístrate aquí</Link>
       </div>
     </div>
   );

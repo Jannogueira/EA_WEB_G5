@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import authService from "../services/auth.service";
 import "./Navbar.css";
 import type { Usuario } from "../models/usuario";
+import useAuth from "../hooks/useAuth";
 
 interface NavbarProps {
   usuario?: Usuario;
@@ -12,18 +12,17 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-const handleLogout = async (e: React.MouseEvent) => {
-  e.preventDefault();
-  e.stopPropagation(); // Evita que se cierre el menú antes de tiempo
+  const { logout } = useAuth();
 
-  console.log("Cerrando sesión en el servidor...");
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation(); // Evita que se cierre el menú antes de tiempo
   
   // Esperamos a que la petición de logout termine
-  await authService.logout();
+  await logout();
   
   // Cerramos el menú y redirigimos
   setMenuOpen(false);
-  navigate("/login");
 };
 
   // Obtener la inicial del nombre en mayúscula
