@@ -51,7 +51,7 @@ const Sidebar: React.FC = () => {
 
           <button 
             className={`sidebar-btn ${isActive("/explore") ? "active" : ""}`} 
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/explore")}
           >
             <Compass size={20} className="btn-icon" />
             <span className="btn-text">Explorar</span>

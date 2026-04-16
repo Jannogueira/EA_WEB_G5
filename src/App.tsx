@@ -5,6 +5,7 @@ import SelectUniversity from './pages/SelectUniversity';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import Explore from './pages/Explore';
 import './App.css';
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/profile/:id" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

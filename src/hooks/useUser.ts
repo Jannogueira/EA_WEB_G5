@@ -18,8 +18,7 @@ export default function useUser() {
       return;
     }
 
-    const user: Usuario = JSON.parse(userJson);
-    setUsuario(user);
+    setUsuario(JSON.parse(userJson));
   }, [navigate]);
 
   const updateProfile = async (data: Partial<Usuario>) => {
@@ -34,11 +33,7 @@ export default function useUser() {
 
       return response.data;
     } catch (err: any) {
-      const msg =
-        err.response?.data?.message ||
-        "Error al actualizar el perfil";
-
-      setError(msg);
+      setError(err.response?.data?.message || "Error al actualizar el perfil");
       throw err;
     } finally {
       setLoading(false);

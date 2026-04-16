@@ -15,5 +15,23 @@ export const getFollowing = (usuarioId: string) => {
   return apiClient.get(`/usuarios/following/${usuarioId}`);
 };
 
-const exportedService = { ...service, updateSelf, getFollowers, getFollowing };
+export const getUsers = () => {
+  return apiClient.get("/usuarios");
+};
+
+export const searchUsers = (query: string) => {
+  return apiClient.get("/usuarios", {
+    params: { search: query }
+  });
+};
+
+const exportedService = { 
+  ...service, 
+  updateSelf, 
+  getFollowers, 
+  getFollowing,
+  getUsers,
+  searchUsers
+};
+
 export default exportedService;
