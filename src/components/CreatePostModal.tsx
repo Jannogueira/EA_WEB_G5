@@ -6,10 +6,9 @@ import { ImagePlus, Send } from "lucide-react";
 interface CreatePostModalProps {
   onClose: () => void;
   onPostCreated: () => void;
-  userId: string;
 }
 
-const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreated, userId }) => {
+const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreated }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     imageUrl: "",
