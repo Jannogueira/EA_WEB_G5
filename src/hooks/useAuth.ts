@@ -7,6 +7,8 @@ export default function useAuth() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  
+
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);

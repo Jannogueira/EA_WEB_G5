@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import "./EditProfile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import useProfile from "../hooks/useProfile";
+import useUser from "../hooks/useUser";
 
 const EditProfile: React.FC = () => {
   const navigate = useNavigate();
-  const { usuario, updateProfile, loading, error } = useProfile();
+  const { usuario, updateProfile, loading, error } = useUser();
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -26,7 +26,7 @@ const EditProfile: React.FC = () => {
   }, [usuario]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -40,7 +40,7 @@ const EditProfile: React.FC = () => {
       alert("¡Perfil actualizado con éxito!");
       navigate("/profile");
     } catch {
-      // error already handled in hook
+      // handled in hook
     }
   };
 
@@ -53,40 +53,72 @@ const EditProfile: React.FC = () => {
 
         <div className="content-area">
           <main className="edit-form-container">
-            <h1>Editar Perfil</h1>
+            <h1 className="page-title-modern">Editar Perfil</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="univy-glass-form">
+
+              {/* Avatar */}
               <div className="avatar-preview-section">
                 <div className="avatar-edit-circle">
                   {formData.nombre?.charAt(0).toUpperCase() || "?"}
                 </div>
               </div>
 
-              {error && <div className="form-error-banner">{error}</div>}
+              {error && (
+                <div className="form-error-banner">{error}</div>
+              )}
 
-              <input
-                name="nombre"
-                value={formData.nombre}
-                onChange={handleChange}
-                required
-              />
+              {/* Nombre */}
+              <div className="form-group-modern">
+                <label>Nombre</label>
+                <input
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-              <input
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+              {/* Email */}
+              <div className="form-group-modern">
+                <label>Email</label>
+                <input
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-              <input
-                name="avatarUrl"
-                value={formData.avatarUrl}
-                onChange={handleChange}
-              />
+              {/* Avatar URL */}
+              <div className="form-group-modern">
+                <label>Avatar URL</label>
+                <input
+                  name="avatarUrl"
+                  value={formData.avatarUrl}
+                  onChange={handleChange}
+                />
+              </div>
 
-              <button disabled={loading}>
-                {loading ? "Guardando..." : "Guardar Cambios"}
-              </button>
+              {/* Buttons */}
+              <div className="form-actions-modern">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => navigate("/profile")}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-btn-premium"
+                  disabled={loading}
+                >
+                  {loading ? "Guardando..." : "Guardar Cambios"}
+                </button>
+              </div>
+
             </form>
           </main>
         </div>

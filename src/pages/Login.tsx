@@ -40,29 +40,41 @@ const Login = () => {
       <div className="login-container">
         <h2>Iniciar Sesión</h2>
 
-        <form onSubmit={handleLogin}>
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            disabled={loading}
-            placeholder="correo@ejemplo.com"
-          />
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={loading}
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
 
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            disabled={loading}
-          />
+          <div className="form-group">
+            <label>Contraseña</label>
+            <input
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              disabled={loading}
+              placeholder="••••••••"
+            />
+          </div>
 
-          <button disabled={loading}>
+          <button type="submit" className="login-btn" disabled={loading}>
             {loading ? "Cargando..." : "Entrar"}
           </button>
         </form>
 
-        <Link to="/register">Regístrate aquí</Link>
+        <div className="register-link-section">
+          ¿No tienes cuenta?
+          <Link to="/register" className="register-link">
+            Regístrate aquí
+          </Link>
+        </div>
       </div>
     </div>
   );

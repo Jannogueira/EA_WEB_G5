@@ -6,141 +6,131 @@ import Navbar from "../components/Navbar";
 import PostService from "../services/post.service";
 import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
-import type { Usuario } from "../models/usuario";
-
-import { Rocket, Heart, MessageCircle, FolderOpen, X } from "lucide-react";
+import useUser from "../hooks/useUser";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
+  const { usuario } = useUser();
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    const userJson = localStorage.getItem('usuario');
-    if (userJson) {
-      const user = JSON.parse(userJson);
-      setUsuario(user);
-      const userId = user._id || user.id;
-      if (userId) fetchUserPosts(userId);
-    }
-  }, []);
+    if (!usuario?._id) return;
 
-  const fetchUserPosts = async (userId: string) => {
-    try {
-      console.log("Fetching posts for user ID:", userId);
-      const { request } = PostService.getPostsByUserId(userId);
-      const response = await request;
-      console.log("Posts received:", response.data);
-      setPosts(response.data);
-    } catch (error) {
-      console.error("Error fetching user posts:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchUserPosts = async () => {
+      try {
+        const { request } = PostService.getPostsByUserId(usuario._id);
+        const response = await request;
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching user posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handlePostClick = (post: Post) => {
-    setSelectedPost(post);
-  };
+    fetchUserPosts();
+  }, [usuario?._id]);
 
   return (
     <div className="profile-wrapper">
-      <Navbar usuario={usuario} />
+      <Navbar usuario={usuario || undefined} />
 
       <div className="main-layout">
         <Sidebar aria-label="Navegación principal" />
 
         <div className="content-area">
           <main className="profile-univy-container">
-            {/* Header: Univy Signature Style */}
+
+            {/* HEADER */}
             <header className="univy-profile-header">
               <div className="header-top">
-                <div className="profile-avatar-wrapper">
-                    <div className="avatar-gradient-border">
-                        <div className="profile-avatar-xl">
-                            {usuario?.nombre ? usuario.nombre.charAt(0).toUpperCase() : "?"}
-                        </div>
-                    </div>
+
+                <div className="avatar-gradient-border">
+                  <div className="profile-avatar-xl">
+                    {usuario?.nombre?.charAt(0).toUpperCase() || "?"}
+                  </div>
                 </div>
 
                 <div className="profile-info-main">
+
                   <div className="username-row">
-                    <h2 className="profile-display-name">{usuario?.nombre || "Cargando..."}</h2>
-                    <button 
+                    <h1 className="profile-display-name">
+                      {usuario?.nombre || "Cargando..."}
+                    </h1>
+
+                    <button
                       className="edit-profile-btn-premium"
-                      onClick={() => navigate('/profile/edit')}
+                      onClick={() => navigate("/profile/edit")}
                     >
-                      Editar Perfil
+                      Editar perfil
                     </button>
                   </div>
 
                   <div className="profile-social-stats">
-                    <div className="social-stat">
-                      <span className="stat-num">{posts.length}</span> publicaciones
-                    </div>
-                    <div className="social-stat">
-                      <span className="stat-num">482</span> seguidores
-                    </div>
-                    <div className="social-stat">
-                      <span className="stat-num">156</span> seguidos
+                    <div>
+                      <span className="stat-num">{posts.length}</span> posts
                     </div>
                   </div>
 
                   <div className="user-bio-univy">
-                    <span className="full-name-label">{usuario?.nombre}</span>
+                    <p className="full-name-label">{usuario?.nombre}</p>
                     <p className="bio-description">
-                      Estudiante en Univy | Apasionado por la tecnología <Rocket size={16} className="inline-icon" />
+                      Estudiante universitario en Univy
                     </p>
-                    {usuario?.email && <p className="bio-contact">{usuario.email}</p>}
+                    <p className="bio-contact">{usuario?.email}</p>
                   </div>
+
                 </div>
               </div>
             </header>
 
-            {/* Posts Heading: Modern Univy Style */}
-            <div className="posts-section-divider">
-              <h3 className="section-title-modern">PUBLICACIONES</h3>
-              <div className="active-line"></div>
-            </div>
-
-            {/* Posts Grid: Univy Modern Grid */}
+            {/* POSTS */}
             {loading ? (
-              <div className="state-message">Cargando publicaciones...</div>
+              <div className="state-message">
+                Cargando publicaciones...
+              </div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (
-                  <div 
-                    key={post._id} 
+                  <div
+                    key={post._id}
                     className="univy-grid-item"
-                    onClick={() => handlePostClick(post)}
+                    onClick={() => setSelectedPost(post)}
                   >
-                    <img src={post.imageUrl} alt="Post" className="univy-grid-img" />
-                    <div className="univy-grid-hover">
-                      <div className="hover-stats">
-                        <span className="stat-item"><Heart size={18} fill="white" /> {post.likes.length}</span>
-                        <span className="stat-item"><MessageCircle size={18} fill="white" /> {post.comments.length}</span>
-                      </div>
-                    </div>
+                    <img
+                      src={post.imageUrl}
+                      className="univy-grid-img"
+                    />
                   </div>
                 ))}
               </div>
             ) : (
               <div className="empty-state">
-                <span className="empty-icon"><FolderOpen size={48} /></span>
-                <h3>Aún no has compartido nada</h3>
+                No posts yet
               </div>
             )}
+
           </main>
         </div>
       </div>
 
-      {/* Detail Modal */}
+      {/* MODAL */}
       {selectedPost && (
-        <div className="post-modal-overlay" onClick={() => setSelectedPost(null)}>
-          <div className="post-modal-container" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-x" onClick={() => setSelectedPost(null)}><X size={24} /></button>
+        <div
+          className="post-modal-overlay"
+          onClick={() => setSelectedPost(null)}
+        >
+          <div className="post-modal-container">
+            <button
+              className="modal-close-x"
+              onClick={() => setSelectedPost(null)}
+            >
+              ✕
+            </button>
+
             <Postcard post={selectedPost} />
           </div>
         </div>

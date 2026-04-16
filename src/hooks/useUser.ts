@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { updateSelf } from "../services/usuario.service";
 import type { Usuario } from "../models/usuario";
 
-export default function useProfile() {
+export default function useUser() {
   const navigate = useNavigate();
 
   const [usuario, setUsuario] = useState<Usuario | null>(null);

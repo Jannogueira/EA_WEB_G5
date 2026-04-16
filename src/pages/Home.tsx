@@ -1,44 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./Home.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Postcard from "../components/Postcard";
-import type { Post } from "../models/post";
-import type { Usuario } from "../models/usuario";
-import PostService from "../services/post.service";
+
+import useProfile from "../hooks/useUser";
+import useUser from "../hooks/usePosts";
 
 const Home: React.FC = () => {
-  const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const userJson = localStorage.getItem("usuario");
-    if (userJson) {
-      setUsuario(JSON.parse(userJson));
-    }
-
-    const fetchPosts = async () => {
-      try {
-        const { request } = PostService.getAll();
-        const response = await request;
-        const data = response.data || response;
-        setPosts(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error(err);
-        setError("Error cargando posts");a
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+  const { usuario } = useProfile();
+  const { posts, loading, error } = useUser();
 
   return (
     <div className="home-wrapper">
-      <Navbar usuario={usuario} />
+      <Navbar usuario={usuario || undefined} />
 
       <div className="main-layout">
         <Sidebar />
@@ -46,10 +21,8 @@ const Home: React.FC = () => {
         <div className="content-area">
           <main className="feed-container">
             <header className="feed-header">
-              <h1 className="page-title">Feed</h1>
-              <p className="page-subtitle">
-                Explora lo que está pasando en Univy
-              </p>
+              <h1>Feed</h1>
+              <p>Explora lo que está pasando en Univy</p>
             </header>
 
             <div className="posts-list">
@@ -60,11 +33,9 @@ const Home: React.FC = () => {
                 <p>No hay posts todavía</p>
               )}
 
-              {!loading &&
-                !error &&
-                posts.map((post) => (
-                  <Postcard key={post._id} post={post} />
-                ))}
+              {posts.map(post => (
+                <Postcard key={post._id} post={post} />
+              ))}
             </div>
           </main>
         </div>

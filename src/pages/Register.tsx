@@ -44,6 +44,7 @@ const Register = () => {
         </p>
 
         <form onSubmit={handleSubmit} className="register-form">
+
           <div className="form-group">
             <label>Nombre Completo</label>
             <input
@@ -81,14 +82,20 @@ const Register = () => {
             />
           </div>
 
-          <button type="submit" disabled={loading}>
+          <button
+            type="submit"
+            className="register-btn"
+            disabled={loading}
+          >
             {loading ? "Procesando..." : "Siguiente"}
           </button>
         </form>
 
         <div className="login-link-section">
           <span>¿Ya eres parte de nuestra comunidad?</span>
-          <Link to="/login">Acceder al campus</Link>
+          <Link to="/login" className="login-link">
+            Acceder al campus
+          </Link>
         </div>
       </div>
     </div>
