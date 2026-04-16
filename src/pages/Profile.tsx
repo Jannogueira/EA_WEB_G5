@@ -4,12 +4,12 @@ import "./Profile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import PostService from "../services/post.service";
-import { getFollowers, getFollowing, getUsers } from "../services/usuario.service";
+import { getFollowers, getFollowing, getUsers, toggleFollow } from "../services/usuario.service";
 import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen } from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus } from "lucide-react";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const Profile: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const isOwnProfile = !id || id === currentUser?._id;
 
@@ -54,9 +55,20 @@ const Profile: React.FC = () => {
               getFollowers(targetId),
               getFollowing(targetId)
             ]);
-            // El backend devuelve { seguidores: [...] }
-            setFollowersCount(Array.isArray(followersRes.data.seguidores) ? followersRes.data.seguidores.length : 0);
-            setFollowingCount(Array.isArray(followingRes.data.seguidos) ? followingRes.data.seguidos.length : 0);
+            
+            const followers = followersRes.data.seguidores || [];
+            const following = followingRes.data.seguidos || [];
+            
+            setFollowersCount(followers.length);
+            setFollowingCount(following.length);
+
+            // Check if current user is following this profile
+            if (currentUser) {
+              const amIFollowing = followers.some((f: any) => 
+                (typeof f === 'string' ? f : f._id) === currentUser._id
+              );
+              setIsFollowing(amIFollowing);
+            }
           } catch (followErr) {
             console.error("Error fetching follow data:", followErr);
           }
@@ -70,6 +82,18 @@ const Profile: React.FC = () => {
 
     fetchProfileData();
   }, [id, currentUser, isOwnProfile]);
+
+  const handleToggleFollow = async () => {
+    if (!profileUser || !currentUser) return;
+    
+    try {
+      await toggleFollow(profileUser._id);
+      setIsFollowing(!isFollowing);
+      setFollowersCount(prev => isFollowing ? prev - 1 : prev + 1);
+    } catch (error) {
+      console.error("Error toggling follow:", error);
+    }
+  };
 
   const handlePostClick = (post: Post) => {
     setSelectedPost(post);
@@ -101,12 +125,28 @@ const Profile: React.FC = () => {
                 <div className="profile-info-main">
                   <div className="username-row">
                     <h2 className="profile-display-name">{profileUser?.nombre}</h2>
-                    {isOwnProfile && (
+                    
+                    {isOwnProfile ? (
                       <button 
                         className="edit-profile-btn-premium"
                         onClick={() => navigate('/profile/edit')}
                       >
                         Editar Perfil
+                      </button>
+                    ) : (
+                      <button 
+                        className={`follow-btn-premium ${isFollowing ? 'following' : ''}`}
+                        onClick={handleToggleFollow}
+                      >
+                        {isFollowing ? (
+                          <>
+                            <UserMinus size={18} /> Dejar de seguir
+                          </>
+                        ) : (
+                          <>
+                            <UserPlus size={18} /> Seguir
+                          </>
+                        )}
                       </button>
                     )}
                   </div>

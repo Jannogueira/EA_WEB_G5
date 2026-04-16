@@ -25,13 +25,18 @@ export const searchUsers = (query: string) => {
   });
 };
 
+export const toggleFollow = (targetId: string) => {
+  return apiClient.post(`/usuarios/follow/${targetId}`);
+};
+
 const exportedService = { 
   ...service, 
   updateSelf, 
   getFollowers, 
   getFollowing,
   getUsers,
-  searchUsers
+  searchUsers,
+  toggleFollow
 };
 
 export default exportedService;
