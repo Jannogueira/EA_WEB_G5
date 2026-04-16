@@ -77,9 +77,11 @@ const Profile: React.FC = () => {
 
                   <div className="user-bio-univy">
                     <p className="full-name-label">{usuario?.nombre}</p>
-                    <p className="bio-description">
-                      Estudiante universitario en Univy
-                    </p>
+                    {usuario?.descripcion && (
+                      <p className="bio-description">
+                        {usuario.descripcion}
+                      </p>
+                    )}
                     <p className="bio-contact">{usuario?.email}</p>
                   </div>
 

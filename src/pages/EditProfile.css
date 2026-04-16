@@ -110,18 +110,21 @@
   color: #f8fafc;
 }
 
-.form-group-modern input {
+.form-group-modern input,
+.form-group-modern textarea {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 14px 18px;
   color: white;
   font-size: 1rem;
+  font-family: 'Inter', system-ui, sans-serif;
   outline: none;
   transition: all 0.2s ease;
 }
 
-.form-group-modern input:focus {
+.form-group-modern input:focus,
+.form-group-modern textarea:focus {
   border-color: #a78bfa;
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 10px rgba(167, 139, 250, 0.2);

@@ -4,6 +4,7 @@ export interface Usuario {
     _id: string;
     nombre: string;
     avatarUrl?: string; // URL de la imagen de avatar del usuario
+    descripcion?: string; // Descripción del perfil del usuario
     email: string;
     password: string;
     rol: 'admin' | 'user';

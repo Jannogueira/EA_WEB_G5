@@ -12,7 +12,8 @@ const EditProfile: React.FC = () => {
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
-    avatarUrl: ""
+    avatarUrl: "",
+    descripcion: ""
   });
 
   useEffect(() => {
@@ -20,13 +21,14 @@ const EditProfile: React.FC = () => {
       setFormData({
         nombre: usuario.nombre || "",
         email: usuario.email || "",
-        avatarUrl: usuario.avatarUrl || ""
+        avatarUrl: usuario.avatarUrl || "",
+        descripcion: usuario.descripcion || ""
       });
     }
   }, [usuario]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -97,6 +99,19 @@ const EditProfile: React.FC = () => {
                   name="avatarUrl"
                   value={formData.avatarUrl}
                   onChange={handleChange}
+                />
+              </div>
+
+              {/* Descripción */}
+              <div className="form-group-modern">
+                <label>Descripción</label>
+                <textarea
+                  name="descripcion"
+                  value={formData.descripcion}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder="Escribe una breve descripción sobre ti..."
+                  style={{ resize: "vertical", minHeight: "80px" }}
                 />
               </div>
 
