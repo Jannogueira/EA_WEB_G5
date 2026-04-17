@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Explore.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -7,6 +7,7 @@ import { searchUsers } from "../services/usuario.service";
 import type { Usuario } from "../models/usuario";
 import UserCard from "../components/UserCard";
 import { Search, Compass } from "lucide-react";
+import ExploreFilter from "../components/ExploreFilterModal";
 
 const Explore: React.FC = () => {
     const { usuario } = useUser();
@@ -14,23 +15,35 @@ const Explore: React.FC = () => {
     const [users, setUsers] = useState<Usuario[]>([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
-    const [hasSearched, setHasSearched] = useState(false);
+    const [hasTyped, setHasTyped] = useState(false);
 
-    const handleSearch = async () => {
-        if (!search.trim()) return;
-        try {
-            setLoading(true);
-            setHasSearched(true);
+    const [showFilter, setShowFilter] = useState(false);
+    const [selectedUnis, setSelectedUnis] = useState<string[]>([]);
 
-            const res = await searchUsers(search);
-            setUsers(res.data);
-
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (!search.trim() && selectedUnis.length === 0) {
+            setUsers([]);
+            setHasTyped(false);
+            return;
         }
-    };
+    
+        const timer = setTimeout(async () => {
+            try {
+                setLoading(true);
+                setHasTyped(true);
+    
+                const res = await searchUsers(search, selectedUnis);
+                setUsers(res.data);
+    
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        }, 400);
+    
+        return () => clearTimeout(timer);
+    }, [search, selectedUnis]);
 
     return (
         <div className="home-wrapper">
@@ -53,6 +66,12 @@ const Explore: React.FC = () => {
 
                         {/* SEARCH */}
                         <div className="search-section-premium">
+                            <button
+                                    className="filter-btn-premium"
+                                    onClick={() => setShowFilter(true)}
+                                >   
+                                    Filtrar
+                                </button>
                             <div className="search-box-wrapper">
                                 <Search size={20} className="search-icon-inside" />
                                 <input 
@@ -60,20 +79,14 @@ const Explore: React.FC = () => {
                                     placeholder="Buscar por nombre..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") handleSearch();
-                                    }}
                                     className="search-input-premium"
                                 />
-                                <button className="search-btn-premium" onClick={handleSearch} disabled={loading}>
-                                    {loading ? "..." : "Buscar"}
-                                </button>
-                            </div>
+                                </div>
                         </div>
 
                         {/* RESULTS */}
                         <div className="explore-results-area">
-                            {hasSearched ? (
+                            {hasTyped ? (
                                 <div className="users-list">
                                     {loading ? (
                                         <div className="state-message">Buscando mentes brillantes...</div>
@@ -98,6 +111,14 @@ const Explore: React.FC = () => {
                     </main>
                 </div>
             </div>
+
+            {showFilter && (
+                <ExploreFilter
+                selected={selectedUnis}
+                onApply={(unis) => setSelectedUnis(unis)}
+                onClose={() => setShowFilter(false)}
+                />
+            )}
         </div>
     );
 };

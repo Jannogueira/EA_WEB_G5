@@ -31,7 +31,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      <aside className="sidebar">
+      <div className="sidebar">
         <nav className="sidebar-nav">
           <button 
             className={`sidebar-btn ${isActive("/home") ? "active" : ""}`} 
@@ -78,11 +78,10 @@ const Sidebar: React.FC = () => {
             <span className="btn-text">Mensajes</span>
           </button>
         </nav>
-      </aside>
+      </div>
 
       {isModalOpen && usuario && (
         <CreatePostModal 
-          userId={usuario._id} 
           onClose={() => setIsModalOpen(false)} 
           onPostCreated={handlePostCreated}
         />

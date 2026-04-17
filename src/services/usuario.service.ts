@@ -19,9 +19,9 @@ export const getUsers = () => {
   return apiClient.get("/usuarios");
 };
 
-export const searchUsers = (query: string) => {
+export const searchUsers = (query: string, universidades: string[]) => {
   return apiClient.get("/usuarios", {
-    params: { search: query }
+    params: { search: query, universidades: universidades?.join(",") },
   });
 };
 
