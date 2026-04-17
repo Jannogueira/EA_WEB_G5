@@ -1,56 +1,71 @@
 .user-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     width: 100%;
-    max-width: 650px;
+    width: 650px;
     display: flex;
     flex-direction: column;
-    margin-bottom: 24px;
-    padding: 18px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .user-card:hover {
+    padding: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.user-card:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(167, 139, 250, 0.3);
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.15);
-  }
-  
-  .user-header {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.user-header {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
-  }
-  
-  .user-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    gap: 16px;
+    margin-bottom: 8px; /* Reduced to bring description closer */
+}
+
+.user-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%; /* Back to classic circle for a cleaner look */
     object-fit: cover;
-    border: 1.5px solid rgba(167, 139, 250, 0.2);
-  }
-  
-  .user-name {
-    font-size: 1.05rem;
+    border: 2px solid rgba(167, 139, 250, 0.2);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 1.1rem;
     font-weight: 700;
     color: #f8fafc;
     margin: 0;
-  }
-  
-  .user-uni {
+}
+
+.user-uni {
     font-size: 0.85rem;
-    color: #94a3b8;
-    margin: 0;
-  }
-  
-  .user-body {
-    margin-top: 8px;
-  }
-  
-  .user-desc {
-    color: #e2e8f0;
+    color: #a78bfa;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.user-body {
+    /* No extra container styling here */
+}
+
+.user-desc {
+    color: #94a3b8; /* Muted slate for a more sophisticated look */
     font-size: 0.95rem;
-    line-height: 1.4;
-  }
+    line-height: 1.6;
+    text-align: left;
+    /* This margin aligns the text exactly under the Name/Uni text */
+    margin-left: 68px; 
+    margin-top: 4px;
+    padding: 0; /* Removed padding */
+    border: none; /* Explicitly removed borders */
+}

@@ -32,7 +32,7 @@ const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
 
       <div className="user-body">
         <p className="user-desc">
-          {user.descripcion || "Este usuario no ha añadido descripción"}
+          {user.descripcion}
         </p>
       </div>
     </div>

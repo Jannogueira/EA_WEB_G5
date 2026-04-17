@@ -68,14 +68,12 @@
     box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
 }
 
-/* Responsive adjustment for small screens */
-@media (max-width: 600px) {
-    .search-section-premium {
-        flex-direction: column; /* Stack them on mobile if it gets too tight */
-        align-items: stretch;
-    }
-    
-    .filter-btn-premium {
-        width: 100%;
-    }
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    animation: fadeIn 0.5s ease-out;
+    width: 100%;
+    padding-bottom: 50px;
+    align-items: stretch; 
 }

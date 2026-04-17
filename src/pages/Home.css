@@ -23,7 +23,6 @@
   margin-left: 280px; /* Space for the floating sidebar */
   padding: 3rem;
   display: flex;
-  justify-content: center;
 }
 
 .feed-container {
@@ -33,6 +32,7 @@
   flex-direction: column;
   gap: 2.5rem;
   animation: fadeIn 0.8s ease-out;
+  align-items: flex-start;
 }
 
 @keyframes fadeIn {
@@ -69,7 +69,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  align-items: center;
+  align-items: flex-start;
 }
 
 /* --- RESPONSIVE --- */

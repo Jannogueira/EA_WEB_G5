@@ -38,6 +38,11 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         </div>
       )}
 
+        <div className="post-caption">
+          <strong>{post.usuario?.nombre || "Usuario"}</strong>{" "}
+          {post.caption}
+        </div>
+
       <div className="post-content">
         <div className="post-actions">
           <button onClick={likePost} className="like-button">
@@ -52,11 +57,6 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             <MessageCircle size={20} />
             <span>{post.comments?.length || 0}</span>
           </button>
-        </div>
-
-        <div className="post-caption">
-          <strong>{post.usuario?.nombre || "Usuario"}</strong>{" "}
-          {post.caption}
         </div>
 
         {showComments && (
@@ -78,9 +78,12 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
                 value={commentText}
                 placeholder="Escribe un comentario..."
                 onChange={(e) => setCommentText(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && addComment(commentText)
-                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    addComment(commentText);
+                    setCommentText("");
+                  }
+                }}
               />
 
               <button
