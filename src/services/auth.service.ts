@@ -7,7 +7,8 @@ const login = async (email: string, password: string) => {
   });
 
   if (response.data.accessToken) {
-    localStorage.setItem('token', response.data.accessToken);
+    localStorage.setItem('accessToken', response.data.accessToken);
+    localStorage.setItem('refreshToken', response.data.refreshToken);
     localStorage.setItem('usuario', JSON.stringify(response.data.usuario));
   }
 
@@ -18,7 +19,8 @@ const register = async (userData: any) => {
   const response = await apiClient.post('/auth/register', userData);
 
   if (response.data.accessToken) {
-    localStorage.setItem('token', response.data.accessToken);
+    localStorage.setItem('accessToken', response.data.accessToken);
+    localStorage.setItem('refreshToken', response.data.refreshToken);
     localStorage.setItem('usuario', JSON.stringify(response.data.usuario));
   }
 
@@ -32,8 +34,9 @@ const logout = async () => {
   } catch (error) {
     console.error('Error al cerrar sesión en el servidor:', error);
   } finally {
-    // 2. Pase lo que pase, limpiamos el Access Token y el Usuario del frontend
-    localStorage.removeItem('token');
+    // 2. Pase lo que pase, limpiamos el Access Token, Refresh Token y el Usuario del frontend
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('usuario');
   }
 };
