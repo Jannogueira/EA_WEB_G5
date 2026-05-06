@@ -2,14 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare } from "lucide-react";
 import CreatePostModal from "./CreatePostModal";
+import { useSocket } from "../context/SocketContext";
 import "./Sidebar.css";
 import type { Usuario } from "../models/usuario";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { unreadCounts } = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
+
+  const hasUnread = Object.values(unreadCounts).some(count => count > 0);
 
   useEffect(() => {
     const userJson = localStorage.getItem('usuario');
@@ -71,11 +75,13 @@ const Sidebar: React.FC = () => {
             <span className="btn-text">Clases</span>
           </button>
           <button 
-            className={`sidebar-btn ${isActive("/chat") ? "active" : ""}`} 
-            onClick={() => navigate("/home")}
+            className={`sidebar-btn ${isActive("/messages") ? "active" : ""}`} 
+            onClick={() => navigate("/messages")}
+            style={{ position: 'relative' }}
           >
             <MessageSquare size={20} className="btn-icon" />
             <span className="btn-text">Mensajes</span>
+            {hasUnread && <div className="sidebar-notification-dot"></div>}
           </button>
         </nav>
       </div>

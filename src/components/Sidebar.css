@@ -1,6 +1,7 @@
 .sidebar {
+  box-sizing: border-box; 
   width: 240px;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 135px);
   background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -86,6 +87,17 @@
     justify-content: center;
     padding: 15px 0;
   }
+}
+
+.sidebar-notification-dot {
+  width: 8px;
+  height: 8px;
+  background: #a78bfa;
+  border-radius: 50%;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
 }
 
 @media (max-width: 768px) {
