@@ -83,7 +83,7 @@ const Messages: React.FC = () => {
                     <span className="last-msg-preview">Chat disponible</span>
                   </div>
                   {unreadCounts[contact._id] > 0 && (
-                    <div className="unread-dot"></div>
+                    <div className="unread-badge">{unreadCounts[contact._id]}</div>
                   )}
                 </div>
               ))}

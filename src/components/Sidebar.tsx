@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
 
-  const hasUnread = Object.values(unreadCounts).some(count => count > 0);
+  const totalUnread = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
 
   useEffect(() => {
     const userJson = localStorage.getItem('usuario');
@@ -81,7 +81,7 @@ const Sidebar: React.FC = () => {
           >
             <MessageSquare size={20} className="btn-icon" />
             <span className="btn-text">Mensajes</span>
-            {hasUnread && <div className="sidebar-notification-dot"></div>}
+            {totalUnread > 0 && <div className="sidebar-notification-badge">{totalUnread > 99 ? '99+' : totalUnread}</div>}
           </button>
         </nav>
       </div>
