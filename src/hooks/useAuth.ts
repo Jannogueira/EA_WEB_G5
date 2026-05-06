@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import authService from "../services/auth.service";
+import authService from "../services/auth";
 
 export default function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  
+
 
   const login = async (email: string, password: string) => {
     setLoading(true);

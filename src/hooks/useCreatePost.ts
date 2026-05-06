@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PostService from "../services/post.service";
+import PostService from "../services/post";
 
 export default function useCreatePost() {
   const [loading, setLoading] = useState(false);

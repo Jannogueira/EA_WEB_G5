@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import PostService from "../services/post.service";
-import CommentService from "../services/comment.service";
+import PostService from "../services/post";
+import CommentService from "../services/comment";
 import type { Post } from "../models/post";
 
 export default function usePost(initialPost: Post) {

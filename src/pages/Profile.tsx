@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./Profile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import PostService from "../services/post.service";
-import { getFollowers, getFollowing, getUsers, toggleFollow } from "../services/usuario.service";
+import PostService from "../services/post";
+import { getFollowers, getFollowing, getUserById, toggleFollow } from "../services/usuario";
 import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
@@ -37,17 +37,19 @@ const Profile: React.FC = () => {
           targetUser = currentUser;
           targetId = currentUser._id;
         } else if (id) {
-          const userRes = await getUsers();
-          targetUser = userRes.data.find((u: Usuario) => u._id === id) || null;
+          // Usamos el nuevo método getUserById
+          const userRes = await getUserById(id);
+          targetUser = userRes.data;
+          targetId = id;
         }
 
         setProfileUser(targetUser);
 
         if (targetId) {
-          // Fetch Posts
+          // Fetch Posts (ahora devuelve PaginatedResponse)
           const { request } = PostService.getPostsByUserId(targetId);
           const res = await request;
-          setPosts(res.data);
+          setPosts(res.data.docs || []);
 
           // Fetch Follow Data
           try {
@@ -55,16 +57,16 @@ const Profile: React.FC = () => {
               getFollowers(targetId),
               getFollowing(targetId)
             ]);
-            
+
+            // Ajustamos según la respuesta del backend
             const followers = followersRes.data.seguidores || [];
             const following = followingRes.data.seguidos || [];
-            
+
             setFollowersCount(followers.length);
             setFollowingCount(following.length);
 
-            // Check if current user is following this profile
             if (currentUser) {
-              const amIFollowing = followers.some((f: any) => 
+              const amIFollowing = followers.some((f: any) =>
                 (typeof f === 'string' ? f : f._id) === currentUser._id
               );
               setIsFollowing(amIFollowing);
@@ -85,7 +87,7 @@ const Profile: React.FC = () => {
 
   const handleToggleFollow = async () => {
     if (!profileUser || !currentUser) return;
-    
+
     try {
       await toggleFollow(profileUser._id);
       setIsFollowing(!isFollowing);
@@ -111,7 +113,6 @@ const Profile: React.FC = () => {
 
         <div className="content-area">
           <main className="profile-univy-container">
-            {/* Header: Univy Signature Style */}
             <header className="univy-profile-header">
               <div className="header-top">
                 <div className="profile-avatar-wrapper">
@@ -125,16 +126,16 @@ const Profile: React.FC = () => {
                 <div className="profile-info-main">
                   <div className="username-row">
                     <h2 className="profile-display-name">{profileUser?.nombre}</h2>
-                    
+
                     {isOwnProfile ? (
-                      <button 
+                      <button
                         className="edit-profile-btn-premium"
                         onClick={() => navigate('/profile/edit')}
                       >
                         Editar Perfil
                       </button>
                     ) : (
-                      <button 
+                      <button
                         className={`follow-btn-premium ${isFollowing ? 'following' : ''}`}
                         onClick={handleToggleFollow}
                       >
@@ -174,20 +175,18 @@ const Profile: React.FC = () => {
               </div>
             </header>
 
-            {/* Posts Heading: Modern Univy Style */}
             <div className="posts-section-divider">
               <h3 className="section-title-modern">PUBLICACIONES</h3>
               <div className="active-line"></div>
             </div>
 
-            {/* Posts Grid: Univy Modern Grid */}
             {loading ? (
               <div className="state-message">Cargando publicaciones...</div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (
-                  <div 
-                    key={post._id} 
+                  <div
+                    key={post._id}
                     className="univy-grid-item"
                     onClick={() => handlePostClick(post)}
                   >
@@ -211,7 +210,6 @@ const Profile: React.FC = () => {
         </div>
       </div>
 
-      {/* Detail Modal */}
       {selectedPost && (
         <div className="post-modal-overlay" onClick={() => setSelectedPost(null)}>
           <div className="post-modal-container" onClick={(e) => e.stopPropagation()}>

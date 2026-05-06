@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import universidadService from "../services/universidad.service";
+import universidadService from "../services/universidad";
 import type { Universidad } from "../models/universidad";
 
 export default function useUnis() {
@@ -11,10 +11,17 @@ export default function useUnis() {
     const fetchUniversidades = async () => {
       try {
         setLoading(true);
-        const data = await universidadService.getAll();
-        setUniversidades(data);
+        // getAll ahora devuelve { request, cancel }
+        // Para universidades, solemos querer todas, así que pedimos un límite alto (o manejamos páginas)
+        const { request } = universidadService.getAll({ limit: 100 });
+        const response = await request;
+
+        // Extraemos docs de la respuesta paginada
+        setUniversidades(response.data.docs || []);
       } catch (err: any) {
-        setError(err.message || "Error cargando universidades");
+        if (err.name !== 'CanceledError') {
+          setError(err.message || "Error cargando universidades");
+        }
       } finally {
         setLoading(false);
       }

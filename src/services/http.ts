@@ -1,3 +1,4 @@
+import type { PaginatedResponse } from "../models/pagination";
 import apiClient from "./api-client";
 
 type EntityWithId = { id: number } | { _id: string };
@@ -9,15 +10,16 @@ class HttpService {
     this.endpoint = endpoint;
   }
 
-  getAll<T>() {
+  getAll<T>(params?: any) {
     const controller = new AbortController();
-    const request = apiClient.get<T[]>(this.endpoint, {
+    const request = apiClient.get<PaginatedResponse<T>>(this.endpoint, {
+      params,
       signal: controller.signal,
     });
     return { request, cancel: () => controller.abort() };
   }
 
-  delete(id: string | number) {
+  delete(id: string | number) { 
     return apiClient.delete(this.endpoint + "/" + id);
   }
 

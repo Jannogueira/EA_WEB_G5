@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { updateSelf } from "../services/usuario.service";
+import { updateSelf } from "../services/usuario";
 import type { Usuario } from "../models/usuario";
 
 export default function useUser() {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import universidadService from '../services/universidad.service';
-import usuarioService from '../services/usuario.service';
+import universidadService from '../services/universidad';
+import usuarioService from '../services/usuario';
 import type { Universidad } from '../models/universidad';
 import type { Usuario } from '../models/usuario';
 import './Register.css'; // Reusando el contenedor de Register por consistencia
@@ -25,10 +25,14 @@ const SelectUniversity = () => {
 
     const fetchUniversidades = async () => {
       try {
-        const data = await universidadService.getAll();
-        setUniversidades(data);
-      } catch (error) {
-        console.error("Error fetching universities:", error);
+        // getAll ahora devuelve { request, cancel }
+        const { request } = universidadService.getAll({ limit: 100 });
+        const response = await request;
+        setUniversidades(response.data.docs || []);
+      } catch (error: any) {
+        if (error.name !== 'CanceledError') {
+          console.error("Error fetching universities:", error);
+        }
       }
     };
     fetchUniversidades();
@@ -42,10 +46,10 @@ const SelectUniversity = () => {
     try {
       // Realizar el PATCH al usuario
       const response = await usuarioService.updateSelf({ universidad: selectedUni });
-      
+
       // Actualizar el usuario en localStorage con los nuevos datos recibidos
       localStorage.setItem('usuario', JSON.stringify(response.data));
-      
+
       console.log("Universidad seleccionada y perfil actualizado.");
       navigate('/home');
     } catch (error: any) {
@@ -61,7 +65,7 @@ const SelectUniversity = () => {
       <div className="register-container">
         <h2 className="register-title">Personaliza tu Perfil</h2>
         <p className="register-subtitle">Selecciona tu centro de estudios para conectar con tu comunidad</p>
-        
+
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
             <label htmlFor="universidad">¿En qué universidad estudias?</label>
@@ -82,10 +86,10 @@ const SelectUniversity = () => {
               ))}
             </select>
           </div>
-          
-          <button 
-            type="submit" 
-            className="register-btn" 
+
+          <button
+            type="submit"
+            className="register-btn"
             disabled={loading || !selectedUni}
           >
             {loading ? "Guardando..." : "Finalizar Registro"}

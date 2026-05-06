@@ -1,13 +1,15 @@
 import apiClient from "./api-client";
-import create from "./http-service";
+import create from "./http";
 import type { Post } from "../models/post";
+import type { PaginatedResponse } from "../models/pagination";
 
 class PostService {
   endpoint = "/posts";
 
-  getPostsByUserId(userId: string) {
+  getPostsByUserId(userId: string, page: number = 1, limit: number = 10) {
     const controller = new AbortController();
-    const request = apiClient.get<Post[]>(`${this.endpoint}/user/${userId}`, {
+    const request = apiClient.get<PaginatedResponse<Post>>(`${this.endpoint}/user/${userId}`, {
+      params: { page, limit },
       signal: controller.signal,
     });
     return { request, cancel: () => controller.abort() };
@@ -18,8 +20,8 @@ class PostService {
   }
 
   // Common CRUD operations inherited via 'create' pattern
-  getAll() {
-    return create(this.endpoint).getAll<Post>();
+  getAll(params?: any) {
+    return create(this.endpoint).getAll<Post>(params);
   }
 
   darleLike(postId: string) {
