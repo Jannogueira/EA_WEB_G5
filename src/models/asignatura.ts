@@ -1,10 +1,7 @@
 import type { Usuario } from './usuario';
 
-export interface Universidad {
+export interface Asignatura {
     _id: string;
     nombre: string;
-    ubicacion: string;
     usuarios: Usuario[];
-    grados: string[];
-    asignaturas: string[];
 }

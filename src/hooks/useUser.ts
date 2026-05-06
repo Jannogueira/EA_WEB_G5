@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { updateSelf } from "../services/usuario";
+import usuarioService from "../services/usuario";
 import type { Usuario } from "../models/usuario";
 
 export default function useUser() {
@@ -26,7 +26,7 @@ export default function useUser() {
     setError(null);
 
     try {
-      const response = await updateSelf(data);
+      const response = await usuarioService.updateSelf(data);
 
       localStorage.setItem("usuario", JSON.stringify(response.data));
       setUsuario(response.data);

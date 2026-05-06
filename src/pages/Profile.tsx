@@ -4,12 +4,24 @@ import "./Profile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import PostService from "../services/post";
-import { getFollowers, getFollowing, getUserById, toggleFollow } from "../services/usuario";
+import {
+  getFollowers,
+  getFollowing,
+  getUserById,
+  toggleFollow
+} from "../services/usuario";
 import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus } from "lucide-react";
+import {
+  X,
+  Heart,
+  MessageCircle,
+  FolderOpen,
+  UserPlus,
+  UserMinus
+} from "lucide-react";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -27,63 +39,49 @@ const Profile: React.FC = () => {
   const isOwnProfile = !id || id === currentUser?._id;
 
   useEffect(() => {
-    const fetchProfileData = async () => {
-      setLoading(true);
-      try {
-        let targetUser: Usuario | null = null;
-        let targetId = id;
+  const fetchProfileData = async () => {
+    setLoading(true);
 
-        if (isOwnProfile && currentUser) {
-          targetUser = currentUser;
-          targetId = currentUser._id;
-        } else if (id) {
-          // Usamos el nuevo método getUserById
-          const userRes = await getUserById(id);
-          targetUser = userRes.data;
-          targetId = id;
-        }
+    try {
+      if (!id && !currentUser?._id) return;
 
-        setProfileUser(targetUser);
+      const targetId = id || currentUser._id;
+      const res = await getUserById(targetId);
+      const targetUser = res.data;
 
-        if (targetId) {
-          // Fetch Posts (ahora devuelve PaginatedResponse)
-          const { request } = PostService.getPostsByUserId(targetId);
-          const res = await request;
-          setPosts(res.data.docs || []);
+      setProfileUser(targetUser);
 
-          // Fetch Follow Data
-          try {
-            const [followersRes, followingRes] = await Promise.all([
-              getFollowers(targetId),
-              getFollowing(targetId)
-            ]);
+      // Cargar posts
+      const { request } = PostService.getPostsByUserId(targetId);
+      const postsRes = await request;
+      setPosts(postsRes.data.docs || []);
 
-            // Ajustamos según la respuesta del backend
-            const followers = followersRes.data.seguidores || [];
-            const following = followingRes.data.seguidos || [];
+      // Cargar followers/following
+      const [followersRes, followingRes] = await Promise.all([
+        getFollowers(targetId),
+        getFollowing(targetId)
+      ]);
 
-            setFollowersCount(followers.length);
-            setFollowingCount(following.length);
+      setFollowersCount(followersRes.data.seguidores?.length || 0);
+      setFollowingCount(followingRes.data.seguidos?.length || 0);
 
-            if (currentUser) {
-              const amIFollowing = followers.some((f: any) =>
-                (typeof f === 'string' ? f : f._id) === currentUser._id
-              );
-              setIsFollowing(amIFollowing);
-            }
-          } catch (followErr) {
-            console.error("Error fetching follow data:", followErr);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-      } finally {
-        setLoading(false);
+      // Saber si sigues al usuario
+      if (currentUser) {
+        const amIFollowing = (followersRes.data.seguidores || []).some(
+          (f: any) => (typeof f === "string" ? f : f._id) === currentUser._id
+        );
+        setIsFollowing(amIFollowing);
       }
-    };
 
-    fetchProfileData();
-  }, [id, currentUser, isOwnProfile]);
+    } catch (error) {
+      console.error("Error profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProfileData();
+}, [id, currentUser]);
 
   const handleToggleFollow = async () => {
     if (!profileUser || !currentUser) return;
@@ -91,9 +89,9 @@ const Profile: React.FC = () => {
     try {
       await toggleFollow(profileUser._id);
       setIsFollowing(!isFollowing);
-      setFollowersCount(prev => isFollowing ? prev - 1 : prev + 1);
-    } catch (error) {
-      console.error("Error toggling follow:", error);
+      setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -101,8 +99,15 @@ const Profile: React.FC = () => {
     setSelectedPost(post);
   };
 
-  if (loading && !profileUser) return <div className="state-message">Cargando perfil...</div>;
-  if (!profileUser && !loading) return <div className="state-message">Usuario no encontrado</div>;
+  if (loading && !profileUser)
+    return <div className="state-message">Cargando perfil...</div>;
+
+  if (!profileUser)
+    return <div className="state-message">Usuario no encontrado</div>;
+
+  // 🔥 helper para mostrar nombre o fallback
+  const getName = (obj: any) =>
+    typeof obj === "string" ? obj : obj?.nombre;
 
   return (
     <div className="profile-wrapper">
@@ -115,28 +120,34 @@ const Profile: React.FC = () => {
           <main className="profile-univy-container">
             <header className="univy-profile-header">
               <div className="header-top">
+
                 <div className="profile-avatar-wrapper">
                   <div className="avatar-gradient-border">
                     <div className="profile-avatar-xl">
-                      {profileUser?.nombre ? profileUser.nombre.charAt(0).toUpperCase() : "?"}
+                      {profileUser?.nombre?.charAt(0).toUpperCase() || "?"}
                     </div>
                   </div>
                 </div>
 
                 <div className="profile-info-main">
+
                   <div className="username-row">
-                    <h2 className="profile-display-name">{profileUser?.nombre}</h2>
+                    <h2 className="profile-display-name">
+                      {profileUser?.nombre}
+                    </h2>
 
                     {isOwnProfile ? (
                       <button
                         className="edit-profile-btn-premium"
-                        onClick={() => navigate('/profile/edit')}
+                        onClick={() => navigate("/profile/edit")}
                       >
                         Editar Perfil
                       </button>
                     ) : (
                       <button
-                        className={`follow-btn-premium ${isFollowing ? 'following' : ''}`}
+                        className={`follow-btn-premium ${
+                          isFollowing ? "following" : ""
+                        }`}
                         onClick={handleToggleFollow}
                       >
                         {isFollowing ? (
@@ -154,7 +165,7 @@ const Profile: React.FC = () => {
 
                   <div className="profile-social-stats">
                     <div className="social-stat">
-                      <span className="stat-num">{posts.length}</span> publicaciones
+                      <span className="stat-num">{posts.length}</span> posts
                     </div>
                     <div className="social-stat">
                       <span className="stat-num">{followersCount}</span> seguidores
@@ -166,10 +177,52 @@ const Profile: React.FC = () => {
 
                   <div className="user-bio-univy">
                     <p className="full-name-label">{profileUser?.nombre}</p>
+
                     {profileUser?.descripcion && (
-                      <p className="bio-description">{profileUser.descripcion}</p>
+                      <p className="bio-description">
+                        {profileUser.descripcion}
+                      </p>
                     )}
+
                     <p className="bio-contact">{profileUser?.email}</p>
+
+                    {/* 🧠 ACADEMIC INFO FIXED */}
+                    {(profileUser?.universidad ||
+                      profileUser?.grado ||
+                      profileUser?.asignaturas?.length) && (
+                      <div className="academic-info-univy">
+
+                        <div className="academic-item">
+                          <span className="academic-label">Universidad</span>
+                          <span className="academic-value">
+                            {getName(profileUser.universidad)}
+                          </span>
+                        </div>
+
+                        <div className="academic-item">
+                          <span className="academic-label">Grado</span>
+                          <span className="academic-value">
+                            {getName(profileUser.grado)}
+                          </span>
+                        </div>
+
+                        {profileUser.asignaturas?.length > 0 && (
+                          <div className="academic-item">
+                            <span className="academic-label">Asignaturas</span>
+
+                            <div className="academic-tags">
+                              {profileUser.asignaturas.map((a: any) => (
+                                <span key={a._id || a} className="academic-tag">
+                                  {getName(a)}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                      </div>
+                    )}
+
                   </div>
                 </div>
               </div>
@@ -181,7 +234,7 @@ const Profile: React.FC = () => {
             </div>
 
             {loading ? (
-              <div className="state-message">Cargando publicaciones...</div>
+              <div className="state-message">Cargando...</div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (
@@ -190,11 +243,18 @@ const Profile: React.FC = () => {
                     className="univy-grid-item"
                     onClick={() => handlePostClick(post)}
                   >
-                    <img src={post.imageUrl} alt="Post" className="univy-grid-img" />
+                    <img
+                      src={post.imageUrl}
+                      className="univy-grid-img"
+                    />
                     <div className="univy-grid-hover">
                       <div className="hover-stats">
-                        <span className="stat-item"><Heart size={18} fill="white" /> {post.likes?.length || 0}</span>
-                        <span className="stat-item"><MessageCircle size={18} fill="white" /> {post.comments?.length || 0}</span>
+                        <span>
+                          <Heart size={18} /> {post.likes?.length || 0}
+                        </span>
+                        <span>
+                          <MessageCircle size={18} /> {post.comments?.length || 0}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -202,8 +262,8 @@ const Profile: React.FC = () => {
               </div>
             ) : (
               <div className="empty-state">
-                <span className="empty-icon"><FolderOpen size={48} /></span>
-                <h3>Aún no hay publicaciones</h3>
+                <FolderOpen size={48} />
+                <h3>Sin publicaciones</h3>
               </div>
             )}
           </main>
@@ -211,9 +271,20 @@ const Profile: React.FC = () => {
       </div>
 
       {selectedPost && (
-        <div className="post-modal-overlay" onClick={() => setSelectedPost(null)}>
-          <div className="post-modal-container" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-x" onClick={() => setSelectedPost(null)}><X size={24} /></button>
+        <div
+          className="post-modal-overlay"
+          onClick={() => setSelectedPost(null)}
+        >
+          <div
+            className="post-modal-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="modal-close-x"
+              onClick={() => setSelectedPost(null)}
+            >
+              <X size={24} />
+            </button>
             <Postcard post={selectedPost} />
           </div>
         </div>

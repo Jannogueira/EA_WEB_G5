@@ -1,60 +1,105 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import universidadService from '../services/universidad';
+import gradoService from '../services/grado';
 import usuarioService from '../services/usuario';
+
+import AsignaturasModal from '../components/AsignaturasModal';
+
 import type { Universidad } from '../models/universidad';
+import type { Grado } from '../models/grado';
 import type { Usuario } from '../models/usuario';
-import './Register.css'; // Reusando el contenedor de Register por consistencia
+
+import './Register.css';
 
 const SelectUniversity = () => {
   const navigate = useNavigate();
+
   const [universidades, setUniversidades] = useState<Universidad[]>([]);
+  const [grados, setGrados] = useState<Grado[]>([]);
+
   const [selectedUni, setSelectedUni] = useState('');
+  const [selectedGrado, setSelectedGrado] = useState('');
+
   const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useState<Usuario | null>(null);
 
+  // modal asignaturas
+  const [modalOpen, setModalOpen] = useState(false);
+
   useEffect(() => {
-    // Recuperar usuario del localStorage
     const userJson = localStorage.getItem('usuario');
-    if (userJson) {
-      setUser(JSON.parse(userJson));
-    } else {
-      // Si no hay usuario, redirigir al login
+
+    if (!userJson) {
       navigate('/login');
+      return;
     }
+
+    const parsedUser = JSON.parse(userJson);
+    setUser(parsedUser);
 
     const fetchUniversidades = async () => {
       try {
-        // getAll ahora devuelve { request, cancel }
         const { request } = universidadService.getAll({ limit: 100 });
-        const response = await request;
-        setUniversidades(response.data.docs || []);
-      } catch (error: any) {
-        if (error.name !== 'CanceledError') {
-          console.error("Error fetching universities:", error);
-        }
+        const res = await request;
+        setUniversidades(res.data.docs || []);
+      } catch (err) {
+        console.error(err);
       }
     };
+
     fetchUniversidades();
   }, [navigate]);
 
+  useEffect(() => {
+    if (!selectedUni) {
+      setGrados([]);
+      setSelectedGrado('');
+      return;
+    }
+
+    const fetchGrados = async () => {
+      try {
+        const res = await gradoService.getByUniversidad(selectedUni);
+        setGrados(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchGrados();
+  }, [selectedUni]);
+
+  const handleUserUpdated = (updatedUser: Usuario) => {
+    setUser(updatedUser);
+    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedUni || !user) return;
+
+    if (!selectedUni || !selectedGrado || !user) return;
 
     setLoading(true);
+
     try {
-      // Realizar el PATCH al usuario
-      const response = await usuarioService.updateSelf({ universidad: selectedUni });
+      const response = await usuarioService.updateSelf({
+        universidad: selectedUni,
+        grado: selectedGrado
+      });
 
-      // Actualizar el usuario en localStorage con los nuevos datos recibidos
-      localStorage.setItem('usuario', JSON.stringify(response.data));
+      const updatedUser = response.data;
 
-      console.log("Universidad seleccionada y perfil actualizado.");
+      localStorage.setItem('usuario', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
       navigate('/home');
-    } catch (error: any) {
-      console.error('Error updating university:', error);
-      alert("Error al guardar la universidad. Inténtalo de nuevo.");
+
+    } catch (error) {
+      console.error(error);
+      alert("Error al guardar la información");
     } finally {
       setLoading(false);
     }
@@ -63,39 +108,84 @@ const SelectUniversity = () => {
   return (
     <div className="register-page">
       <div className="register-container">
-        <h2 className="register-title">Personaliza tu Perfil</h2>
-        <p className="register-subtitle">Selecciona tu centro de estudios para conectar con tu comunidad</p>
+
+        <h2 className="register-title">
+          Personaliza tu Perfil
+        </h2>
+
+        <p className="register-subtitle">
+          Selecciona tu centro de estudios
+        </p>
 
         <form onSubmit={handleSubmit} className="register-form">
+
+          {/* UNIVERSIDAD */}
           <div className="form-group">
-            <label htmlFor="universidad">¿En qué universidad estudias?</label>
+            <label>Universidad</label>
             <select
-              id="universidad"
-              name="universidad"
+              className="select-input"
               value={selectedUni}
               onChange={(e) => setSelectedUni(e.target.value)}
               disabled={loading}
-              className="select-input"
               required
             >
-              <option value="" disabled>Selecciona tu universidad</option>
-              {universidades.map((uni) => (
-                <option key={uni._id} value={uni._id}>
-                  {uni.nombre}
+              <option value="">Selecciona universidad</option>
+              {universidades.map((u) => (
+                <option key={u._id} value={u._id}>
+                  {u.nombre}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* GRADO */}
+          <div className="form-group">
+            <label>Grado</label>
+            <select
+              className="select-input"
+              value={selectedGrado}
+              onChange={(e) => setSelectedGrado(e.target.value)}
+              disabled={!selectedUni || loading}
+              required
+            >
+              <option value="">Selecciona grado</option>
+              {grados.map((g) => (
+                <option key={g._id} value={g._id}>
+                  {g.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* BOTÓN ASIGNATURAS */}
+          <button
+            type="button"
+            className="edit-btn-premium secondary"
+            disabled={!selectedGrado || loading}
+            onClick={() => setModalOpen(true)}
+          >
+            Seleccionar asignaturas
+          </button>
+
+          {/* SUBMIT FINAL */}
           <button
             type="submit"
             className="register-btn"
-            disabled={loading || !selectedUni}
+            disabled={loading || !selectedUni || !selectedGrado}
           >
             {loading ? "Guardando..." : "Finalizar Registro"}
           </button>
+
         </form>
       </div>
+
+      {/* MODAL ASIGNATURAS */}
+      <AsignaturasModal
+        gradoId={selectedGrado}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onUpdated={handleUserUpdated}
+      />
     </div>
   );
 };

@@ -40,6 +40,13 @@ export const getUserById = (id: string) => {
   return apiClient.get<Usuario>(`/usuarios/${id}`);
 };
 
+export const updateAsignaturas = (usuarioId: string, asignaturas: string[]) => {
+  return apiClient.patch(
+    `/usuarios/${usuarioId}/asignaturas`,
+    { asignaturas }
+  );
+};
+
 const exportedService = {
   ...service,
   updateSelf,
@@ -48,7 +55,8 @@ const exportedService = {
   getUsers,
   searchUsers,
   toggleFollow,
-  getUserById
+  getUserById,
+  updateAsignaturas
 };
 
 export default exportedService;

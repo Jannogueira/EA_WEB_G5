@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import "./EditProfile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+
 import useUser from "../hooks/useUser";
+import AsignaturasModal from "../components/AsignaturasModal";
 
 const EditProfile: React.FC = () => {
   const navigate = useNavigate();
   const { usuario, updateProfile, loading, error } = useUser();
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -42,8 +47,13 @@ const EditProfile: React.FC = () => {
       alert("¡Perfil actualizado con éxito!");
       navigate("/profile");
     } catch {
-      // handled in hook
+      // error manejado en hook
     }
+  };
+
+  const handleUserUpdated = (updatedUser: any) => {
+    // sincroniza UI tras editar asignaturas
+    localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
 
   return (
@@ -55,11 +65,12 @@ const EditProfile: React.FC = () => {
 
         <div className="content-area">
           <main className="edit-form-container">
+
             <h1 className="page-title-modern">Editar Perfil</h1>
 
             <form onSubmit={handleSubmit} className="univy-glass-form">
 
-              {/* Avatar */}
+              {/* AVATAR */}
               <div className="avatar-preview-section">
                 <div className="avatar-edit-circle">
                   {formData.nombre?.charAt(0).toUpperCase() || "?"}
@@ -70,7 +81,7 @@ const EditProfile: React.FC = () => {
                 <div className="form-error-banner">{error}</div>
               )}
 
-              {/* Nombre */}
+              {/* NOMBRE */}
               <div className="form-group-modern">
                 <label>Nombre</label>
                 <input
@@ -81,7 +92,7 @@ const EditProfile: React.FC = () => {
                 />
               </div>
 
-              {/* Email */}
+              {/* EMAIL */}
               <div className="form-group-modern">
                 <label>Email</label>
                 <input
@@ -92,7 +103,7 @@ const EditProfile: React.FC = () => {
                 />
               </div>
 
-              {/* Avatar URL */}
+              {/* AVATAR */}
               <div className="form-group-modern">
                 <label>Avatar URL</label>
                 <input
@@ -102,7 +113,7 @@ const EditProfile: React.FC = () => {
                 />
               </div>
 
-              {/* Descripción */}
+              {/* DESCRIPCIÓN */}
               <div className="form-group-modern">
                 <label>Descripción</label>
                 <textarea
@@ -111,11 +122,23 @@ const EditProfile: React.FC = () => {
                   onChange={handleChange}
                   rows={3}
                   placeholder="Escribe una breve descripción sobre ti..."
-                  style={{ resize: "vertical", minHeight: "80px" }}
                 />
               </div>
 
-              {/* Buttons */}
+              {/* 🔥 BOTÓN ASIGNATURAS */}
+              <div className="form-group-modern">
+                <label>Asignaturas</label>
+
+                <button
+                  type="button"
+                  className="edit-profile-btn-premium"
+                  onClick={() => setModalOpen(true)}
+                >
+                  Editar asignaturas
+                </button>
+              </div>
+
+              {/* BOTONES */}
               <div className="form-actions-modern">
                 <button
                   type="button"
@@ -135,9 +158,20 @@ const EditProfile: React.FC = () => {
               </div>
 
             </form>
+
           </main>
         </div>
       </div>
+
+      {/* 🔥 MODAL ASIGNATURAS */}
+      {usuario && (
+        <AsignaturasModal
+          gradoId={usuario.grado || ""}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onUpdated={handleUserUpdated}
+        />
+      )}
     </div>
   );
 };

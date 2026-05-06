@@ -12,4 +12,6 @@ export interface Usuario {
     activo: boolean;
     seguidores?: string[];
     seguidos?: string[];
+    grado?: string;
+    asignaturas?: string[];
 }
