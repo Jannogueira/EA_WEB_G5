@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreatePostModal.css";
 import useCreatePost from "../hooks/useCreatePost";
+import { useTranslation } from "react-i18next";
 
 import { ImagePlus, Send, X } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface CreatePostModalProps {
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreated }) => {
+  const { t } = useTranslation();
   const { createPost, loading } = useCreatePost();
 
   const [formData, setFormData] = useState({
@@ -31,7 +33,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       onPostCreated();
       onClose();
     } catch {
-      alert("Error al crear la publicación.");
+      alert(t('create_post.error'));
     }
   };
 
@@ -39,8 +41,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     <div className="create-modal-overlay" onClick={onClose}>
       <div className="create-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header-modern">
-          <h2>Nueva Publicación</h2>
-          <button className="close-x-btn" aria-label="Cerrar" onClick={onClose}>
+          <h2>{t('create_post.title')}</h2>
+          <button className="close-x-btn" aria-label={t('edit_profile.cancel')} onClick={onClose}>
             <X size={20} />
           </button>
         </header>
@@ -52,14 +54,14 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
             ) : (
               <div className="img-placeholder">
                 <ImagePlus size={48} strokeWidth={1.5} />
-                <p>La vista previa de tu imagen aparecerá aquí</p>
+                <p>{t('create_post.img_placeholder')}</p>
               </div>
             )}
           </div>
 
           <div className="input-section">
             <div className="form-group-modern">
-              <label>URL de la imagen</label>
+              <label>{t('create_post.label_img')}</label>
               <input 
                 type="text" 
                 name="imageUrl" 
@@ -70,7 +72,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
             </div>
 
             <div className="form-group-modern">
-              <label>Pie de foto</label>
+              <label>{t('create_post.label_caption')}</label>
               <textarea 
                 name="caption" 
                 value={formData.caption} 
@@ -85,9 +87,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
               className="publish-btn-premium"
               disabled={loading || !formData.imageUrl}
             >
-              {loading ? "Compartiendo..." : (
+              {loading ? t('create_post.sharing') : (
                 <>
-                  <span>Publicar</span>
+                  <span>{t('create_post.publish')}</span>
                   <Send size={18} />
                 </>
               )}

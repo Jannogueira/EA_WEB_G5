@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import type { Usuario } from "../models/usuario";
 import useAuth from "../hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 interface NavbarProps {
   usuario?: Usuario;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -37,7 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
       <div className="navbar-right">
         <div className="profile-container">
           <div className="user-info-brief">
-            <span className="user-nav-name">{usuario?.nombre || "Cargando..."}</span>
+            <span className="user-nav-name">{usuario?.nombre || t('navbar.loading')}</span>
             <span className="user-nav-email">{usuario?.email}</span>
           </div>
           
@@ -56,10 +58,10 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
               </div>
               <hr className="dropdown-divider" />
               <button className="dropdown-item" onClick={() => navigate("/profile")}>
-                Perfil
+                {t('navbar.profile')}
               </button>
               <button className="dropdown-item logout" onClick={handleLogout}>
-                Cerrar Sesión
+                {t('navbar.logout')}
               </button>
             </div>
           )}

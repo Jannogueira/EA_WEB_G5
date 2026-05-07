@@ -5,8 +5,10 @@ import Navbar from "../components/Navbar";
 import Postcard from "../components/Postcard";
 import useUser from "../hooks/useUser";
 import usePosts from "../hooks/usePosts";
+import { useTranslation } from "react-i18next";
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
   const { usuario } = useUser();
   const { posts, loading, error, hasNextPage, fetchNextPage } = usePosts();
   
@@ -42,8 +44,8 @@ const Home: React.FC = () => {
         <div className="content-area">
           <main className="feed-container">
             <header className="feed-header">
-              <h1>Feed</h1>
-              <p>Explora lo que está pasando en Univy</p>
+              <h1>{t('home.title')}</h1>
+              <p>{t('home.subtitle')}</p>
             </header>
 
             <div className="posts-list">
@@ -55,12 +57,12 @@ const Home: React.FC = () => {
 
               {/* Centinela para el scroll infinito */}
               <div ref={observerTarget} className="scroll-sentinel">
-                {loading && <p>Cargando más posts increíbles...</p>}
-                {!hasNextPage && posts.length > 0 && <p className="end-message">Has llegado al final. ¡Vuelve más tarde!</p>}
+                {loading && <p>{t('home.loading')}</p>}
+                {!hasNextPage && posts.length > 0 && <p className="end-message">{t('home.end')}</p>}
               </div>
 
               {!loading && !error && posts.length === 0 && (
-                <p>No hay posts todavía</p>
+                <p>{t('home.empty')}</p>
               )}
             </div>
           </main>

@@ -14,16 +14,12 @@ import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import {
-  X,
-  Heart,
-  MessageCircle,
-  FolderOpen,
-  UserPlus,
-  UserMinus
-} from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const { usuario: currentUser } = useUser();
@@ -99,13 +95,9 @@ const Profile: React.FC = () => {
     setSelectedPost(post);
   };
 
-  if (loading && !profileUser)
-    return <div className="state-message">Cargando perfil...</div>;
+  if (loading && !profileUser) return <div className="state-message">{t('profile.loading')}</div>;
+  if (!profileUser && !loading) return <div className="state-message">{t('profile.not_found')}</div>;
 
-  if (!profileUser)
-    return <div className="state-message">Usuario no encontrado</div>;
-
-  // 🔥 helper para mostrar nombre o fallback
   const getName = (obj: any) =>
     typeof obj === "string" ? obj : obj?.nombre;
 
@@ -141,7 +133,7 @@ const Profile: React.FC = () => {
                         className="edit-profile-btn-premium"
                         onClick={() => navigate("/profile/edit")}
                       >
-                        Editar Perfil
+                        {t('profile.edit_btn')}
                       </button>
                     ) : (
                       <button
@@ -152,11 +144,11 @@ const Profile: React.FC = () => {
                       >
                         {isFollowing ? (
                           <>
-                            <UserMinus size={18} /> Dejar de seguir
+                            <UserMinus size={18} /> {t('profile.unfollow')}
                           </>
                         ) : (
                           <>
-                            <UserPlus size={18} /> Seguir
+                            <UserPlus size={18} /> {t('profile.follow')}
                           </>
                         )}
                       </button>
@@ -165,13 +157,13 @@ const Profile: React.FC = () => {
 
                   <div className="profile-social-stats">
                     <div className="social-stat">
-                      <span className="stat-num">{posts.length}</span> posts
+                      <span className="stat-num">{posts.length}</span> {t('profile.posts_count')}
                     </div>
                     <div className="social-stat">
-                      <span className="stat-num">{followersCount}</span> seguidores
+                      <span className="stat-num">{followersCount}</span> {t('profile.followers_count')}
                     </div>
                     <div className="social-stat">
-                      <span className="stat-num">{followingCount}</span> seguidos
+                      <span className="stat-num">{followingCount}</span> {t('profile.following_count')}
                     </div>
                   </div>
 
@@ -229,12 +221,12 @@ const Profile: React.FC = () => {
             </header>
 
             <div className="posts-section-divider">
-              <h3 className="section-title-modern">PUBLICACIONES</h3>
+              <h3 className="section-title-modern">{t('profile.posts_title')}</h3>
               <div className="active-line"></div>
             </div>
 
             {loading ? (
-              <div className="state-message">Cargando...</div>
+              <div className="state-message">{t('profile.loading_posts')}</div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (
@@ -262,8 +254,8 @@ const Profile: React.FC = () => {
               </div>
             ) : (
               <div className="empty-state">
-                <FolderOpen size={48} />
-                <h3>Sin publicaciones</h3>
+                <span className="empty-icon"><FolderOpen size={48} /></span>
+                <h3>{t('profile.empty_posts')}</h3>
               </div>
             )}
           </main>
