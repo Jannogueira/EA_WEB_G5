@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./CreatePostModal.css";
 import useCreatePost from "../hooks/useCreatePost";
 import { useTranslation } from "react-i18next";
+import { uploadImage } from "../services/upload";
 
-import { ImagePlus, Send, X } from "lucide-react";
+import { ImagePlus, Send, X, Loader2 } from "lucide-react";
 
 interface CreatePostModalProps {
   onClose: () => void;
@@ -12,28 +13,52 @@ interface CreatePostModalProps {
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreated }) => {
   const { t } = useTranslation();
-  const { createPost, loading } = useCreatePost();
+  const { createPost, loading: creatingPost } = useCreatePost();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     imageUrl: "",
     caption: ""
   });
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      setError(null);
+      const res = await uploadImage(file);
+      setFormData(prev => ({ ...prev, imageUrl: res.url }));
+    } catch (err) {
+      console.error("Error al subir imagen:", err);
+      setError("Error al subir la imagen. Por favor, inténtalo de nuevo.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCaptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, caption: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      await createPost(formData);
+    if (!formData.imageUrl) {
+        setError("Por favor selecciona una imagen primero");
+        return;
+    }
 
+    try {
+      setError(null);
+      await createPost(formData);
       onPostCreated();
       onClose();
     } catch {
-      alert(t('create_post.error'));
+      setError(t('create_post.error'));
     }
   };
 
@@ -48,8 +73,16 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
         </header>
 
         <form className="create-post-form" onSubmit={handleSubmit}>
-          <div className="preview-container">
-            {formData.imageUrl ? (
+          <div 
+            className="preview-container clickable" 
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {uploading ? (
+              <div className="img-placeholder">
+                <Loader2 size={48} className="animate-spin" />
+                <p>Subiendo a Cloudinary...</p>
+              </div>
+            ) : formData.imageUrl ? (
               <img src={formData.imageUrl} alt="Preview" className="img-preview" />
             ) : (
               <div className="img-placeholder">
@@ -57,26 +90,27 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
                 <p>{t('create_post.img_placeholder')}</p>
               </div>
             )}
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              style={{ display: 'none' }} 
+              accept="image/*"
+            />
           </div>
 
           <div className="input-section">
-            <div className="form-group-modern">
-              <label>{t('create_post.label_img')}</label>
-              <input 
-                type="text" 
-                name="imageUrl" 
-                value={formData.imageUrl} 
-                onChange={handleChange}
-                required 
-              />
-            </div>
-
+            {error && (
+              <div className="form-error-banner" style={{ marginBottom: '15px' }}>
+                {error}
+              </div>
+            )}
             <div className="form-group-modern">
               <label>{t('create_post.label_caption')}</label>
               <textarea 
                 name="caption" 
                 value={formData.caption} 
-                onChange={handleChange}
+                onChange={handleCaptionChange}
                 rows={4}
                 required
               />
@@ -85,9 +119,9 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
             <button 
               type="submit" 
               className="publish-btn-premium"
-              disabled={loading || !formData.imageUrl}
+              disabled={creatingPost || uploading || !formData.imageUrl}
             >
-              {loading ? t('create_post.sharing') : (
+              {creatingPost ? t('create_post.sharing') : (
                 <>
                   <span>{t('create_post.publish')}</span>
                   <Send size={18} />
