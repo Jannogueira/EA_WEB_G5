@@ -1,51 +1,20 @@
-/* --- VARIABLES DEL TEMA THE ATELIER --- */
-:root {
-  --bg-dark: #0a0b10;
-  --card-bg: rgba(20, 22, 35, 0.4);
-  --border-subtle: rgba(255, 255, 255, 0.1);
-  --text-main: #ffffff;
-  --text-muted: #8b949e;
-  --accent-purple: #8a2be2;
-  --accent-glow: rgba(138, 43, 226, 0.3);
-  --input-bg: rgba(0, 0, 0, 0.2);
-  --success-color: #2ea043;
-  --success-glow: rgba(46, 160, 67, 0.2);
-}
-
-/* --- ESTILOS GLOBALES --- */
-body {
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-#root {
-  max-width: 10000px;
-  margin: 2 auto;
-  width: 100%;
-}
-
-/* --- TARJETAS TIPO CRISTAL (Glassmorphism) --- */
+/* --- GLASSMORPHISM COMPONENTS --- */
 .hero, .atelier-form, #docs, #social {
-  background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-subtle);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-main);
 }
 
 .hero:hover, .atelier-form:hover {
   box-shadow: 0 0 25px var(--accent-glow);
 }
 
-/* --- FORMULARIO Y INPUTS --- */
+/* --- FORM AND INPUTS --- */
 .atelier-form {
   display: flex;
   flex-direction: column;
@@ -55,13 +24,12 @@ body {
 }
 
 input {
-  background-color: var(--input-bg);
+  background-color: var(--bg-input);
   color: var(--text-main);
   border: 1px solid var(--border-subtle);
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 1rem;
-  transition: all 0.2s ease;
   outline: none;
 }
 
@@ -74,7 +42,7 @@ input:focus {
   box-shadow: 0 0 10px var(--accent-glow);
 }
 
-/* --- BOTONES --- */
+/* --- BUTTONS --- */
 button.atelier-btn, button.counter {
   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   color: white;
@@ -89,7 +57,7 @@ button.atelier-btn, button.counter {
 }
 
 button.atelier-btn:hover, button.counter:hover {
-  filter: brightness(1.2);
+  filter: brightness(1.1);
   box-shadow: 0 0 15px var(--accent-glow);
 }
 
@@ -97,38 +65,22 @@ button.atelier-btn:active, button.counter:active {
   transform: scale(0.98);
 }
 
-/* --- MENSAJES DE ESTADO --- */
+/* --- STATUS MESSAGES --- */
 p[style*="green"] {
   background: rgba(46, 160, 67, 0.1);
   border: 1px solid var(--success-color);
-  color: #3fb950 !important; 
+  color: var(--success-color) !important; 
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 0 15px var(--success-glow);
 }
 
-p[style*="red"] {
-  background: rgba(255, 85, 85, 0.1);
-  border: 1px solid #ff5555;
-  color: #ff7b7b !important;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(255, 85, 85, 0.2);
-}
-
-/* --- GRID INFERIOR (Next Steps) --- */
+/* --- GRID INFERIOR --- */
 #next-steps {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
   text-align: left;
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 10px;
 }
 
 #next-steps a {
@@ -137,8 +89,7 @@ p[style*="red"] {
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: color 0.2s;
-  background: var(--input-bg);
+  background: var(--bg-input);
   padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--border-subtle);
@@ -149,23 +100,10 @@ p[style*="red"] {
   border-color: var(--accent-purple);
 }
 
-/* Logos del Hero */
-.hero {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
 .hero img {
-  filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+  filter: drop-shadow(0 0 10px var(--accent-glow));
 }
 
-.button-icon, .logo {
-    width: 20px;
-}
-
-/* Responsive básico para móviles */
 @media (min-width: 600px) {
   #next-steps {
     grid-template-columns: 1fr 1fr;

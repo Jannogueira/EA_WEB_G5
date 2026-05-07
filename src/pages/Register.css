@@ -6,24 +6,23 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #000000);
+  /* background removed to use global ThemedBackground */
   width: 100%;
 }
 
 /* Contenedor principal con efecto cristal */
 .register-container {
-  background: rgba(20, 22, 35, 0.6);
+  background: var(--bg-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: 28px;
   padding: 3.5rem;
   width: 100%;
   max-width: 480px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-main);
   text-align: center;
-  color: #ffffff;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
   animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -37,14 +36,14 @@
   margin-bottom: 0.5rem;
   font-size: 2.4rem;
   font-weight: 800;
-  background: linear-gradient(to right, #ffffff, #a78bfa);
+  background: linear-gradient(to right, var(--text-main), var(--accent-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.04em;
 }
 
 .register-subtitle {
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 1rem;
   margin-bottom: 2.5rem;
   font-weight: 400;
@@ -67,17 +66,17 @@
   margin-bottom: 0.6rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--text-muted);
   margin-left: 0.4rem;
-  letter-spacing: 0.02em;
 }
 
 /* Estilo de los inputs y select */
 .register-form input,
-.select-input {
-  background: rgba(15, 17, 26, 0.5);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.select-input,
+.edit-btn-premium {
+  background: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
   padding: 14px 18px;
   border-radius: 14px;
   font-size: 0.95rem;
@@ -98,15 +97,15 @@
 }
 
 .select-input option {
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: var(--dropdown-bg);
+  color: var(--text-main);
 }
 
 .register-form input:focus,
-.select-input:focus {
-  border-color: #8b5cf6;
-  background: rgba(15, 17, 26, 0.7);
-  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+.select-input:focus,
+.edit-btn-premium:hover {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
 /* Botón principal */
@@ -121,12 +120,12 @@
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   margin-top: 1.5rem;
-  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 10px 20px var(--accent-glow);
 }
 
 .register-btn:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 15px 30px var(--accent-glow);
   filter: brightness(1.1);
 }
 
@@ -135,43 +134,16 @@
   cursor: not-allowed;
 }
 
-.edit-btn-premium {
-  background: rgba(15, 17, 26, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-  padding: 14px 18px;
-  border-radius: 14px;
-  font-weight: 400;
-  font-size: 0.95rem;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  line-height: 1.5;   /* match input line height */
-  -webkit-appearance: none; /* remove button default styling */
-  -moz-appearance: none;
-  appearance: none;
-}
-
-.edit-btn-premium:hover {
-  background: rgba(15, 17, 26, 0.7);
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
-  transform: translateY(-1px);
-}
-
 .login-link-section {
   margin-top: 2.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--divider);
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .login-link {
-  color: #a78bfa;
+  color: var(--accent-purple);
   text-decoration: none;
   font-weight: 700;
   margin-left: 0.6rem;
@@ -179,6 +151,5 @@
 }
 
 .login-link:hover {
-  color: #ffffff;
-  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+  filter: brightness(1.2);
 }

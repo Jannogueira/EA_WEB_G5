@@ -4,6 +4,8 @@ import "./Navbar.css";
 import type { Usuario } from "../models/usuario";
 import useAuth from "../hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../context/ThemeContext";
+import { Sun, Moon } from "lucide-react";
 
 interface NavbarProps {
   usuario?: Usuario;
@@ -11,6 +13,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
   const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -37,6 +40,17 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
       </div>
 
       <div className="navbar-right">
+        {/* THEME TOGGLE SWITCH */}
+        <div className="theme-switch" onClick={toggleTheme} title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}>
+          <div className="theme-switch-thumb">
+            {theme === 'light' ? (
+              <Sun className="theme-icon" />
+            ) : (
+              <Moon className="theme-icon" />
+            )}
+          </div>
+        </div>
+
         <div className="profile-container">
           <div className="user-info-brief">
             <span className="user-nav-name">{usuario?.nombre || t('navbar.loading')}</span>

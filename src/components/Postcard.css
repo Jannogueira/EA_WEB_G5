@@ -1,8 +1,8 @@
 .post-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
   border-radius: 24px;
   width: 100%;
   max-width: 650px;
@@ -11,14 +11,13 @@
   flex-direction: column;
   overflow: hidden;
   margin-bottom: 32px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-main);
 }
 
 .post-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 48px rgba(124, 58, 237, 0.1);
-  border-color: rgba(167, 139, 250, 0.2);
+  box-shadow: 0 12px 48px var(--accent-glow);
+  border-color: var(--accent-border);
 }
 
 .post-header {
@@ -26,7 +25,7 @@
   align-items: center;
   padding: 18px 20px;
   background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--divider);
 }
 
 .author-avatar {
@@ -35,19 +34,19 @@
   border-radius: 50%;
   margin-right: 14px;
   object-fit: cover;
-  border: 1.5px solid rgba(167, 139, 250, 0.2);
+  border: 1.5px solid var(--accent-purple);
 }
 
 .author-name {
   font-size: 1.05rem;
   font-weight: 700;
   margin: 0;
-  color: #f8fafc;
+  color: var(--text-main);
 }
 
 .author-uni {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -76,17 +75,16 @@
 }
 
 .post-actions button {
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 12px;
   font-size: 1.1rem;
-  color: #f8fafc;
+  color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
 }
 
 .post-actions button .liked {
@@ -95,40 +93,41 @@
 }
 
 .post-actions button:hover {
-  background: rgba(167, 139, 250, 0.2);
+  background: var(--accent-bg);
+  border-color: var(--accent-purple);
   transform: scale(1.05);
 }
 
 .post-caption {
   font-size: 1rem;
   line-height: 1.5;
-  color: #e2e8f0;
+  color: var(--text-main);
   padding-top: 10px;
-  padding-left: 25px;
+  padding-left: 10px;
   text-align: left;
 }
 
 .post-caption strong {
-  color: #f8fafc;
+  color: var(--text-main);
   margin-right: 6px;
 }
 
 .post-comments {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--divider);
   text-align: left;
 }
 
 .comment-item {
   font-size: 0.9rem;
   margin-bottom: 8px;
-  color: #cbd5e1;
-  padding-left: 15px;
+  color: var(--text-muted);
+  padding-left: 10px;
 }
 
 .comment-item strong {
-  color: #f8fafc;
+  color: var(--text-main);
   margin-right: 6px;
 }
 
@@ -141,26 +140,25 @@
 
 .comment-input-area input {
   flex: 1;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 12px 16px;
   outline: none;
-  color: #f8fafc;
+  color: var(--text-main);
   font-size: 0.9rem;
-  transition: border-color 0.2s;
 }
 
 .comment-input-area input:focus {
-  border-color: #8b5cf6;
+  border-color: var(--accent-purple);
 }
 
 .comment-input-area input::placeholder {
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .send-comment-btn {
-  background: #8b5cf6;
+  background: var(--accent-purple);
   color: white;
   border: none;
   border-radius: 12px;
@@ -170,23 +168,17 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
 }
 
 .send-comment-btn:hover:not(:disabled) {
-  background: #a78bfa;
+  filter: brightness(1.1);
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-}
-
-.send-comment-btn:active:not(:disabled) {
-  transform: translateY(0) scale(0.95);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .send-comment-btn:disabled {
-  background: rgba(255, 255, 255, 0.05);
-  color: #64748b;
+  background: var(--bg-input);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
-

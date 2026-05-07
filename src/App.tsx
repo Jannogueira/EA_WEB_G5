@@ -9,11 +9,13 @@ import Explore from './pages/Explore';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import { SocketProvider } from './context/SocketContext';
+import ThemedBackground from './components/ThemedBackground';
 import './App.css';
 
 function App() {
   return (
     <BrowserRouter>
+      <ThemedBackground />
       <SocketProvider>
         <Routes>
           {/* Entrar a la web te redirige automáticamente al Login */}
