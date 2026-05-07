@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "./EditProfile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-
 import useUser from "../hooks/useUser";
 import { useTranslation } from "react-i18next";
 import AsignaturasModal from "../components/AsignaturasModal";
-
+import { uploadImage } from "../services/upload";
+import { Loader2, Camera } from "lucide-react";
 const EditProfile: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { usuario, updateProfile, loading, error } = useUser();
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
@@ -23,7 +22,6 @@ const EditProfile: React.FC = () => {
     descripcion: "",
     privado: false
   });
-
   useEffect(() => {
     if (usuario) {
       setFormData({
@@ -35,17 +33,31 @@ const EditProfile: React.FC = () => {
       });
     }
   }, [usuario]);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploading(true);
+      setUploadError(null);
+      const res = await uploadImage(file);
+      setFormData(prev => ({ ...prev, avatarUrl: res.url }));
+    } catch (err) {
+      console.error("Error al subir avatar:", err);
+      setUploadError("Error al subir el avatar. Inténtalo de nuevo.");
+    } finally {
+      setUploading(false);
+    }
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       await updateProfile(formData);
       navigate("/profile");
@@ -53,36 +65,50 @@ const EditProfile: React.FC = () => {
       // error manejado en hook
     }
   };
-
   const handleUserUpdated = (updatedUser: any) => {
     // sincroniza UI tras editar asignaturas
     localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
-
   return (
     <div className="edit-profile-wrapper">
       <Navbar usuario={usuario || undefined} />
-
       <div className="main-layout">
         <Sidebar aria-label="Navegación principal" />
-
         <div className="content-area">
           <main className="edit-form-container">
             <h1 className="page-title-modern">{t('edit_profile.title')}</h1>
-
             <form onSubmit={handleSubmit} className="univy-glass-form">
-
               {/* AVATAR */}
               <div className="avatar-preview-section">
-                <div className="avatar-edit-circle">
-                  {formData.nombre?.charAt(0).toUpperCase() || "?"}
+                <div 
+                  className="avatar-edit-circle clickable"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {uploading ? (
+                    <Loader2 size={32} className="animate-spin" />
+                  ) : formData.avatarUrl ? (
+                    <img src={formData.avatarUrl} alt="Avatar" className="avatar-img-full" />
+                  ) : (
+                    formData.nombre?.charAt(0).toUpperCase() || "?"
+                  )}
+                  <div className="avatar-overlay-icon">
+                    <Camera size={20} />
+                  </div>
                 </div>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange} 
+                  style={{ display: 'none' }} 
+                  accept="image/*"
+                />
               </div>
-
               {error && (
                 <div className="form-error-banner">{error}</div>
               )}
-
+              {uploadError && (
+                <div className="form-error-banner">{uploadError}</div>
+              )}
               {/* NOMBRE */}
               <div className="form-group-modern">
                 <label>{t('edit_profile.label_name')}</label>
@@ -93,7 +119,6 @@ const EditProfile: React.FC = () => {
                   required
                 />
               </div>
-
               {/* EMAIL */}
               <div className="form-group-modern">
                 <label>{t('edit_profile.label_email')}</label>
@@ -104,17 +129,16 @@ const EditProfile: React.FC = () => {
                   required
                 />
               </div>
-
-              {/* AVATAR */}
+              {/* AVATAR URL */}
               <div className="form-group-modern">
                 <label>{t('edit_profile.label_avatar')}</label>
                 <input
                   name="avatarUrl"
                   value={formData.avatarUrl}
                   onChange={handleChange}
+                  placeholder="O sube una imagen haciendo clic en el círculo"
                 />
               </div>
-
               {/* DESCRIPCIÓN */}
               <div className="form-group-modern">
                 <label>{t('edit_profile.label_bio')}</label>
@@ -127,11 +151,9 @@ const EditProfile: React.FC = () => {
                   style={{ resize: "vertical", minHeight: "80px" }}
                 />
               </div>
-
               {/* BOTÓN ASIGNATURAS */}
               <div className="form-group-modern">
                 <label>Asignaturas</label>
-
                 <button
                   type="button"
                   className="edit-profile-btn-premium"
@@ -140,7 +162,6 @@ const EditProfile: React.FC = () => {
                   Editar
                 </button>
               </div>
-
               {/* BOTONES */}
               {/* Privacidad */}
               <div className="form-group-modern checkbox-group">
@@ -155,7 +176,6 @@ const EditProfile: React.FC = () => {
                 </label>
                 <p className="field-help">Si tu cuenta es privada, solo tus seguidores podrán ver tus publicaciones.</p>
               </div>
-
               {/* Buttons */}
               <div className="form-actions-modern">
                 <button
@@ -165,22 +185,18 @@ const EditProfile: React.FC = () => {
                 >
                   {t('edit_profile.cancel')}
                 </button>
-
                 <button
                   type="submit"
                   className="save-btn-premium"
-                  disabled={loading}
+                  disabled={loading || uploading}
                 >
-                  {loading ? t('edit_profile.saving') : t('edit_profile.save')}
+                  {loading || uploading ? t('edit_profile.saving') : t('edit_profile.save')}
                 </button>
               </div>
-
             </form>
-
           </main>
         </div>
       </div>
-
       {/* MODAL ASIGNATURAS */}
       {usuario && (
         <AsignaturasModal
@@ -193,5 +209,4 @@ const EditProfile: React.FC = () => {
     </div>
   );
 };
-
 export default EditProfile;
