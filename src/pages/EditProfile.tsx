@@ -46,7 +46,6 @@ const EditProfile: React.FC = () => {
 
     try {
       await updateProfile(formData);
-      alert(t('edit_profile.success'));
       navigate("/profile");
     } catch {
       // error manejado en hook
@@ -136,7 +135,7 @@ const EditProfile: React.FC = () => {
                   className="edit-profile-btn-premium"
                   onClick={() => setModalOpen(true)}
                 >
-                  Editar asignaturas
+                  Editar
                 </button>
               </div>
 

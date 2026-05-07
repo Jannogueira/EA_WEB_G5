@@ -185,19 +185,21 @@
 .edit-profile-btn-premium {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #a78bfa;
-  padding: 8px 20px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 0.9rem;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1rem;
+  font-family: 'Inter', system-ui, sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .edit-profile-btn-premium:hover {
-  background: rgba(167, 139, 250, 0.1);
-  border-color: rgba(167, 139, 250, 0.4);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #a78bfa;
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.2);
+  transform: translateY(-1px);
 }
 
 /* --- Responsive --- */

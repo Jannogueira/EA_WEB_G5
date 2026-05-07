@@ -95,7 +95,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-.edit-profile-btn-premium {
+.edit-prf-btn-premium {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #a78bfa;
@@ -107,7 +107,7 @@
   transition: all 0.2s ease;
 }
 
-.edit-profile-btn-premium:hover {
+.edit-prf-btn-premium:hover {
   background: rgba(167, 139, 250, 0.1);
   border-color: rgba(167, 139, 250, 0.4);
   transform: translateY(-2px);
@@ -335,18 +335,17 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  font-size: 0.93rem;
 }
 
 .academic-label {
-  font-size: 0.75rem;
+  font-size: 1.1rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #64748b;
   font-weight: 700;
 }
 
 .academic-value {
-  font-size: 0.95rem;
   color: #e2e8f0;
   font-weight: 600;
 }
@@ -376,6 +375,10 @@
   color: #ffffff;
 }
 
+.sidebar-btn .btn-icon {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
 
 /* --- Responsive --- */
 @media (max-width: 1024px) {

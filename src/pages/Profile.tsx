@@ -4,17 +4,12 @@ import "./Profile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import PostService from "../services/post";
-import {
-  getFollowers,
-  getFollowing,
-  getUserById,
-  toggleFollow
-} from "../services/usuario";
+import { getFollowers, getFollowing, getUserById, toggleFollow} from "../services/usuario";
 import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus } from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 
@@ -130,7 +125,7 @@ const Profile: React.FC = () => {
 
                     {isOwnProfile ? (
                       <button
-                        className="edit-profile-btn-premium"
+                        className="edit-prf-btn-premium"
                         onClick={() => navigate("/profile/edit")}
                       >
                         {t('profile.edit_btn')}
@@ -168,8 +163,6 @@ const Profile: React.FC = () => {
                   </div>
 
                   <div className="user-bio-univy">
-                    <p className="full-name-label">{profileUser?.nombre}</p>
-
                     {profileUser?.descripcion && (
                       <p className="bio-description">
                         {profileUser.descripcion}
@@ -178,32 +171,28 @@ const Profile: React.FC = () => {
 
                     <p className="bio-contact">{profileUser?.email}</p>
 
-                    {/* 🧠 ACADEMIC INFO FIXED */}
                     {(profileUser?.universidad ||
                       profileUser?.grado ||
                       profileUser?.asignaturas?.length) && (
                       <div className="academic-info-univy">
 
-                        <div className="academic-item">
-                          <span className="academic-label">Universidad</span>
+                        <div className="academic-label">
                           <span className="academic-value">
-                            {getName(profileUser.universidad)}
+                            <GraduationCap size={18} className="btn-icon" /> {getName(profileUser.universidad)}
                           </span>
                         </div>
 
                         <div className="academic-item">
-                          <span className="academic-label">Grado</span>
                           <span className="academic-value">
-                            {getName(profileUser.grado)}
+                          <NotebookPen size={15} className="btn-icon" /> {getName(profileUser.grado)}
                           </span>
                         </div>
 
-                        {profileUser.asignaturas?.length > 0 && (
+                        {profileUser.asignaturas.length > 0 && (
                           <div className="academic-item">
-                            <span className="academic-label">Asignaturas</span>
 
                             <div className="academic-tags">
-                              {profileUser.asignaturas.map((a: any) => (
+                              {profileUser.asignaturas?.map((a: any) => (
                                 <span key={a._id || a} className="academic-tag">
                                   {getName(a)}
                                 </span>

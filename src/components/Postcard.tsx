@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import "./Postcard.css";
 import type { Post } from "../models/post";
 import usePost from "../hooks/usePost";
+import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, SendHorizonal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { post, likePost, addComment, loadingComment } = usePost(postProp);
 
@@ -14,9 +16,15 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
 
   const userAvatar = post.usuario?.avatarUrl;
 
+  const handleProfileClick = () => {
+    if (post.usuario?._id) {
+      navigate(`/profile/${post.usuario._id}`);
+    }
+  };
+
   return (
     <div className="post-card">
-      <div className="post-header">
+      <div className="post-header" onClick={handleProfileClick} style={{ cursor: "pointer" }}>
         <img
           src={userAvatar}
           alt={post.usuario?.nombre || "Usuario"}

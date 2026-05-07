@@ -13,12 +13,15 @@ export default function useUser() {
   useEffect(() => {
     const userJson = localStorage.getItem("usuario");
 
-    if (!userJson) {
-      navigate("/login");
-      return;
+    if (!userJson && location.pathname !== "/register") {
+    navigate("/login");
+    return;
     }
 
+    if (userJson) {
     setUsuario(JSON.parse(userJson));
+    }
+
   }, [navigate]);
 
   const updateProfile = async (data: Partial<Usuario>) => {

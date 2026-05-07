@@ -158,14 +158,17 @@ const SelectUniversity = () => {
           </div>
 
           {/* BOTÓN ASIGNATURAS */}
+          <div className="form-group">
+            <label>Asignaturas</label>
           <button
             type="button"
             className="edit-btn-premium secondary"
             disabled={!selectedGrado || loading}
             onClick={() => setModalOpen(true)}
           >
-            Seleccionar asignaturas
+            Selecciona asignaturas
           </button>
+          </div>
 
           {/* SUBMIT FINAL */}
           <button

@@ -135,23 +135,31 @@
   cursor: not-allowed;
 }
 
-
 .edit-btn-premium {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(15, 17, 26, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #a78bfa;
-  padding: 8px 20px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 0.9rem;
+  color: #f8fafc;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 400;
+  font-size: 0.95rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.5;   /* match input line height */
+  -webkit-appearance: none; /* remove button default styling */
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .edit-btn-premium:hover {
-  background: rgba(167, 139, 250, 0.1);
-  border-color: rgba(167, 139, 250, 0.4);
-  transform: translateY(-2px);
+  background: rgba(15, 17, 26, 0.7);
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+  transform: translateY(-1px);
 }
 
 .login-link-section {
