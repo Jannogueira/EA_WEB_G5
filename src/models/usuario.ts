@@ -12,4 +12,5 @@ export interface Usuario {
     activo: boolean;
     seguidores?: string[];
     seguidos?: string[];
+    privado: boolean;
 }

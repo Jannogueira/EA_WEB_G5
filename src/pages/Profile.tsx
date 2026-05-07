@@ -9,7 +9,7 @@ import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus } from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, Lock } from "lucide-react";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -101,6 +101,8 @@ const Profile: React.FC = () => {
     setSelectedPost(post);
   };
 
+  const isRestricted = profileUser?.privado && !isOwnProfile && !isFollowing;
+
   if (loading && !profileUser) return <div className="state-message">Cargando perfil...</div>;
   if (!profileUser && !loading) return <div className="state-message">Usuario no encontrado</div>;
 
@@ -182,6 +184,12 @@ const Profile: React.FC = () => {
 
             {loading ? (
               <div className="state-message">Cargando publicaciones...</div>
+            ) : isRestricted ? (
+              <div className="private-account-empty">
+                <span className="empty-icon"><Lock size={48} /></span>
+                <h3>Esta cuenta es privada</h3>
+                <p>Sigue a este usuario para ver sus publicaciones.</p>
+              </div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (

@@ -277,6 +277,32 @@
   display: block;
 }
 
+.private-account-empty {
+  padding: 100px 20px;
+  text-align: center;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 20px;
+}
+
+.private-account-empty h3 {
+  color: #f8fafc;
+  font-size: 1.5rem;
+  margin: 15px 0 10px 0;
+}
+
+.private-account-empty p {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.private-account-empty .empty-icon {
+  color: #a78bfa;
+}
+
 /* --- Modal Styles --- */
 .post-modal-overlay {
   position: fixed;
