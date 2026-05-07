@@ -1,0 +1,86 @@
+{
+  "sidebar": {
+    "home": "Inici",
+    "create": "Crear",
+    "explore": "Explorar",
+    "university": "Universitat",
+    "classes": "Classes",
+    "messages": "Missatges"
+  },
+  "home": {
+    "title": "Feed",
+    "subtitle": "Explora el que està passant a Univy",
+    "loading": "Carregant més posts increïbles...",
+    "end": "Has arribat al final. Torna més tard!",
+    "empty": "No hi ha posts encara"
+  },
+  "explore": {
+    "title": "Explorar Usuaris",
+    "subtitle": "Descobreix nous estudiants d'Univy",
+    "filter": "Filtrar",
+    "search_placeholder": "Cercar per nom...",
+    "searching": "Cercant ments brillants...",
+    "loading_more": "Carregant més usuaris...",
+    "no_more": "No hi ha més usuaris per mostrar",
+    "not_found": "No s'han trobat usuaris amb aquest nom",
+    "onboarding_title": "Cerca algú per començar",
+    "onboarding_subtitle": "Troba els teus companys de classe o d'universitat"
+  },
+  "profile": {
+    "loading": "Carregant perfil...",
+    "not_found": "Usuari no trobat",
+    "edit_btn": "Editar Perfil",
+    "follow": "Seguir",
+    "unfollow": "Deixar de seguir",
+    "posts_count": "publicacions",
+    "followers_count": "seguidors",
+    "following_count": "seguits",
+    "posts_title": "PUBLICACIONS",
+    "loading_posts": "Carregant publicacions...",
+    "empty_posts": "Encara no hi ha publicacions"
+  },
+  "edit_profile": {
+    "title": "Editar Perfil",
+    "success": "Perfil actualitzat amb èxit!",
+    "label_name": "Nom",
+    "label_email": "Email",
+    "label_avatar": "Avatar URL",
+    "label_bio": "Descripció",
+    "placeholder_bio": "Escriu una breu descripció sobre tu...",
+    "cancel": "Cancel·lar",
+    "saving": "Guardant...",
+    "save": "Guardar Canvis"
+  },
+  "create_post": {
+    "title": "Nova Publicació",
+    "img_placeholder": "La vista prèvia de la teva imatge apareixerà aquí",
+    "label_img": "URL de la imatge",
+    "label_caption": "Peu de foto",
+    "sharing": "Compartint...",
+    "publish": "Publicar",
+    "error": "Error en crear la publicació."
+  },
+  "postcard": {
+    "comment_placeholder": "Escriu un comentari...",
+    "send_comment": "Enviar comentari"
+  },
+  "messages": {
+    "search": "Cercar xat...",
+    "available": "Xat disponible",
+    "loading": "Carregant...",
+    "typing": "està escrivint...",
+    "placeholder": "Escriu un missatge...",
+    "title": "Els teus Missatges",
+    "empty": "Selecciona una conversa per començar."
+  },
+  "navbar": {
+    "loading": "Carregant...",
+    "profile": "Perfil",
+    "logout": "Tancar la sessió"
+  },
+  "common": {
+    "language": "Idioma",
+    "spanish": "Espanyol",
+    "catalan": "Català"
+  }
+}

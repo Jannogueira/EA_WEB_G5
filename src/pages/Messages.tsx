@@ -6,9 +6,11 @@ import useUser from "../hooks/useUser";
 import useChat from "../hooks/useChat";
 import { useSocket } from "../context/SocketContext";
 import { Send, User, MessageCircle, Search, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ChatContact } from "../models/message";
 
 const Messages: React.FC = () => {
+  const { t } = useTranslation();
   const { usuario } = useUser();
   const { unreadCounts, markAsRead } = useSocket();
   const {
@@ -61,7 +63,7 @@ const Messages: React.FC = () => {
                 <Search size={18} className="search-icon-dim" />
                 <input 
                   type="text" 
-                  placeholder="Buscar chat..." 
+                  placeholder={t('messages.search')} 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -80,7 +82,6 @@ const Messages: React.FC = () => {
                   </div>
                   <div className="contact-info">
                     <span className="contact-name">{contact.nombre}</span>
-                    <span className="last-msg-preview">Chat disponible</span>
                   </div>
                   {unreadCounts[contact._id] > 0 && (
                     <div className="unread-badge">{unreadCounts[contact._id]}</div>
@@ -104,7 +105,7 @@ const Messages: React.FC = () => {
 
                 <div className="messages-list">
                   {loadingHistory ? (
-                    <div className="modal-empty">Cargando...</div>
+                    <div className="modal-empty">{t('messages.loading')}</div>
                   ) : (
                     messages.map((msg) => (
                       <div
@@ -129,7 +130,7 @@ const Messages: React.FC = () => {
                     <div className="typing-dots">
                       <span></span><span></span><span></span>
                     </div>
-                    <span>{activeContact.nombre} está escribiendo...</span>
+                    <span>{activeContact.nombre} {t('messages.typing')}</span>
                   </div>
                 )}
 
@@ -137,7 +138,7 @@ const Messages: React.FC = () => {
                   <div className="input-wrapper-premium">
                     <input
                       type="text"
-                      placeholder="Escribe un mensaje..."
+                      placeholder={t('messages.placeholder')}
                       value={inputMessage}
                       onChange={(e) => {
                         setInputMessage(e.target.value);
@@ -154,8 +155,8 @@ const Messages: React.FC = () => {
             ) : (
               <div className="no-chat-selected">
                 <MessageCircle size={100} color="rgba(167, 139, 250, 0.1)" />
-                <h2>Tus Mensajes</h2>
-                <p>Selecciona una conversación para empezar.</p>
+                <h2>{t('messages.title')}</h2>
+                <p>{t('messages.empty')}</p>
               </div>
             )}
           </main>

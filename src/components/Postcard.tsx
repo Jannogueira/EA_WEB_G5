@@ -3,8 +3,10 @@ import "./Postcard.css";
 import type { Post } from "../models/post";
 import usePost from "../hooks/usePost";
 import { Heart, MessageCircle, SendHorizonal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
+  const { t } = useTranslation();
   const { post, likePost, addComment, loadingComment } = usePost(postProp);
 
   const [showComments, setShowComments] = useState(false);
@@ -64,7 +66,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             {post.comments?.map((c) => (
               <p key={c._id} className="comment-item">
                 <strong>
-                  {typeof c.usuario === "object"
+                   {typeof c.usuario === "object"
                     ? c.usuario.nombre
                     : "Usuario"}
                 </strong>{" "}
@@ -76,7 +78,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
               <input
                 type="text"
                 value={commentText}
-                placeholder="Escribe un comentario..."
+                placeholder={t('postcard.comment_placeholder')}
                 onChange={(e) => setCommentText(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -93,7 +95,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
                 }}
                 disabled={loadingComment || !commentText.trim()}
                 className="send-comment-btn"
-                title="Enviar comentario"
+                title={t('postcard.send_comment')}
               >
                 {loadingComment ? "..." : <SendHorizonal size={18} />}
               </button>

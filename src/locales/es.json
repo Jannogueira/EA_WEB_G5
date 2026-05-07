@@ -1,0 +1,86 @@
+{
+  "sidebar": {
+    "home": "Inicio",
+    "create": "Crear",
+    "explore": "Explorar",
+    "university": "Universidad",
+    "classes": "Clases",
+    "messages": "Mensajes"
+  },
+  "home": {
+    "title": "Feed",
+    "subtitle": "Explora lo que está pasando en Univy",
+    "loading": "Cargando más posts increíbles...",
+    "end": "Has llegado al final. ¡Vuelve más tarde!",
+    "empty": "No hay posts todavía"
+  },
+  "explore": {
+    "title": "Explorar Usuarios",
+    "subtitle": "Descubre nuevos estudiantes de Univy",
+    "filter": "Filtrar",
+    "search_placeholder": "Buscar por nombre...",
+    "searching": "Buscando mentes brillantes...",
+    "loading_more": "Cargando más usuarios...",
+    "no_more": "No hay más usuarios para mostrar",
+    "not_found": "No se encontraron usuarios con ese nombre",
+    "onboarding_title": "Busca a alguien para empezar",
+    "onboarding_subtitle": "Encuentra a tus compañeros de clase o de universidad"
+  },
+  "profile": {
+    "loading": "Cargando perfil...",
+    "not_found": "Usuario no encontrado",
+    "edit_btn": "Editar Perfil",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir",
+    "posts_count": "publicaciones",
+    "followers_count": "seguidores",
+    "following_count": "seguidos",
+    "posts_title": "PUBLICACIONES",
+    "loading_posts": "Cargando publicaciones...",
+    "empty_posts": "Aún no hay publicaciones"
+  },
+  "edit_profile": {
+    "title": "Editar Perfil",
+    "success": "¡Perfil actualizado con éxito!",
+    "label_name": "Nombre",
+    "label_email": "Email",
+    "label_avatar": "Avatar URL",
+    "label_bio": "Descripción",
+    "placeholder_bio": "Escribe una breve descripción sobre ti...",
+    "cancel": "Cancelar",
+    "saving": "Guardando...",
+    "save": "Guardar Cambios"
+  },
+  "create_post": {
+    "title": "Nueva Publicación",
+    "img_placeholder": "La vista previa de tu imagen aparecerá aquí",
+    "label_img": "URL de la imagen",
+    "label_caption": "Pie de foto",
+    "sharing": "Compartiendo...",
+    "publish": "Publicar",
+    "error": "Error al crear la publicación."
+  },
+  "postcard": {
+    "comment_placeholder": "Escribe un comentario...",
+    "send_comment": "Enviar comentario"
+  },
+  "messages": {
+    "search": "Buscar chat...",
+    "available": "Chat disponible",
+    "loading": "Cargando...",
+    "typing": "está escribiendo...",
+    "placeholder": "Escribe un mensaje...",
+    "title": "Tus Mensajes",
+    "empty": "Selecciona una conversación para empezar."
+  },
+  "navbar": {
+    "loading": "Cargando...",
+    "profile": "Perfil",
+    "logout": "Cerrar Sesión"
+  },
+  "common": {
+    "language": "Idioma",
+    "spanish": "Español",
+    "catalan": "Catalán"
+  }
+}

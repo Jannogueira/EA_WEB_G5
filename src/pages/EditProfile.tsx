@@ -4,8 +4,10 @@ import "./EditProfile.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
+import { useTranslation } from "react-i18next";
 
 const EditProfile: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { usuario, updateProfile, loading, error } = useUser();
 
@@ -39,7 +41,7 @@ const EditProfile: React.FC = () => {
 
     try {
       await updateProfile(formData);
-      alert("¡Perfil actualizado con éxito!");
+      alert(t('edit_profile.success'));
       navigate("/profile");
     } catch {
       // handled in hook
@@ -55,7 +57,7 @@ const EditProfile: React.FC = () => {
 
         <div className="content-area">
           <main className="edit-form-container">
-            <h1 className="page-title-modern">Editar Perfil</h1>
+            <h1 className="page-title-modern">{t('edit_profile.title')}</h1>
 
             <form onSubmit={handleSubmit} className="univy-glass-form">
 
@@ -72,7 +74,7 @@ const EditProfile: React.FC = () => {
 
               {/* Nombre */}
               <div className="form-group-modern">
-                <label>Nombre</label>
+                <label>{t('edit_profile.label_name')}</label>
                 <input
                   name="nombre"
                   value={formData.nombre}
@@ -83,7 +85,7 @@ const EditProfile: React.FC = () => {
 
               {/* Email */}
               <div className="form-group-modern">
-                <label>Email</label>
+                <label>{t('edit_profile.label_email')}</label>
                 <input
                   name="email"
                   value={formData.email}
@@ -94,7 +96,7 @@ const EditProfile: React.FC = () => {
 
               {/* Avatar URL */}
               <div className="form-group-modern">
-                <label>Avatar URL</label>
+                <label>{t('edit_profile.label_avatar')}</label>
                 <input
                   name="avatarUrl"
                   value={formData.avatarUrl}
@@ -104,13 +106,13 @@ const EditProfile: React.FC = () => {
 
               {/* Descripción */}
               <div className="form-group-modern">
-                <label>Descripción</label>
+                <label>{t('edit_profile.label_bio')}</label>
                 <textarea
                   name="descripcion"
                   value={formData.descripcion}
                   onChange={handleChange}
                   rows={3}
-                  placeholder="Escribe una breve descripción sobre ti..."
+                  placeholder={t('edit_profile.placeholder_bio')}
                   style={{ resize: "vertical", minHeight: "80px" }}
                 />
               </div>
@@ -122,7 +124,7 @@ const EditProfile: React.FC = () => {
                   className="cancel-btn"
                   onClick={() => navigate("/profile")}
                 >
-                  Cancelar
+                  {t('edit_profile.cancel')}
                 </button>
 
                 <button
@@ -130,7 +132,7 @@ const EditProfile: React.FC = () => {
                   className="save-btn-premium"
                   disabled={loading}
                 >
-                  {loading ? "Guardando..." : "Guardar Cambios"}
+                  {loading ? t('edit_profile.saving') : t('edit_profile.save')}
                 </button>
               </div>
 

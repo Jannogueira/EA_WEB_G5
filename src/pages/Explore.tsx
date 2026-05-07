@@ -8,8 +8,10 @@ import type { Usuario } from "../models/usuario";
 import UserCard from "../components/UserCard";
 import { Search, Compass } from "lucide-react";
 import ExploreFilter from "../components/ExploreFilterModal";
+import { useTranslation } from "react-i18next";
 
 const Explore: React.FC = () => {
+    const { t } = useTranslation();
     const { usuario } = useUser();
 
     const [users, setUsers] = useState<Usuario[]>([]);
@@ -90,8 +92,8 @@ const Explore: React.FC = () => {
                                 <Compass size={32} className="explore-icon" />
                             </div>
                             <div className="header-text">
-                                <h1>Explorar Usuarios</h1>
-                                <p>Descubre nuevos estudiantes de Univy</p>
+                                <h1>{t('explore.title')}</h1>
+                                <p>{t('explore.subtitle')}</p>
                             </div>
                         </header>
 
@@ -101,13 +103,13 @@ const Explore: React.FC = () => {
                                 className="filter-btn-premium"
                                 onClick={() => setShowFilter(true)}
                             >
-                                Filtrar
+                                {t('explore.filter')}
                             </button>
                             <div className="search-box-wrapper">
                                 <Search size={20} className="search-icon-inside" />
                                 <input
                                     type="text"
-                                    placeholder="Buscar por nombre..."
+                                    placeholder={t('explore.search_placeholder')}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     className="search-input-premium"
@@ -120,19 +122,19 @@ const Explore: React.FC = () => {
                             {hasTyped ? (
                                 <div className="users-list">
                                     {loading && page === 1 ? (
-                                        <div className="state-message">Buscando mentes brillantes...</div>
+                                        <div className="state-message">{t('explore.searching')}</div>
                                     ) : users && users.length > 0 ? (
                                         <>
                                             {users.map((u) => (
                                                 <UserCard key={u._id} user={u} />
                                             ))}
                                             <div ref={observerTarget} className="scroll-sentinel">
-                                                {loading && <p>Cargando más usuarios...</p>}
-                                                {!hasNextPage && <p className="end-message">No hay más usuarios para mostrar</p>}
+                                                {loading && <p>{t('explore.loading_more')}</p>}
+                                                {!hasNextPage && <p className="end-message">{t('explore.no_more')}</p>}
                                             </div>
                                         </>
                                     ) : !loading && (
-                                        <div className="empty-state">No se encontraron usuarios con ese nombre</div>
+                                        <div className="empty-state">{t('explore.not_found')}</div>
                                     )}
                                 </div>
                             ) : (
@@ -140,8 +142,8 @@ const Explore: React.FC = () => {
                                     <div className="onboarding-circle">
                                         <Search size={48} opacity={0.3} />
                                     </div>
-                                    <h3>Busca a alguien para empezar</h3>
-                                    <p>Encuentra a tus compañeros de clase o de universidad</p>
+                                    <h3>{t('explore.onboarding_title')}</h3>
+                                    <p>{t('explore.onboarding_subtitle')}</p>
                                 </div>
                             )}
                         </div>
