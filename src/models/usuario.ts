@@ -13,4 +13,5 @@ export interface Usuario {
     seguidores?: string[];
     seguidos?: string[];
     privado: boolean;
+    followStatus?: 'PENDING' | 'ACCEPTED' | null;
 }

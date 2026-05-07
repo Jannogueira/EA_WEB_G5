@@ -40,6 +40,14 @@ export const getUserById = (id: string) => {
   return apiClient.get<Usuario>(`/usuarios/${id}`);
 };
 
+export const acceptFollowRequest = (followerId: string) => {
+  return apiClient.post(`/usuarios/requests/accept/${followerId}`);
+};
+
+export const rejectFollowRequest = (followerId: string) => {
+  return apiClient.post(`/usuarios/requests/reject/${followerId}`);
+};
+
 const exportedService = {
   ...service,
   updateSelf,
@@ -48,7 +56,9 @@ const exportedService = {
   getUsers,
   searchUsers,
   toggleFollow,
-  getUserById
+  getUserById,
+  acceptFollowRequest,
+  rejectFollowRequest
 };
 
 export default exportedService;

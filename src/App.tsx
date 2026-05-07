@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import Explore from './pages/Explore';
 import Messages from './pages/Messages';
+import Notifications from './pages/Notifications';
 import { SocketProvider } from './context/SocketContext';
 import './App.css';
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile/:id" element={<Profile />} />
         </Routes>
       </SocketProvider>

@@ -9,7 +9,7 @@ import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, Lock } from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, Lock, Clock } from "lucide-react";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ const Profile: React.FC = () => {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const isOwnProfile = !id || id === currentUser?._id;
 
@@ -44,6 +45,10 @@ const Profile: React.FC = () => {
         }
 
         setProfileUser(targetUser);
+        if (targetUser) {
+          setIsFollowing(targetUser.followStatus === 'ACCEPTED');
+          setIsPending(targetUser.followStatus === 'PENDING');
+        }
 
         if (targetId) {
           // Fetch Posts (ahora devuelve PaginatedResponse)
@@ -89,9 +94,14 @@ const Profile: React.FC = () => {
     if (!profileUser || !currentUser) return;
 
     try {
-      await toggleFollow(profileUser._id);
-      setIsFollowing(!isFollowing);
-      setFollowersCount(prev => isFollowing ? prev - 1 : prev + 1);
+      const res = await toggleFollow(profileUser._id);
+      const newStatus = res.data.status;
+      
+      setIsFollowing(newStatus === 'ACCEPTED');
+      setIsPending(newStatus === 'PENDING');
+
+      if (newStatus === 'ACCEPTED') setFollowersCount(prev => prev + 1);
+      else if (!newStatus) setFollowersCount(prev => isFollowing ? prev - 1 : prev);
     } catch (error) {
       console.error("Error toggling follow:", error);
     }
@@ -144,6 +154,10 @@ const Profile: React.FC = () => {
                         {isFollowing ? (
                           <>
                             <UserMinus size={18} /> Dejar de seguir
+                          </>
+                        ) : isPending ? (
+                          <>
+                            <Clock size={18} /> Solicitado
                           </>
                         ) : (
                           <>

@@ -29,7 +29,11 @@ const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
               : "Sin universidad"}
           </p>
         </div>
-        {user.privado && <Lock size={16} className="private-badge" title="Cuenta Privada" />}
+        {user.privado && (
+          <span title="Cuenta Privada">
+            <Lock size={16} className="private-badge" />
+          </span>
+        )}
       </div>
 
       <div className="user-body">
