@@ -14,4 +14,6 @@ export interface Usuario {
     seguidos?: string[];
     grado?: string;
     asignaturas?: string[];
+    privado: boolean;
+    followStatus?: 'PENDING' | 'ACCEPTED' | null;
 }

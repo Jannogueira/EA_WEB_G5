@@ -20,7 +20,8 @@ const EditProfile: React.FC = () => {
     nombre: "",
     email: "",
     avatarUrl: "",
-    descripcion: ""
+    descripcion: "",
+    privado: false
   });
 
   useEffect(() => {
@@ -29,7 +30,8 @@ const EditProfile: React.FC = () => {
         nombre: usuario.nombre || "",
         email: usuario.email || "",
         avatarUrl: usuario.avatarUrl || "",
-        descripcion: usuario.descripcion || ""
+        descripcion: usuario.descripcion || "",
+        privado: usuario.privado || false
       });
     }
   }, [usuario]);
@@ -126,7 +128,7 @@ const EditProfile: React.FC = () => {
                 />
               </div>
 
-              {/* 🔥 BOTÓN ASIGNATURAS */}
+              {/* BOTÓN ASIGNATURAS */}
               <div className="form-group-modern">
                 <label>Asignaturas</label>
 
@@ -140,6 +142,21 @@ const EditProfile: React.FC = () => {
               </div>
 
               {/* BOTONES */}
+              {/* Privacidad */}
+              <div className="form-group-modern checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="privado"
+                    checked={formData.privado}
+                    onChange={(e) => setFormData(prev => ({ ...prev, privado: e.target.checked }))}
+                  />
+                  <span>Cuenta Privada</span>
+                </label>
+                <p className="field-help">Si tu cuenta es privada, solo tus seguidores podrán ver tus publicaciones.</p>
+              </div>
+
+              {/* Buttons */}
               <div className="form-actions-modern">
                 <button
                   type="button"
@@ -164,7 +181,7 @@ const EditProfile: React.FC = () => {
         </div>
       </div>
 
-      {/* 🔥 MODAL ASIGNATURAS */}
+      {/* MODAL ASIGNATURAS */}
       {usuario && (
         <AsignaturasModal
           gradoId={usuario.grado || ""}

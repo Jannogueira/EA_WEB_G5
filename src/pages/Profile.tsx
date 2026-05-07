@@ -9,9 +9,8 @@ import Postcard from "../components/Postcard";
 import type { Post } from "../models/post";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap } from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap, Clock, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
 
 const Profile: React.FC = () => {
   const { t } = useTranslation();
@@ -26,6 +25,7 @@ const Profile: React.FC = () => {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const isOwnProfile = !id || id === currentUser?._id;
 
@@ -39,8 +39,12 @@ const Profile: React.FC = () => {
       const targetId = id || currentUser._id;
       const res = await getUserById(targetId);
       const targetUser = res.data;
-
       setProfileUser(targetUser);
+      if (targetUser) {
+          setIsFollowing(targetUser.followStatus === 'ACCEPTED');
+          setIsPending(targetUser.followStatus === 'PENDING');
+        }
+
 
       // Cargar posts
       const { request } = PostService.getPostsByUserId(targetId);
@@ -78,11 +82,16 @@ const Profile: React.FC = () => {
     if (!profileUser || !currentUser) return;
 
     try {
-      await toggleFollow(profileUser._id);
-      setIsFollowing(!isFollowing);
-      setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
-    } catch (err) {
-      console.error(err);
+      const res = await toggleFollow(profileUser._id);
+      const newStatus = res.data.status;
+      
+      setIsFollowing(newStatus === 'ACCEPTED');
+      setIsPending(newStatus === 'PENDING');
+
+      if (newStatus === 'ACCEPTED') setFollowersCount(prev => prev + 1);
+      else if (!newStatus) setFollowersCount(prev => isFollowing ? prev - 1 : prev);
+    } catch (error) {
+      console.error("Error toggling follow:", error);
     }
   };
 
@@ -90,11 +99,13 @@ const Profile: React.FC = () => {
     setSelectedPost(post);
   };
 
-  if (loading && !profileUser) return <div className="state-message">{t('profile.loading')}</div>;
-  if (!profileUser && !loading) return <div className="state-message">{t('profile.not_found')}</div>;
-
   const getName = (obj: any) =>
     typeof obj === "string" ? obj : obj?.nombre;
+
+  const isRestricted = profileUser?.privado && !isOwnProfile && !isFollowing;
+
+  if (loading && !profileUser) return <div className="state-message">Cargando perfil...</div>;
+  if (!profileUser && !loading) return <div className="state-message">Usuario no encontrado</div>;
 
   return (
     <div className="profile-wrapper">
@@ -140,6 +151,10 @@ const Profile: React.FC = () => {
                         {isFollowing ? (
                           <>
                             <UserMinus size={18} /> {t('profile.unfollow')}
+                          </>
+                        ) : isPending ? (
+                          <>
+                            <Clock size={18} /> Solicitado
                           </>
                         ) : (
                           <>
@@ -215,7 +230,13 @@ const Profile: React.FC = () => {
             </div>
 
             {loading ? (
-              <div className="state-message">{t('profile.loading_posts')}</div>
+              <div className="state-message">Cargando publicaciones...</div>
+            ) : isRestricted ? (
+              <div className="private-account-empty">
+                <span className="empty-icon"><Lock size={48} /></span>
+                <h3>Esta cuenta es privada</h3>
+                <p>Sigue a este usuario para ver sus publicaciones.</p>
+              </div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
                 {posts.map((post) => (

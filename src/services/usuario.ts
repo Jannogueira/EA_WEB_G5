@@ -47,6 +47,14 @@ export const updateAsignaturas = (usuarioId: string, asignaturas: string[]) => {
   );
 };
 
+export const acceptFollowRequest = (followerId: string) => {
+  return apiClient.post(`/usuarios/requests/accept/${followerId}`);
+};
+
+export const rejectFollowRequest = (followerId: string) => {
+  return apiClient.post(`/usuarios/requests/reject/${followerId}`);
+};
+
 const exportedService = {
   ...service,
   updateSelf,
@@ -56,7 +64,9 @@ const exportedService = {
   searchUsers,
   toggleFollow,
   getUserById,
-  updateAsignaturas
+  updateAsignaturas,
+  acceptFollowRequest,
+  rejectFollowRequest
 };
 
 export default exportedService;

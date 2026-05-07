@@ -6,16 +6,20 @@ interface SocketContextType {
   socket: Socket | null;
   notifications: any[];
   unreadCounts: Record<string, number>; // userId -> count
+  notificationCount: number;
   clearNotifications: () => void;
   markAsRead: (userId: string) => void;
+  setNotificationCount: (count: number) => void;
 }
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   notifications: [],
   unreadCounts: {},
+  notificationCount: 0,
   clearNotifications: () => {},
   markAsRead: () => {},
+  setNotificationCount: () => {},
 });
 
 export const useSocket = () => useContext(SocketContext);
@@ -25,6 +29,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [socket, setSocket] = useState<Socket | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     if (usuario) {
@@ -45,7 +50,16 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       });
 
       newSocket.on('new_follow', (data) => {
-        alert(`¡${data.follower.nombre} te ha empezado a seguir!`);
+        // alert(`¡${data.follower.nombre} te ha empezado a seguir!`);
+        setNotificationCount(prev => prev + 1);
+      });
+
+      newSocket.on('new_notification', () => {
+        setNotificationCount(prev => prev + 1);
+      });
+
+      newSocket.on('new_follow_request', () => {
+        setNotificationCount(prev => prev + 1);
       });
 
       return () => {
@@ -67,7 +81,15 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const clearNotifications = useCallback(() => setNotifications([]), []);
 
   return (
-    <SocketContext.Provider value={{ socket, notifications, unreadCounts, clearNotifications, markAsRead }}>
+    <SocketContext.Provider value={{ 
+      socket, 
+      notifications, 
+      unreadCounts, 
+      notificationCount,
+      clearNotifications, 
+      markAsRead,
+      setNotificationCount
+    }}>
       {children}
     </SocketContext.Provider>
   );

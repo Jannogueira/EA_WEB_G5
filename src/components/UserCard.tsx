@@ -2,6 +2,7 @@ import React from "react";
 import "./UserCard.css";
 import type { Usuario } from "../models/usuario";
 import { useNavigate } from "react-router-dom";
+import { Lock } from "lucide-react";
 
 const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
     const navigate = useNavigate();
@@ -28,6 +29,11 @@ const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
               : "Sin universidad"}
           </p>
         </div>
+        {user.privado && (
+          <span title="Cuenta Privada">
+            <Lock size={16} className="private-badge" />
+          </span>
+        )}
       </div>
 
       <div className="user-body">

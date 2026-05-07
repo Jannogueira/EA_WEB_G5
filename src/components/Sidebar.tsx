@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Languages } from "lucide-react";
+import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell } from "lucide-react";
 import CreatePostModal from "./CreatePostModal";
 import { useSocket } from "../context/SocketContext";
 import { useTranslation } from "react-i18next";
@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { unreadCounts } = useSocket();
+  const { unreadCounts, notificationCount } = useSocket();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuario, setUsuario] = useState<Usuario | undefined>(undefined);
 
@@ -27,7 +27,6 @@ const Sidebar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const handlePostCreated = () => {
-    // Si estamos en home o perfil, refrescamos la página para ver el nuevo post
     if (location.pathname === "/home" || location.pathname === "/profile") {
       window.location.reload();
     } else {
@@ -89,6 +88,18 @@ const Sidebar: React.FC = () => {
             <MessageSquare size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.messages')}</span>
             {totalUnread > 0 && <div className="sidebar-notification-badge">{totalUnread > 99 ? '99+' : totalUnread}</div>}
+          </button>
+
+          <button 
+            className={`sidebar-btn ${isActive("/notifications") ? "active" : ""}`} 
+            onClick={() => navigate("/notifications")}
+            style={{ position: 'relative' }}
+          >
+            <Bell size={20} className="btn-icon" />
+            <span className="btn-text">Notificaciones</span>
+            {notificationCount > 0 && (
+              <div className="sidebar-notification-badge">{notificationCount > 99 ? '99+' : notificationCount}</div>
+            )}
           </button>
         </nav>
 
