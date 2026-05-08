@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useUser from "../hooks/useUser";
-import useAsignaturasByGrado from "../hooks/useAsignatura";
+import useAsignatura from "../hooks/useAsignatura";
 import usuarioService from "../services/usuario";
 import type { Usuario } from "../models/usuario";
 
@@ -27,7 +27,7 @@ const AsignaturasModal: React.FC<Props> = ({
     toggle,
     loading,
     error
-  } = useAsignaturasByGrado(gradoId, usuario);
+  } = useAsignatura(gradoId, usuario);
 
   const [saving, setSaving] = useState(false);
 

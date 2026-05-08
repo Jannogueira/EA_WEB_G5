@@ -14,6 +14,14 @@ class GradoService {
   getById(gradoId: string) {
     return apiClient.get(`${this.endpoint}/${gradoId}`);
   }
+
+  getAll() {
+    return apiClient.get(this.endpoint);
+  }
+
+  getAllAsignaturas() {
+    return apiClient.get('/asignaturas');
+  }
 }
 
 export default new GradoService();
