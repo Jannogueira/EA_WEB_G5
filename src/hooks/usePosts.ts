@@ -14,8 +14,8 @@ export default function usePosts() {
 
     setLoading(true);
     try {
-      // Ahora pasamos la página al servicio
-      const { request } = PostService.getAll({ page: pageNum, limit: 10 });
+      // Ahora pasamos la página al servicio para obtener los posts de seguidos
+      const { request } = PostService.getFollowing(pageNum, 10);
       const response = await request;
 
       console.log("DEBUG: Datos recibidos en usePosts:", response.data);

@@ -15,6 +15,15 @@ class PostService {
     return { request, cancel: () => controller.abort() };
   }
 
+  getFollowing(page: number = 1, limit: number = 10) {
+    const controller = new AbortController();
+    const request = apiClient.get<PaginatedResponse<Post>>(`${this.endpoint}/following`, {
+      params: { page, limit },
+      signal: controller.signal,
+    });
+    return { request, cancel: () => controller.abort() };
+  }
+
   createPost(data: any) {
     return apiClient.post(this.endpoint, data);
   }
