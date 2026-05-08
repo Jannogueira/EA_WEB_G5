@@ -3,8 +3,12 @@ import "./Explore.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
+import useUnis from "../hooks/useUni";
+import gradoService from "../services/grado";
 import { searchUsers } from "../services/usuario";
 import type { Usuario } from "../models/usuario";
+import type { Grado } from "../models/grado";
+import type { Asignatura } from "../models/asignatura";
 import UserCard from "../components/UserCard";
 import { Search, Compass } from "lucide-react";
 import ExploreFilter from "../components/ExploreFilterModal";
@@ -22,18 +26,46 @@ const Explore: React.FC = () => {
     const [hasNextPage, setHasNextPage] = useState(false);
 
     const [showFilter, setShowFilter] = useState(false);
-    const [selectedUnis, setSelectedUnis] = useState<string[]>([]);
+    
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+    const { universidades } = useUnis();
+    const [grados, setGrados] = useState<Grado[]>([]);
+    const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
 
     const observerTarget = useRef(null);
+
+    useEffect(() => {
+        const fetchRefs = async () => {
+            try {
+                const [gRes, aRes] = await Promise.all([
+                    gradoService.getAll(),
+                    gradoService.getAllAsignaturas()
+                ]);
+                setGrados(gRes.data);
+                setAsignaturas(aRes.data);
+            } catch (err) {
+                console.error("Error fetching reference data", err);
+            }
+        };
+        fetchRefs();
+    }, []);
 
     const performSearch = async (pageNum: number, isNewSearch: boolean = false) => {
         if (loading || (!isNewSearch && !hasNextPage)) return;
 
         try {
             setLoading(true);
-            const res = await searchUsers(search, selectedUnis, pageNum);
+            const res = await searchUsers(
+                search, 
+                selectedFilters, 
+                universidades, 
+                grados, 
+                asignaturas, 
+                pageNum
+            );
+            
             const { docs, hasNextPage: more } = res.data;
-
             setUsers(prev => isNewSearch ? docs : [...prev, ...docs]);
             setHasNextPage(more);
             setPage(pageNum);
@@ -45,9 +77,8 @@ const Explore: React.FC = () => {
         }
     };
 
-    // Debounce para la búsqueda inicial
     useEffect(() => {
-        if (!search.trim() && selectedUnis.length === 0) {
+        if (!search.trim() && selectedFilters.length === 0) {
             setUsers([]);
             setHasTyped(false);
             setHasNextPage(false);
@@ -59,9 +90,8 @@ const Explore: React.FC = () => {
         }, 400);
 
         return () => clearTimeout(timer);
-    }, [search, selectedUnis]);
+    }, [search, selectedFilters]);
 
-    // Intersection Observer para scroll infinito
     useEffect(() => {
         const observer = new IntersectionObserver(
             entries => {
@@ -81,10 +111,8 @@ const Explore: React.FC = () => {
     return (
         <div className="home-wrapper">
             <Navbar usuario={usuario || undefined} />
-
             <div className="main-layout">
                 <Sidebar />
-
                 <div className="content-area">
                     <main className="feed-container">
                         <header className="feed-header explore-header">
@@ -97,13 +125,9 @@ const Explore: React.FC = () => {
                             </div>
                         </header>
 
-                        {/* SEARCH */}
                         <div className="search-section-premium">
-                            <button
-                                className="filter-btn-premium"
-                                onClick={() => setShowFilter(true)}
-                            >
-                                {t('explore.filter')}
+                            <button className="filter-btn-premium" onClick={() => setShowFilter(true)}>
+                                {t('explore.filter')} {selectedFilters.length > 0 && `(${selectedFilters.length})`}
                             </button>
                             <div className="search-box-wrapper">
                                 <Search size={20} className="search-icon-inside" />
@@ -117,17 +141,14 @@ const Explore: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* RESULTS */}
                         <div className="explore-results-area">
                             {hasTyped ? (
                                 <div className="users-list">
                                     {loading && page === 1 ? (
                                         <div className="state-message">{t('explore.searching')}</div>
-                                    ) : users && users.length > 0 ? (
+                                    ) : users.length > 0 ? (
                                         <>
-                                            {users.map((u) => (
-                                                <UserCard key={u._id} user={u} />
-                                            ))}
+                                            {users.map((u) => <UserCard key={u._id} user={u} />)}
                                             <div ref={observerTarget} className="scroll-sentinel">
                                                 {loading && <p>{t('explore.loading_more')}</p>}
                                                 {!hasNextPage && <p className="end-message">{t('explore.no_more')}</p>}
@@ -139,9 +160,7 @@ const Explore: React.FC = () => {
                                 </div>
                             ) : (
                                 <div className="explore-onboarding">
-                                    <div className="onboarding-circle">
-                                        <Search size={48} opacity={0.3} />
-                                    </div>
+                                    <div className="onboarding-circle"><Search size={48} opacity={0.3} /></div>
                                     <h3>{t('explore.onboarding_title')}</h3>
                                     <p>{t('explore.onboarding_subtitle')}</p>
                                 </div>
@@ -153,8 +172,8 @@ const Explore: React.FC = () => {
 
             {showFilter && (
                 <ExploreFilter
-                    selected={selectedUnis}
-                    onApply={(unis) => setSelectedUnis(unis)}
+                    selected={selectedFilters}
+                    onApply={(ids) => setSelectedFilters(ids)}
                     onClose={() => setShowFilter(false)}
                 />
             )}
