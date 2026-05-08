@@ -2,6 +2,9 @@ import create from "./http";
 import apiClient from "./api-client";
 import type { PaginatedResponse } from "../models/pagination";
 import type { Usuario } from "../models/usuario";
+import type { Universidad } from "../models/universidad";
+import type { Grado } from "../models/grado";
+import type { Asignatura } from "../models/asignatura";
 
 const service = create("/usuarios");
 
@@ -21,13 +24,26 @@ export const getUsers = (params?: any) => {
   return apiClient.get<PaginatedResponse<Usuario>>("/usuarios", { params });
 };
 
-export const searchUsers = (query: string, universidades: string[], page: number = 1, limit: number = 10) => {
-  return apiClient.get<PaginatedResponse<Usuario>>("/usuarios", {
+export const searchUsers = (
+  query: string,
+  allIds: string[],
+  allUnis: Universidad[],
+  allGrados: Grado[],
+  allAsignaturas: Asignatura[],
+  page: number = 1
+) => {
+  const unis = allIds.filter(id => allUnis.some(u => u._id === id));
+  const grados = allIds.filter(id => allGrados.some(g => g._id === id));
+  const asigs = allIds.filter(id => allAsignaturas.some(a => a._id === id));
+
+  return apiClient.get("/usuarios", {
     params: {
       search: query,
-      universidades: universidades?.join(","),
+      universidades: unis.length > 0 ? unis.join(",") : undefined,
+      grados: grados.length > 0 ? grados.join(",") : undefined,
+      asignaturas: asigs.length > 0 ? asigs.join(",") : undefined,
       page,
-      limit
+      limit: 10
     },
   });
 };

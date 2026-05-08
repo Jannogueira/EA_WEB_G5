@@ -3,7 +3,7 @@ import gradoService from "../services/grado";
 import type { Asignatura } from "../models/asignatura";
 import type { Usuario } from "../models/usuario";
 
-export default function useAsignaturasByGrado(gradoId: string, usuario: Usuario | null) {
+export default function useAsignatura(gradoId: string, usuario: Usuario | null) {
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
