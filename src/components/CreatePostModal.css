@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
   z-index: 3000;
   display: flex;
@@ -13,13 +13,19 @@
   animation: fadeIn 0.3s ease-out;
 }
 
+[data-theme='dark'] .create-modal-overlay {
+  background: rgba(0, 0, 0, 0.85);
+}
+
 .create-modal-content {
   width: 90%;
   max-width: 800px;
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
   border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  box-shadow: var(--shadow-main);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -27,7 +33,7 @@
 
 .modal-header-modern {
   padding: 16px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--divider);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -37,20 +43,24 @@
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
-  color: white;
+  color: var(--text-main);
 }
 
 .close-x-btn {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 1.25rem;
   cursor: pointer;
   padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
 }
 
 .close-x-btn:hover {
-  color: white;
+  color: var(--text-main);
 }
 
 .create-post-form {
@@ -61,11 +71,11 @@
 /* --- Dual Panel Layout --- */
 .preview-container {
   flex: 1.2;
-  background: #020617;
+  background: var(--bg-input);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid var(--divider);
   min-height: 400px;
 }
 
@@ -81,14 +91,15 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: #475569;
+  color: var(--text-muted);
   padding: 40px;
   transition: all 0.3s ease;
+  text-align: center;
 }
 
 .img-placeholder svg {
-  color: #6366f1;
-  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.3));
+  color: var(--accent-purple);
+  filter: drop-shadow(0 0 8px var(--accent-glow));
 }
 
 .img-placeholder p {
@@ -105,7 +116,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: rgba(15, 23, 42, 0.5);
+  background: transparent;
 }
 
 .form-group-modern {
@@ -118,18 +129,18 @@
 .form-group-modern label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .form-group-modern input, 
 .form-group-modern textarea {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 14px;
-  color: white;
+  color: var(--text-main);
   font-size: 0.95rem;
   font-family: inherit;
   outline: none;
@@ -140,8 +151,8 @@
 
 .form-group-modern input:focus,
 .form-group-modern textarea:focus {
-  border-color: #a78bfa;
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .publish-btn-premium {
@@ -154,7 +165,7 @@
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 10px 20px var(--accent-glow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -164,7 +175,7 @@
 
 .publish-btn-premium:hover:not(:disabled) {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 15px 30px var(--accent-glow);
   filter: brightness(1.1);
 }
 
@@ -188,7 +199,7 @@
   .preview-container {
     height: 300px;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--divider);
   }
   
   .create-modal-content {
@@ -203,8 +214,8 @@
 }
 
 .preview-container.clickable:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: scale(1.02);
+    background: var(--bg-card);
+    transform: scale(1.01);
 }
 
 .animate-spin {

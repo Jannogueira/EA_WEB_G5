@@ -71,7 +71,7 @@
 }
 
 .avatar-placeholder {
-  background: var(--accent-purple);
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   display: flex;
   align-items: center;
   justify-content: center;

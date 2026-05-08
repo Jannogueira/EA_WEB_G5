@@ -61,7 +61,11 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
             className="profile-initial-trigger" 
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {userInitial}
+            {usuario?.avatarUrl ? (
+              <img src={usuario.avatarUrl} alt={usuario.nombre} className="nav-avatar-img" />
+            ) : (
+              userInitial
+            )}
           </div>
 
           {menuOpen && (
