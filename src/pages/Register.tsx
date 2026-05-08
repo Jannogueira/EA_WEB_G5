@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import Alert from '../components/Alert';
+import type { AlertState } from '../components/Alert';
 import './Register.css';
 
 const Register = () => {
@@ -12,8 +14,11 @@ const Register = () => {
     password: ''
   });
 
+  const [alert, setAlert] = useState<AlertState | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -25,18 +30,33 @@ const Register = () => {
 
     try {
       await register(formData);
+            
     } catch (error: any) {
       const msg =
         error.response?.data?.message ||
         error.message ||
-        "Error al registrar el usuario";
+        'Error al contactar con el servidor';
 
-      alert("Fallo el registro: " + msg);
+      setAlert({
+        type: 'error',
+        title: 'Fallo de registro',
+        message: msg
+      });
     }
   };
 
   return (
     <div className="register-page">
+
+      {alert && (
+        <Alert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
+
       <div className="register-container">
         <h2 className="register-title">Únete a Univy</h2>
         <p className="register-subtitle">

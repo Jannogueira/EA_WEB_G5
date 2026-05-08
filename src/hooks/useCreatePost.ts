@@ -11,7 +11,6 @@ export default function useCreatePost() {
       const res = await PostService.createPost(data);
       return res.data;
     } catch (error) {
-      console.error("Error creating post:", error);
       throw error;
     } finally {
       setLoading(false);

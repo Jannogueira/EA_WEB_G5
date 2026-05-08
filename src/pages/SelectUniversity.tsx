@@ -6,6 +6,8 @@ import gradoService from '../services/grado';
 import usuarioService from '../services/usuario';
 
 import AsignaturasModal from '../components/AsignaturasModal';
+import Alert from '../components/Alert';
+import type { AlertState } from '../components/Alert';
 
 import type { Universidad } from '../models/universidad';
 import type { Grado } from '../models/grado';
@@ -26,8 +28,9 @@ const SelectUniversity = () => {
 
   const [user, setUser] = useState<Usuario | null>(null);
 
-  // modal asignaturas
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [alert, setAlert] = useState<AlertState | null>(null);
 
   useEffect(() => {
     const userJson = localStorage.getItem('usuario');
@@ -45,8 +48,16 @@ const SelectUniversity = () => {
         const { request } = universidadService.getAll({ limit: 100 });
         const res = await request;
         setUniversidades(res.data.docs || []);
-      } catch (err) {
-        console.error(err);
+      } catch (error: any) {
+        const errorMsg =
+        error.response?.data?.message ||
+        "Error al conectar con el servidor";
+
+        setAlert({
+          type: 'error',
+          title: 'Error',
+          message: errorMsg
+        });
       }
     };
 
@@ -64,8 +75,16 @@ const SelectUniversity = () => {
       try {
         const res = await gradoService.getByUniversidad(selectedUni);
         setGrados(res.data);
-      } catch (err) {
-        console.error(err);
+      } catch (error: any) {
+        const errorMsg =
+        error.response?.data?.message ||
+        "Error al conectar con el servidor";
+
+        setAlert({
+          type: 'error',
+          title: 'Error',
+          message: errorMsg
+        });
       }
     };
 
@@ -95,11 +114,27 @@ const SelectUniversity = () => {
       localStorage.setItem('usuario', JSON.stringify(updatedUser));
       setUser(updatedUser);
 
-      navigate('/home');
+      setAlert({
+        type: 'success',
+        title: 'Perfil actualizado',
+        message: 'Tu información se ha guardado correctamente'
+      });
 
-    } catch (error) {
-      console.error(error);
-      alert("Error al guardar la información");
+      setTimeout(() => {
+        navigate('/home');
+      }, 1200);
+
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message ||
+        "Error al conectar con el servidor";
+
+      setAlert({
+        type: 'error',
+        title: 'Error al guardar',
+        message: errorMsg
+      });
+
     } finally {
       setLoading(false);
     }
@@ -107,6 +142,17 @@ const SelectUniversity = () => {
 
   return (
     <div className="register-page">
+
+      {/* GLOBAL CENTER ALERT */}
+      {alert && (
+        <Alert
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
+
       <div className="register-container">
 
         <h2 className="register-title">
@@ -157,20 +203,20 @@ const SelectUniversity = () => {
             </select>
           </div>
 
-          {/* BOTÓN ASIGNATURAS */}
+          {/* ASIGNATURAS */}
           <div className="form-group">
             <label>Asignaturas</label>
-          <button
-            type="button"
-            className="edit-btn-premium secondary"
-            disabled={!selectedGrado || loading}
-            onClick={() => setModalOpen(true)}
-          >
-            Selecciona asignaturas
-          </button>
+            <button
+              type="button"
+              className="edit-btn-premium secondary"
+              disabled={!selectedGrado || loading}
+              onClick={() => setModalOpen(true)}
+            >
+              Selecciona asignaturas
+            </button>
           </div>
 
-          {/* SUBMIT FINAL */}
+          {/* SUBMIT */}
           <button
             type="submit"
             className="register-btn"
@@ -182,7 +228,7 @@ const SelectUniversity = () => {
         </form>
       </div>
 
-      {/* MODAL ASIGNATURAS */}
+      {/* MODAL */}
       <AsignaturasModal
         gradoId={selectedGrado}
         open={modalOpen}

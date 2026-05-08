@@ -32,7 +32,7 @@ const logout = async () => {
     // 1. Avisamos al backend para que destruya la cookie del refresh token
     await apiClient.post('/auth/logout');
   } catch (error) {
-    console.error('Error al cerrar sesión en el servidor:', error);
+    //Error manejado en la página
   } finally {
     // 2. Pase lo que pase, limpiamos el Access Token, Refresh Token y el Usuario del frontend
     localStorage.removeItem('accessToken');

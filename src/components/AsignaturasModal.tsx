@@ -3,6 +3,8 @@ import useUser from "../hooks/useUser";
 import useAsignatura from "../hooks/useAsignatura";
 import usuarioService from "../services/usuario";
 import type { Usuario } from "../models/usuario";
+import Alert from "./Alert";
+import type { AlertState } from "./Alert";
 
 import "./ExploreFilterModal.css";
 
@@ -26,10 +28,12 @@ const AsignaturasModal: React.FC<Props> = ({
     selected,
     toggle,
     loading,
-    error
+    error = "Error al cargar asignaturas"
   } = useAsignatura(gradoId, usuario);
 
   const [saving, setSaving] = useState(false);
+
+  const [alert, setAlert] = useState<AlertState | null>(null);
 
   if (!open || !usuario) return null;
 
@@ -48,15 +52,33 @@ const AsignaturasModal: React.FC<Props> = ({
       onUpdated(updated);
       onClose();
 
-    } catch (err) {
-      console.error("Error guardando asignaturas:", err);
-    } finally {
-      setSaving(false);
+      } catch (error: any) {
+          const msg =
+          error.response?.data?.message ||
+          error.message ||
+          'Error al contactar con el servidor';
+
+          setAlert({
+              type: 'error',
+              title: 'Error al guardar asignaturas',
+              message: msg
+          });
+      } finally {
+    setSaving(false);
     }
   };
 
   return (
     <div className="filter-overlay">
+     {alert && (
+        <Alert
+      type={alert.type}
+      title={alert.title}
+      message={alert.message}
+      onClose={() => setAlert(null)}
+      />
+    )}
+
       <div className="filter-modal">
 
         <h2>Selecciona tus asignaturas</h2>

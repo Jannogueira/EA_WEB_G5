@@ -13,6 +13,8 @@ import UserCard from "../components/UserCard";
 import { Search, Compass } from "lucide-react";
 import ExploreFilter from "../components/ExploreFilterModal";
 import { useTranslation } from "react-i18next";
+import type { AlertState } from "../components/Alert";
+import Alert from "../components/Alert";
 
 const Explore: React.FC = () => {
     const { t } = useTranslation();
@@ -33,6 +35,8 @@ const Explore: React.FC = () => {
     const [grados, setGrados] = useState<Grado[]>([]);
     const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
 
+    const [alert, setAlert] = useState<AlertState | null>(null);
+
     const observerTarget = useRef(null);
 
     useEffect(() => {
@@ -44,11 +48,19 @@ const Explore: React.FC = () => {
                 ]);
                 setGrados(gRes.data);
                 setAsignaturas(aRes.data);
-            } catch (err) {
-                console.error("Error fetching reference data", err);
-            }
-        };
-        fetchRefs();
+        } catch (error: any) {
+            const msg =
+            error.response?.data?.message ||
+            error.message ||
+            'Error al contactar con el servidor';
+
+            setAlert({
+                type: 'error',
+                title: 'Error de carga',
+                message: msg
+            });
+        }
+    };fetchRefs();
     }, []);
 
     const performSearch = async (pageNum: number, isNewSearch: boolean = false) => {
@@ -70,8 +82,17 @@ const Explore: React.FC = () => {
             setHasNextPage(more);
             setPage(pageNum);
             if (isNewSearch) setHasTyped(true);
-        } catch (err) {
-            console.error(err);
+        } catch (error: any) {
+            const msg =
+            error.response?.data?.message ||
+            error.message ||
+            'Error al contactar con el servidor';
+
+            setAlert({
+                type: 'error',
+                title: 'Error en la búsqueda',
+                message: msg
+            });
         } finally {
             setLoading(false);
         }
@@ -110,6 +131,16 @@ const Explore: React.FC = () => {
 
     return (
         <div className="home-wrapper">
+
+            {alert && (
+                <Alert
+                type={alert.type}
+                title={alert.title}
+                message={alert.message}
+                onClose={() => setAlert(null)}
+                />
+            )}
+
             <Navbar usuario={usuario || undefined} />
             <div className="main-layout">
                 <Sidebar />

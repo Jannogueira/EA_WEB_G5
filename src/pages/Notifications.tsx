@@ -10,6 +10,9 @@ import { useSocket } from "../context/SocketContext";
 import { Heart, MessageCircle, UserPlus, Clock, Check, X, Bell, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import Alert from '../components/Alert';
+import type { AlertState } from '../components/Alert';
+
 
 const Notifications: React.FC = () => {
     const { usuario } = useUser();
@@ -17,6 +20,7 @@ const Notifications: React.FC = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(true);
     const [processingId, setProcessingId] = useState<string | null>(null);
+    const [alert, setAlert] = useState<AlertState | null>(null);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -30,8 +34,17 @@ const Notifications: React.FC = () => {
                 setNotifications(uniqueNotifications);
                 setNotificationCount(0); // Reset count when viewing
                 await notificationService.markAllAsRead();
-            } catch (err: unknown) {
-                // Error fetching notifications
+            } catch (error: any) {
+                const errorMsg = 
+                error.response?.data?.message ||
+                "Error al conectar con el servidor";
+                
+                setAlert({
+                    type: 'error',
+                    title: 'Error al cargar notificaciones',
+                    message: errorMsg
+                });
+
             } finally {
                 setLoading(false);
             }
@@ -47,8 +60,17 @@ const Notifications: React.FC = () => {
             await acceptFollowRequest(followerId);
             // Sincronización tras 200 OK
             setNotifications(prev => prev.filter(n => n._id !== notificationId));
-        } catch (err: unknown) {
-            // Silencioso según requerimiento
+        } catch (error: any) {
+                const errorMsg = 
+                error.response?.data?.message ||
+                "Error al conectar con el servidor";
+                
+                setAlert({
+                    type: 'error',
+                    title: 'Acción fallida',
+                    message: errorMsg
+                });
+
         } finally {
             setProcessingId(null);
         }
@@ -62,8 +84,16 @@ const Notifications: React.FC = () => {
             await rejectFollowRequest(followerId);
             // Sincronización tras 200 OK
             setNotifications(prev => prev.filter(n => n._id !== notificationId));
-        } catch (err: unknown) {
-            // Silencioso según requerimiento
+        } catch (error: any) {
+                const errorMsg = 
+                error.response?.data?.message ||
+                "Error al conectar con el servidor";
+                
+                setAlert({
+                    type: 'error',
+                    title: 'Acción fallida',
+                    message: errorMsg
+                });
         } finally {
             setProcessingId(null);
         }
@@ -93,6 +123,16 @@ const Notifications: React.FC = () => {
 
     return (
         <div className="notifications-wrapper">
+
+            {alert && (
+                <Alert
+                type={alert.type}
+                title={alert.title}
+                message={alert.message}
+                onClose={() => setAlert(null)}
+                />
+            )}
+
             <Navbar usuario={usuario || undefined} />
 
             <div className="main-layout">
