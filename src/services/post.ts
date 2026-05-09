@@ -41,6 +41,12 @@ class PostService {
     return apiClient.get<Post>(`${this.endpoint}/${postId}`);
   }
 
+  getDiscoveryFeed() {
+  return apiClient.get<{ docs: Post[]; hasNextPage: boolean }>(
+    `${this.endpoint}/discovery`
+  );
+}
+
 }
 
 export default new PostService();
