@@ -69,6 +69,7 @@
     "empty_subtitle": "Las interacciones de otros usuarios aparecerán aquí.",
     "type": {
       "like": "le ha dado me gusta a tu publicación.",
+      "like_comment": "le ha dado me gusta a tu comentario.",
       "comment": "ha comentado: ",
       "follow": "ha empezado a seguirte.",
       "follow_request": "quiere seguirte.",
@@ -87,7 +88,8 @@
   },
   "postcard": {
     "comment_placeholder": "Escribe un comentario...",
-    "send_comment": "Enviar comentario"
+    "send_comment": "Enviar comentario",
+    "like_comment": "Me gusta"
   },
   "messages": {
     "search": "Buscar chat...",

@@ -9,7 +9,7 @@ export interface Notification {
         nombre: string;
         avatarUrl?: string;
     };
-    type: 'like' | 'comment' | 'follow' | 'follow_request' | 'follow_accepted';
+    type: 'like' | 'like_comment' | 'comment' | 'follow' | 'follow_request' | 'follow_accepted';
     post?: {
         _id: string;
         imageUrl: string;

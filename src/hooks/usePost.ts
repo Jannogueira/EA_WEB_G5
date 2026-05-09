@@ -16,7 +16,10 @@ export default function usePost(initialPost: Post) {
   useEffect(() => {
     setPost({
       ...initialPost,
-      comments: initialPost.comments ?? [],
+      comments: (initialPost.comments ?? []).map(c => ({
+        ...c,
+        likes: c.likes ?? []
+      })),
       likes: initialPost.likes ?? [],
     });
   }, [initialPost]);
@@ -48,7 +51,7 @@ export default function usePost(initialPost: Post) {
 
       setPost(prev => ({
         ...prev,
-        comments: [...prev.comments, res.data],
+        comments: [...prev.comments, { ...res.data, likes: [] }],
       }));
     } catch (err) {
       setError("Error al crear comentario");
@@ -57,9 +60,25 @@ export default function usePost(initialPost: Post) {
     }
   };
 
+  const likeComment = async (commentId: string) => {
+    try {
+      const res = await CommentService.like(commentId);
+      // Backend returns the updated comment
+      setPost(prev => ({
+        ...prev,
+        comments: prev.comments.map(c => 
+          c._id === commentId ? { ...c, likes: res.data.likes } : c
+        ),
+      }));
+    } catch (err) {
+      setError("Error al dar like al comentario");
+    }
+  };
+
   return {
     post,
     likePost,
+    likeComment,
     addComment,
     loadingComment,
     error,

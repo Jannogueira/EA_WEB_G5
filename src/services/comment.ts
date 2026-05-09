@@ -15,11 +15,15 @@ class CommentService {
   }
 
   create(data: CommentData) {
-    return apiClient.post("/comments", data);
+    return apiClient.post<Comment>("/comments", data);
   }
 
   delete(commentId: string) {
     return apiClient.delete(`/comments/${commentId}`);
+  }
+
+  like(commentId: string) {
+    return apiClient.patch<Comment>(`/comments/${commentId}/like`);
   }
 }
 

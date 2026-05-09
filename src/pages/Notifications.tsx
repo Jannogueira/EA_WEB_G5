@@ -140,7 +140,8 @@ const Notifications: React.FC = () => {
 
     const getIcon = (type: string) => {
         switch (type) {
-            case "like": return <Heart size={16} fill="#ef4444" color="#ef4444" />;
+            case "like":
+            case "like_comment": return <Heart size={16} fill="#ef4444" color="#ef4444" />;
             case "comment": return <MessageCircle size={16} fill="#3b82f6" color="#3b82f6" />;
             case "follow":
             case "follow_request": return <UserPlus size={16} color="#a78bfa" />;
@@ -152,6 +153,7 @@ const Notifications: React.FC = () => {
     const getMessage = (n: Notification) => {
         switch (n.type) {
             case "like": return t('notifications.type.like');
+            case "like_comment": return t('notifications.type.like_comment');
             case "comment": return t('notifications.type.comment') + (n.post?.caption || "");
             case "follow": return t('notifications.type.follow');
             case "follow_request": return t('notifications.type.follow_request');

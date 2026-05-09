@@ -69,6 +69,7 @@
     "empty_subtitle": "Les interaccions d'altres usuaris apareixeran aquí.",
     "type": {
       "like": "t'ha donat m'agrada a la teva publicació.",
+      "like_comment": "t'ha donat m'agrada al teu comentari.",
       "comment": "ha comentat: ",
       "follow": "ha començat a seguir-te.",
       "follow_request": "vol seguir-te.",
@@ -87,7 +88,8 @@
   },
   "postcard": {
     "comment_placeholder": "Escriu un comentari...",
-    "send_comment": "Enviar comentari"
+    "send_comment": "Enviar comentari",
+    "like_comment": "M'agrada"
   },
   "messages": {
     "search": "Cercar xat...",
