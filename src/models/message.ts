@@ -1,3 +1,5 @@
+import type { Post } from './post';
+
 export interface Message {
   _id: string;
   remitente: {
@@ -11,9 +13,14 @@ export interface Message {
     avatarUrl?: string;
   };
   contenido: string;
+  post?: Post;
   leido: boolean;
   eliminadoParaTodos?: boolean;
   createdAt: string;
+  reactions?: Array<{
+    usuario: string;
+    emoji: string;
+  }>;
 }
 
 export interface ChatContact {

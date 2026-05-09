@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Messages.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import useChat from "../hooks/useChat";
 import { useSocket } from "../context/SocketContext";
-import { Send, User, MessageCircle, Search, X, Trash2 } from "lucide-react";
+import { Send, User, MessageCircle, Search, X, Trash2, Smile } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ChatContact } from "../models/message";
 
 const Messages: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { usuario } = useUser();
   const { unreadCounts, markAsRead } = useSocket();
   const {
@@ -23,10 +25,12 @@ const Messages: React.FC = () => {
     sendMessage,
     emitTyping,
     deleteMessage,
+    reactToMessage,
   } = useChat(usuario?._id || "");
 
   const [inputMessage, setInputMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeReactionPicker, setActiveReactionPicker] = useState<string | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; messageId: string; isOwn: boolean }>({
     isOpen: false,
     messageId: "",
@@ -127,16 +131,84 @@ const Messages: React.FC = () => {
                         key={msg._id}
                         className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
                       >
-                        <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""}`}>
-                          {msg.eliminadoParaTodos ? t('messages.deleted') : msg.contenido}
+                        <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""} ${msg.post ? "post-msg" : ""}`}>
+                          {msg.eliminadoParaTodos ? (
+                            t('messages.deleted')
+                          ) : msg.post ? (
+                            <div className="shared-post-card" onClick={() => navigate(`/profile/${msg.post?.usuario?._id}`)}>
+                              <div className="shared-post-header">
+                                <img src={msg.post.usuario?.avatarUrl} alt="" className="shared-post-avatar" />
+                                <span>{msg.post.usuario?.nombre}</span>
+                              </div>
+                              {msg.post.imageUrl && (
+                                <div className="shared-post-image">
+                                  <img src={msg.post.imageUrl} alt="" />
+                                </div>
+                              )}
+                              <div className="shared-post-caption">
+                                {msg.post.caption}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className={msg.contenido.includes('privada') ? 'private-msg-text' : ''}>
+                              {msg.contenido}
+                            </div>
+                          )}
+                          
+                          {/* REACCIONES ACTIVAS */}
+                          {msg.reactions && msg.reactions.length > 0 && !msg.eliminadoParaTodos && (
+                            <div className="message-reactions-container">
+                                {Object.entries(
+                                  msg.reactions.reduce((acc: any, curr) => {
+                                    acc[curr.emoji] = (acc[curr.emoji] || 0) + 1;
+                                    return acc;
+                                  }, {})
+                                ).map(([emoji, count]: any) => (
+                                  <div 
+                                    key={emoji} 
+                                    className={`reaction-badge ${msg.reactions?.some(r => r.usuario === usuario?._id && r.emoji === emoji) ? 'user-reacted' : ''}`}
+                                    onClick={() => reactToMessage(msg._id, emoji)}
+                                  >
+                                    <span>{emoji}</span>
+                                    {count > 1 && <span className="reaction-count">{count}</span>}
+                                  </div>
+                                ))}
+                            </div>
+                          )}
                           
                           {!msg.eliminadoParaTodos && (
-                            <button 
-                              className="msg-delete-btn" 
-                              onClick={() => handleDeleteClick(msg._id, msg.remitente._id === usuario?._id)}
-                            >
-                              <Trash2 size={14} />
-                            </button>
+                            <div className="message-hover-actions">
+                              <button 
+                                className="msg-action-btn"
+                                onClick={() => setActiveReactionPicker(activeReactionPicker === msg._id ? null : msg._id)}
+                              >
+                                <Smile size={14} />
+                              </button>
+
+                              <button 
+                                className="msg-action-btn" 
+                                onClick={() => handleDeleteClick(msg._id, msg.remitente._id === usuario?._id)}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+
+                              {/* PICKER DE EMOJIS */}
+                              {activeReactionPicker === msg._id && (
+                                <div className="emoji-mini-picker">
+                                  {['❤️', '😂', '😮', '😢', '🔥', '👍'].map(emoji => (
+                                    <span 
+                                      key={emoji} 
+                                      onClick={() => {
+                                        reactToMessage(msg._id, emoji);
+                                        setActiveReactionPicker(null);
+                                      }}
+                                    >
+                                      {emoji}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           )}
                         </div>
                         <span className="message-time">

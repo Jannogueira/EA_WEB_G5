@@ -6,13 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import SharePostModal from "./SharePostModal";
+import PostDetailModal from "./PostDetailModal";
+
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { post, likePost, likeComment, addComment, loadingComment, error } = usePost(postProp);
 
-  const [showComments, setShowComments] = useState(false);
-  const [commentText, setCommentText] = useState("");
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const currentUserId = (() => {
     try {
@@ -50,7 +53,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
       </div>
 
       {post.imageUrl && (
-        <div className="post-image-container">
+        <div className="post-image-container" onClick={() => setShowDetailModal(true)} style={{ cursor: "pointer" }}>
           <img
             src={post.imageUrl}
             alt="Post content"
@@ -59,97 +62,80 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         </div>
       )}
 
-      <div className="post-caption">
-        <strong>{post.usuario?.nombre || "Usuario"}</strong>{" "}
-        {post.caption}
-      </div>
-
       <div className="post-content">
         <div className="post-actions">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              likePost();
-            }} 
-            className="like-button" 
-            title={t('postcard.like_post')}
-          >
-            <Heart size={22} className={postLiked ? "liked" : ""} />
-            <span>{post.likes?.length || 0}</span>
-          </button>
+          <div className="main-actions">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                likePost();
+              }} 
+              className="like-button" 
+              title={t('postcard.like_post')}
+            >
+              <Heart size={24} className={postLiked ? "liked" : ""} fill={postLiked ? "currentColor" : "none"} />
+            </button>
 
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowComments(!showComments);
-            }}
-            className="comment-button"
-          >
-            <MessageCircle size={20} />
-            <span>{post.comments?.length || 0}</span>
-          </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDetailModal(true);
+              }}
+              className="comment-button"
+            >
+              <MessageCircle size={24} />
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowShareModal(true);
+              }}
+              className="share-btn-action"
+              title={t('postcard.share')}
+            >
+              <Send size={24} />
+            </button>
+          </div>
         </div>
 
-        {error && <p className="error-message" style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}>{error}</p>}
+        <div className="post-likes-count">
+            {post.likes?.length || 0} {t('postcard.likes')}
+        </div>
 
-        {showComments && (
-          <div className="post-comments">
-            {post.comments?.map((c) => {
-              const isCommentLiked = currentUserId && c.likes?.some((id: any) => (id._id || id) === currentUserId);
-              return (
-                <div key={c._id} className="comment-item-row">
-                  <p className="comment-item">
-                    <strong>
-                      {typeof c.usuario === "object"
-                        ? c.usuario.nombre
-                        : "Usuario"}
-                    </strong>{" "}
-                    {c.texto}
-                  </p>
-                  <button 
-                    className={`comment-like-btn ${isCommentLiked ? 'liked' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      likeComment(c._id);
-                    }}
-                    title={t('postcard.like_comment')}
-                  >
-                    <Heart size={14} className={isCommentLiked ? "liked" : ""} />
-                    {c.likes && c.likes.length > 0 && <span>{c.likes.length}</span>}
-                  </button>
-                </div>
-              );
-            })}
+        <div className="post-caption">
+            <span className="author-name-inline">{post.usuario?.nombre}</span>{" "}
+            {post.caption}
+        </div>
 
-            <div className="comment-input-area" onClick={(e) => e.stopPropagation()}>
-              <input
-                type="text"
-                value={commentText}
-                placeholder={t('postcard.comment_placeholder')}
-                onChange={(e) => setCommentText(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    addComment(commentText);
-                    setCommentText("");
-                  }
-                }}
-              />
-
-              <button
-                onClick={() => {
-                  addComment(commentText);
-                  setCommentText("");
-                }}
-                disabled={loadingComment || !commentText.trim()}
-                className="send-comment-btn"
-                title={t('postcard.send_comment')}
-              >
-                {loadingComment ? "..." : <Send size={18} />}
-              </button>
-            </div>
-          </div>
+        {post.comments && post.comments.length > 0 && (
+            <button className="view-comments-link" onClick={() => setShowDetailModal(true)}>
+                {t('post_detail.view_more', { count: post.comments.length })}
+            </button>
         )}
+
+        {error && <p className="error-message" style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}>{error}</p>}
       </div>
+
+      {showShareModal && (
+        <SharePostModal 
+          postId={post._id} 
+          onClose={() => setShowShareModal(false)} 
+        />
+      )}
+
+      {showDetailModal && (
+          <PostDetailModal 
+            post={post}
+            currentUserId={currentUserId}
+            onClose={() => setShowDetailModal(false)}
+            onLike={likePost}
+            onLikeComment={likeComment}
+            onAddComment={addComment}
+            loadingComment={loadingComment}
+            onShare={() => setShowShareModal(true)}
+          />
+      )}
     </div>
   );
 };

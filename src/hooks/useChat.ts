@@ -21,7 +21,6 @@ export default function useChat(currentUserId: string) {
     if (!socket) return;
 
     const handleReceiveMessage = (msg: Message) => {
-      // Solo añadir si es de la conversación activa o si yo soy el remitente (confirmación)
       if (activeContact && (msg.remitente._id === activeContact._id || msg.remitente._id === currentUserId)) {
         setMessages(prev => [...prev, msg]);
       }
@@ -38,8 +37,6 @@ export default function useChat(currentUserId: string) {
     const handleTyping = ({ userId }: { userId: string }) => {
       if (activeContact && userId === activeContact._id) {
         setTypingUserId(userId);
-        
-        // Limpiar el indicador automáticamente después de 3 segundos de inactividad
         clearTimeout(typingTimeout);
         typingTimeout = setTimeout(() => {
           setTypingUserId(null);
@@ -58,11 +55,14 @@ export default function useChat(currentUserId: string) {
           if (type === 'everyone') {
             return { ...msg, contenido: 'El mensaje ha sido eliminado', eliminadoParaTodos: true };
           }
-          // Si es 'me', el backend ya filtra, pero si estamos en la misma sesión lo ocultamos
           return { ...msg, _hidden: true };
         }
         return msg;
       }).filter(msg => !(msg as any)._hidden));
+    };
+
+    const handleMessageUpdated = (msg: Message) => {
+      setMessages(prev => prev.map(m => m._id === msg._id ? msg : m));
     };
     
     socket.on('receive_message', handleReceiveMessage);
@@ -70,6 +70,7 @@ export default function useChat(currentUserId: string) {
     socket.on('user_typing', handleTyping);
     socket.on('user_stop_typing', handleStopTyping);
     socket.on('messages_deleted', handleMessagesDeleted);
+    socket.on('message_updated', handleMessageUpdated);
 
     return () => {
       socket.off('receive_message', handleReceiveMessage);
@@ -77,6 +78,7 @@ export default function useChat(currentUserId: string) {
       socket.off('user_typing', handleTyping);
       socket.off('user_stop_typing', handleStopTyping);
       socket.off('messages_deleted', handleMessagesDeleted);
+      socket.off('message_updated', handleMessageUpdated);
       clearTimeout(typingTimeout);
     };
   }, [socket, activeContact, currentUserId]);
@@ -90,7 +92,7 @@ export default function useChat(currentUserId: string) {
       const res = await getConversation(contact._id);
       setMessages(res.data);
     } catch (err) {
-      // Error manejado en la página
+      // Error
     } finally {
       setLoadingHistory(false);
     }
@@ -121,6 +123,16 @@ export default function useChat(currentUserId: string) {
     });
   }, [socket, activeContact]);
 
+  // Reaccionar a un mensaje
+  const reactToMessage = useCallback((messageId: string, emoji: string) => {
+    if (!socket || !activeContact) return;
+    socket.emit('react_message', {
+      messageId,
+      emoji,
+      destinatarioId: activeContact._id
+    });
+  }, [socket, activeContact]);
+
   return {
     contacts,
     activeContact,
@@ -131,5 +143,6 @@ export default function useChat(currentUserId: string) {
     sendMessage,
     emitTyping,
     deleteMessage,
+    reactToMessage,
   };
 }

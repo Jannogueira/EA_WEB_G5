@@ -89,7 +89,10 @@
   "postcard": {
     "comment_placeholder": "Escriu un comentari...",
     "send_comment": "Enviar comentari",
-    "like_comment": "M'agrada"
+    "like_comment": "M'agrada",
+    "likes": "M'agrada",
+    "share": "Compartir",
+    "like_post": "M'agrada"
   },
   "messages": {
     "search": "Cercar xat...",
@@ -103,7 +106,18 @@
     "delete_me": "Eliminar per a mi",
     "delete_everyone": "Eliminar per a tothom",
     "cancel": "Cancel·lar",
-    "deleted": "El missatge ha estat eliminat"
+    "deleted": "El missatge ha estat eliminat",
+    "private_post": "Aquesta publicació és privada i no la pots veure."
+  },
+  "share": {
+    "title": "Enviar publicació",
+    "send": "Enviar",
+    "success": "Enviat amb èxit!",
+    "empty": "No s'han trobat amics"
+  },
+  "post_detail": {
+    "reply": "Respondre",
+    "view_more": "Veure els {{count}} comentaris"
   },
   "navbar": {
     "loading": "Carregant...",

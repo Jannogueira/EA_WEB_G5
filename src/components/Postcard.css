@@ -1,218 +1,129 @@
 .post-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 24px;
-  width: 100%;
-  max-width: 650px;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin-bottom: 32px;
-  box-shadow: var(--shadow-main);
-}
-
-.post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 48px var(--accent-glow);
-  border-color: var(--accent-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 24px;
+    margin-bottom: 32px;
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: var(--shadow-main);
 }
 
 .post-header {
-  display: flex;
-  align-items: center;
-  padding: 18px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid var(--divider);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .author-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  margin-right: 14px;
-  object-fit: cover;
-  border: 1.5px solid var(--accent-purple);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid var(--accent-border);
+    padding: 2px;
+    background: var(--bg-input);
 }
 
 .author-name {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--text-main);
-}
-
-.author-uni {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
 }
 
 .post-image-container {
-  width: 100%;
-  height: auto;
-  overflow: hidden;
-  position: relative;
+    width: 100%;
+    background: #000;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
 }
 
 .post-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  /* Eliminado object-fit: cover para evitar recortes */
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .post-content {
-  padding: 20px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .post-actions {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 4px;
 }
 
-.post-actions button {
-  background: var(--bg-input);
-  border: 1px solid var(--border-subtle);
-  cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.main-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
 
-.post-actions button .liked {
-  color: #ef4444;
-  fill: #ef4444;
+.like-button, .comment-button, .share-btn-action {
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
 }
 
-.post-actions button:hover {
-  background: var(--accent-bg);
-  border-color: var(--accent-purple);
-  transform: scale(1.05);
+.like-button:hover, .comment-button:hover, .share-btn-action:hover {
+    opacity: 0.6;
+}
+
+.like-button .liked {
+    color: #ed4956;
+}
+
+.post-likes-count {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
 }
 
 .post-caption {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-main);
-  padding-top: 10px;
-  padding-left: 10px;
-  text-align: left;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    line-height: 1.4;
 }
 
-.post-caption strong {
-  color: var(--text-main);
-  margin-right: 6px;
+.author-name-inline {
+    font-weight: 600;
+    margin-right: 4px;
 }
 
-.post-comments {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--divider);
-  text-align: left;
+.view-comments-link {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    width: fit-content;
 }
 
-.comment-item-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 10px;
+.view-comments-link:hover {
+    color: var(--text-main);
 }
 
-.comment-item {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  padding-left: 10px;
-  margin: 0;
-  flex: 1;
-}
-
-.comment-item strong {
-  color: var(--text-main);
-  margin-right: 6px;
-}
-
-.comment-like-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px;
-  transition: all 0.2s;
-}
-
-.comment-like-btn:hover {
-  color: var(--accent-purple);
-}
-
-.comment-like-btn .liked {
-  color: #ef4444;
-  fill: #ef4444;
-}
-
-.comment-like-btn span {
-  font-size: 0.75rem;
-}
-
-.comment-input-area {
-  margin-top: 16px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.comment-input-area input {
-  flex: 1;
-  background: var(--bg-input);
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 12px 16px;
-  outline: none;
-  color: var(--text-main);
-  font-size: 0.9rem;
-}
-
-.comment-input-area input:focus {
-  border-color: var(--accent-purple);
-}
-
-.comment-input-area input::placeholder {
-  color: var(--text-muted);
-}
-
-.send-comment-btn {
-  background: var(--accent-purple);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.send-comment-btn:hover:not(:disabled) {
-  filter: brightness(1.1);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 12px var(--accent-glow);
-}
-
-.send-comment-btn:disabled {
-  background: var(--bg-input);
-  color: var(--text-muted);
-  cursor: not-allowed;
+.error-message {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 5px;
 }
