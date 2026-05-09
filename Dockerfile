@@ -9,7 +9,7 @@ RUN npm ci --silent
 
 # Copy source and build
 COPY . .
-RUN npm run build
+RUN npx vite build
 
 # Production stage: serve with nginx
 FROM nginx:stable-alpine AS production
