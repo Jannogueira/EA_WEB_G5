@@ -102,7 +102,10 @@
 }
 
 .register-form input:focus,
-.select-input:focus,
+.select-input:focus {
+  border-color: var(--accent-purple);
+}
+
 .edit-btn-premium:hover {
   border-color: var(--accent-purple);
   box-shadow: 0 0 0 4px var(--accent-glow);

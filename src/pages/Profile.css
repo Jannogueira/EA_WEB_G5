@@ -332,6 +332,19 @@
   overflow: hidden;
 }
 
+.post-modal-container .post-card {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.post-modal-container .post-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .modal-close-x {
   position: absolute;
   top: 20px;

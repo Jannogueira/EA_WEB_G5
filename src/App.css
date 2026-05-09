@@ -39,7 +39,6 @@ input::placeholder {
 
 input:focus {
   border-color: var(--accent-purple);
-  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 /* --- BUTTONS --- */

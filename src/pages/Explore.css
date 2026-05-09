@@ -24,7 +24,6 @@
 .search-box-wrapper:focus-within {
     background: var(--bg-input);
     border-color: var(--accent-purple);
-    box-shadow: 0 10px 40px var(--accent-glow);
 }
 
 .search-icon-inside {

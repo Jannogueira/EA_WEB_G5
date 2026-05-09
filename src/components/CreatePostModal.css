@@ -153,7 +153,6 @@
 .form-group-modern input:focus,
 .form-group-modern textarea:focus {
   border-color: var(--accent-purple);
-  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .publish-btn-premium {

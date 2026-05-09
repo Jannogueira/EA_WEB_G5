@@ -125,7 +125,10 @@
 }
 
 .form-group-modern input:focus,
-.form-group-modern textarea:focus,
+.form-group-modern textarea:focus {
+  border-color: var(--accent-purple);
+}
+
 .edit-profile-btn-premium:hover {
   border-color: var(--accent-purple);
   box-shadow: 0 0 10px var(--accent-glow);
