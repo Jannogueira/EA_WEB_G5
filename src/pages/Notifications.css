@@ -192,11 +192,30 @@
 }
 
 .notification-post-preview {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--border-subtle);
+  border: 1.5px solid var(--border-subtle);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notification-post-preview:hover {
+  transform: scale(1.1) rotate(2deg);
+  border-color: var(--accent-purple);
+  box-shadow: 0 6px 16px rgba(167, 139, 250, 0.3);
+}
+
+.notification-post-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  image-rendering: -webkit-optimize-contrast; /* Sharpness for Webkit */
+  image-rendering: crisp-edges;
 }
 
 .empty-notifications {
