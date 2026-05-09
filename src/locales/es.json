@@ -40,6 +40,7 @@
     "loading_posts": "Cargando publicaciones...",
     "empty_posts": "Aún no hay publicaciones",
     "pending": "Solicitado",
+    "following": "Siguiendo",
     "private_title": "Esta cuenta es privada",
     "private_subtitle": "Sigue a este usuario para ver sus publicaciones."
   },
@@ -72,7 +73,8 @@
       "follow": "ha empezado a seguirte.",
       "follow_request": "quiere seguirte.",
       "follow_accepted": "ha aceptado tu solicitud de seguimiento."
-    }
+    },
+    "follow_back": "Devolver follow"
   },
   "create_post": {
     "title": "Nueva Publicación",

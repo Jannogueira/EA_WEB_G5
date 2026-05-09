@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import notificationService from "../services/notification";
 import type { Notification } from "../services/notification";
-import { acceptFollowRequest, rejectFollowRequest } from "../services/usuario";
+import { acceptFollowRequest, rejectFollowRequest, toggleFollow } from "../services/usuario";
 import { useSocket } from "../context/SocketContext";
 import { Heart, MessageCircle, UserPlus, Clock, Check, X, Bell, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,19 @@ const Notifications: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [alert, setAlert] = useState<AlertState | null>(null);
+    const [followStatuses, setFollowStatuses] = useState<Record<string, string>>({});
+
+    // Inicializar estados de seguimiento basados en el usuario actual
+    useEffect(() => {
+        if (usuario?.seguidos) {
+            const initial: Record<string, string> = {};
+            usuario.seguidos.forEach((id: any) => {
+                const idStr = typeof id === 'string' ? id : id._id;
+                initial[idStr] = 'ACCEPTED';
+            });
+            setFollowStatuses(initial);
+        }
+    }, [usuario]);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -95,6 +108,31 @@ const Notifications: React.FC = () => {
                     title: 'Acción fallida',
                     message: errorMsg
                 });
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
+    const handleFollowBack = async (targetId: string, notificationId: string) => {
+        if (processingId) return;
+        setProcessingId(notificationId);
+        
+        try {
+            const res = await toggleFollow(targetId);
+            const newStatus = res.data.status;
+            
+            // Actualizar el estado local para cambiar el botón a Siguiendo o Solicitado
+            setFollowStatuses(prev => ({
+                ...prev,
+                [targetId]: newStatus || 'NONE'
+            }));
+        } catch (error: any) {
+            const errorMsg = error.response?.data?.message || "Error al conectar con el servidor";
+            setAlert({
+                type: 'error',
+                title: 'Acción fallida',
+                message: errorMsg
+            });
         } finally {
             setProcessingId(null);
         }
@@ -199,6 +237,38 @@ const Notifications: React.FC = () => {
                                                             <X size={18} />
                                                         </button>
                                                     </>
+                                                )}
+                                            </div>
+                                        ) : n.type === "follow" ? (
+                                            <div className="notification-actions">
+                                                {processingId === n._id ? (
+                                                    <Loader2 className="animate-spin" size={20} />
+                                                ) : (
+                                                    <button 
+                                                        className={`follow-back-btn ${
+                                                            followStatuses[n.sender._id] === 'ACCEPTED' ? 'following' : 
+                                                            followStatuses[n.sender._id] === 'PENDING' ? 'pending' : ''
+                                                        }`}
+                                                        onClick={() => handleFollowBack(n.sender._id, n._id)}
+                                                        disabled={!!processingId}
+                                                    >
+                                                        {followStatuses[n.sender._id] === 'ACCEPTED' ? (
+                                                            <>
+                                                                <Check size={16} />
+                                                                <span>{t('profile.following')}</span>
+                                                            </>
+                                                        ) : followStatuses[n.sender._id] === 'PENDING' ? (
+                                                            <>
+                                                                <Clock size={16} />
+                                                                <span>{t('profile.pending')}</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <UserPlus size={16} />
+                                                                <span>{t('notifications.follow_back')}</span>
+                                                            </>
+                                                        )}
+                                                    </button>
                                                 )}
                                             </div>
                                         ) : n.post && (

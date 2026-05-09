@@ -40,6 +40,7 @@
     "loading_posts": "Carregant publicacions...",
     "empty_posts": "Encara no hi ha publicacions",
     "pending": "Sol·licitat",
+    "following": "Seguint",
     "private_title": "Aquest compte és privat",
     "private_subtitle": "Segueix aquest usuari per veure les seves publicacions."
   },
@@ -72,7 +73,8 @@
       "follow": "ha començat a seguir-te.",
       "follow_request": "vol seguir-te.",
       "follow_accepted": "ha acceptat la teva sol·licitud de seguiment."
-    }
+    },
+    "follow_back": "Tornar follow"
   },
   "create_post": {
     "title": "Nova Publicació",
