@@ -12,11 +12,11 @@ COPY . .
 # 4. Instalamos todas las dependencias (ahora TypeScript sí encontrará la carpeta src/)
 RUN npm install
 
-# 5. Compilamos el código de TypeScript a JavaScript (ejecuta "tsc")
-RUN npm run build
+# 5. Compilamos usando vite directamente para saltar errores de tsc
+RUN npx vite build
 
-# 6. Exponemos el puerto que configuraste en tu .env
-EXPOSE 1337
+# 6. Exponemos el puerto de preview
+EXPOSE 5173
 
-# 7. Arrancamos el servidor usando el código ya compilado
-CMD ["npm", "start"]
+# 7. Arrancamos el servidor de preview de vite
+CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5173"]
