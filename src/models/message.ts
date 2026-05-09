@@ -12,6 +12,7 @@ export interface Message {
   };
   contenido: string;
   leido: boolean;
+  eliminadoParaTodos?: boolean;
   createdAt: string;
 }
 

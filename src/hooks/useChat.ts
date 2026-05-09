@@ -52,16 +52,31 @@ export default function useChat(currentUserId: string) {
       clearTimeout(typingTimeout);
     };
 
+    const handleMessagesDeleted = ({ messageIds, type }: { messageIds: string[], type: 'me' | 'everyone' }) => {
+      setMessages(prev => prev.map(msg => {
+        if (messageIds.includes(msg._id)) {
+          if (type === 'everyone') {
+            return { ...msg, contenido: 'El mensaje ha sido eliminado', eliminadoParaTodos: true };
+          }
+          // Si es 'me', el backend ya filtra, pero si estamos en la misma sesión lo ocultamos
+          return { ...msg, _hidden: true };
+        }
+        return msg;
+      }).filter(msg => !(msg as any)._hidden));
+    };
+    
     socket.on('receive_message', handleReceiveMessage);
     socket.on('message_sent', handleMessageSent);
     socket.on('user_typing', handleTyping);
     socket.on('user_stop_typing', handleStopTyping);
+    socket.on('messages_deleted', handleMessagesDeleted);
 
     return () => {
       socket.off('receive_message', handleReceiveMessage);
       socket.off('message_sent', handleMessageSent);
       socket.off('user_typing', handleTyping);
       socket.off('user_stop_typing', handleStopTyping);
+      socket.off('messages_deleted', handleMessagesDeleted);
       clearTimeout(typingTimeout);
     };
   }, [socket, activeContact, currentUserId]);
@@ -96,6 +111,16 @@ export default function useChat(currentUserId: string) {
     socket.emit('typing', { destinatarioId: activeContact._id });
   }, [activeContact, socket]);
 
+  // Eliminar mensaje
+  const deleteMessage = useCallback((messageId: string, type: 'me' | 'everyone') => {
+    if (!socket || !activeContact) return;
+    socket.emit('delete_messages', {
+      messageIds: [messageId],
+      type,
+      destinatarioId: activeContact._id
+    });
+  }, [socket, activeContact]);
+
   return {
     contacts,
     activeContact,
@@ -105,5 +130,6 @@ export default function useChat(currentUserId: string) {
     openConversation,
     sendMessage,
     emitTyping,
+    deleteMessage,
   };
 }

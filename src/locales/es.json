@@ -94,7 +94,12 @@
     "typing": "está escribiendo...",
     "placeholder": "Escribe un mensaje...",
     "title": "Tus Mensajes",
-    "empty": "Selecciona una conversación para empezar."
+    "empty": "Selecciona una conversación para empezar.",
+    "delete_title": "¿Eliminar mensaje?",
+    "delete_me": "Eliminar para mí",
+    "delete_everyone": "Eliminar para todos",
+    "cancel": "Cancelar",
+    "deleted": "El mensaje ha sido eliminado"
   },
   "navbar": {
     "loading": "Cargando...",

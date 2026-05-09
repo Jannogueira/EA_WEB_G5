@@ -94,7 +94,12 @@
     "typing": "està escrivint...",
     "placeholder": "Escriu un missatge...",
     "title": "Els teus Missatges",
-    "empty": "Selecciona una conversa per començar."
+    "empty": "Selecciona una conversa per començar.",
+    "delete_title": "Eliminar missatge?",
+    "delete_me": "Eliminar per a mi",
+    "delete_everyone": "Eliminar per a tothom",
+    "cancel": "Cancel·lar",
+    "deleted": "El missatge ha estat eliminat"
   },
   "navbar": {
     "loading": "Carregant...",

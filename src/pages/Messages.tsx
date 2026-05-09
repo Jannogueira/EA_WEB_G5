@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import useChat from "../hooks/useChat";
 import { useSocket } from "../context/SocketContext";
-import { Send, User, MessageCircle, Search, X } from "lucide-react";
+import { Send, User, MessageCircle, Search, X, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ChatContact } from "../models/message";
 
@@ -22,10 +22,16 @@ const Messages: React.FC = () => {
     openConversation,
     sendMessage,
     emitTyping,
+    deleteMessage,
   } = useChat(usuario?._id || "");
 
   const [inputMessage, setInputMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; messageId: string; isOwn: boolean }>({
+    isOpen: false,
+    messageId: "",
+    isOwn: false
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,6 +57,15 @@ const Messages: React.FC = () => {
       c.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [contacts, searchTerm]);
+
+  const handleDeleteClick = (msgId: string, isOwn: boolean) => {
+    setDeleteModal({ isOpen: true, messageId: msgId, isOwn });
+  };
+
+  const confirmDelete = (type: 'me' | 'everyone') => {
+    deleteMessage(deleteModal.messageId, type);
+    setDeleteModal({ isOpen: false, messageId: "", isOwn: false });
+  };
 
   return (
     <div className="messages-page-wrapper">
@@ -112,8 +127,17 @@ const Messages: React.FC = () => {
                         key={msg._id}
                         className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
                       >
-                        <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"}`}>
-                          {msg.contenido}
+                        <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""}`}>
+                          {msg.eliminadoParaTodos ? t('messages.deleted') : msg.contenido}
+                          
+                          {!msg.eliminadoParaTodos && (
+                            <button 
+                              className="msg-delete-btn" 
+                              onClick={() => handleDeleteClick(msg._id, msg.remitente._id === usuario?._id)}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
                         </div>
                         <span className="message-time">
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -164,6 +188,28 @@ const Messages: React.FC = () => {
         
         {/* Sidebar al final para asegurar que sus eventos de clic siempre tengan prioridad */}
         <Sidebar />
+
+        {/* MODAL DE ELIMINACIÓN */}
+        {deleteModal.isOpen && (
+          <div className="delete-modal-overlay" onClick={() => setDeleteModal({ ...deleteModal, isOpen: false })}>
+            <div className="delete-modal-content" onClick={e => e.stopPropagation()}>
+              <h3>{t('messages.delete_title')}</h3>
+              <div className="delete-modal-actions">
+                <button className="delete-option me" onClick={() => confirmDelete('me')}>
+                  {t('messages.delete_me')}
+                </button>
+                {deleteModal.isOwn && (
+                  <button className="delete-option everyone" onClick={() => confirmDelete('everyone')}>
+                    {t('messages.delete_everyone')}
+                  </button>
+                )}
+                <button className="delete-option cancel" onClick={() => setDeleteModal({ ...deleteModal, isOpen: false })}>
+                  {t('messages.cancel')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };
