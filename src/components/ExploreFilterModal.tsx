@@ -4,6 +4,8 @@ import gradoService from "../services/grado"; // Using your existing service
 import type { Grado } from "../models/grado";
 import type { Asignatura } from "../models/asignatura";
 import "./ExploreFilterModal.css";
+import Alert from "./Alert";
+import type { AlertState } from "./Alert";
 
 interface Props {
   selected: string[];
@@ -18,28 +20,37 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
   const [localSelected, setLocalSelected] = useState<string[]>(selected);
   
   // Data States
-  const { universidades, loading: loadingUnis, error: uniError } = useUnis();
+  const { universidades, loading: loadingUnis } = useUnis();
   const [grados, setGrados] = useState<Grado[]>([]);
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
   
   const [loadingItems, setLoadingItems] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch all Grados and Asignaturas using your service methods
+  const [alert, setAlert] = useState<AlertState | null>(null);
+
   useEffect(() => {
     const fetchAllData = async () => {
       setLoadingItems(true);
       try {
-        // Use the getAll methods you just added to the service
         const [gradosRes, asignaturasRes] = await Promise.all([
           gradoService.getAll(),
           gradoService.getAllAsignaturas()
         ]);
         setGrados(gradosRes.data);
         setAsignaturas(asignaturasRes.data);
-      } catch (err) {
-        console.error("Error fetching filter data", err);
-      } finally {
+        } catch (error: any) {
+            const msg =
+            error.response?.data?.message ||
+            error.message ||
+            'Error al contactar con el servidor';
+
+            setAlert({
+                type: 'error',
+                title: 'Error al cargar filtros',
+                message: msg
+            });
+        } finally {
         setLoadingItems(false);
       }
     };
@@ -68,6 +79,14 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
 
   return (
     <div className="filter-overlay">
+      {alert && (
+        <Alert
+      type={alert.type}
+      title={alert.title}
+      message={alert.message}
+      onClose={() => setAlert(null)}
+      />
+    )}
       <div className="filter-modal">
         <div className="filter-tabs">
           {(["universidades", "grados", "asignaturas"] as FilterTab[]).map((tab) => (
@@ -95,7 +114,6 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
 
         <div className="filter-content">
           {(loadingUnis || loadingItems) && <p className="loading-text">Cargando...</p>}
-          {(uniError) && <p className="error-text">Error al cargar datos</p>}
           
           <div className="uni-tags">
             {currentFilteredList.map((item) => (

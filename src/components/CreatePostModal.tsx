@@ -33,8 +33,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       const res = await uploadImage(file);
       setFormData(prev => ({ ...prev, imageUrl: res.url }));
     } catch (err) {
-      console.error("Error al subir imagen:", err);
-      setError("Error al subir la imagen. Por favor, inténtalo de nuevo.");
+      //Error manejado en la pagina
     } finally {
       setUploading(false);
     }

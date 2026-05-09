@@ -13,7 +13,7 @@ export default function useChat(currentUserId: string) {
 
   // Cargar contactos mutuos
   useEffect(() => {
-    getContacts().then(res => setContacts(res.data)).catch(console.error);
+    getContacts().then(res => setContacts(res.data));
   }, []);
 
   // Escuchar eventos del socket global
@@ -75,7 +75,7 @@ export default function useChat(currentUserId: string) {
       const res = await getConversation(contact._id);
       setMessages(res.data);
     } catch (err) {
-      console.error('Error cargando historial:', err);
+      // Error manejado en la página
     } finally {
       setLoadingHistory(false);
     }

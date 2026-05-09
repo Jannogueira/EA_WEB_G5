@@ -11,6 +11,8 @@ import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
 import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap, Clock, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Alert from "../components/Alert";
+import type { AlertState } from "../components/Alert";
 
 const Profile: React.FC = () => {
   const { t } = useTranslation();
@@ -26,6 +28,8 @@ const Profile: React.FC = () => {
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isPending, setIsPending] = useState(false);
+
+  const [alert, setAlert] = useState<AlertState | null>(null);
 
   const isOwnProfile = !id || id === currentUser?._id;
 
@@ -68,8 +72,16 @@ const Profile: React.FC = () => {
         setIsFollowing(amIFollowing);
       }
 
-    } catch (error) {
-      console.error("Error profile:", error);
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message ||
+        "Error al conectar con el servidor";
+        
+      setAlert({
+        type: 'error',
+        title: 'Error',
+        message: errorMsg
+      });
     } finally {
       setLoading(false);
     }
@@ -90,8 +102,16 @@ const Profile: React.FC = () => {
 
       if (newStatus === 'ACCEPTED') setFollowersCount(prev => prev + 1);
       else if (!newStatus) setFollowersCount(prev => isFollowing ? prev - 1 : prev);
-    } catch (error) {
-      console.error("Error toggling follow:", error);
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message ||
+        "Error al conectar con el servidor";
+
+      setAlert({
+        type: 'error',
+        title: 'Acción no completada',
+        message: errorMsg
+      });
     }
   };
 
@@ -109,6 +129,14 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-wrapper">
+      {alert && (
+        <Alert
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        onClose={() => setAlert(null)}
+        />
+      )}
       <Navbar usuario={currentUser || undefined} />
 
       <div className="main-layout">

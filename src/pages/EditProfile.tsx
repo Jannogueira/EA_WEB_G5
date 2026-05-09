@@ -8,13 +8,18 @@ import { useTranslation } from "react-i18next";
 import AsignaturasModal from "../components/AsignaturasModal";
 import { uploadImage } from "../services/upload";
 import { Loader2, Camera } from "lucide-react";
+import Alert from "../components/Alert";
+import type { AlertState } from "../components/Alert";
+
 const EditProfile: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { usuario, updateProfile, loading, error } = useUser();
+  const { usuario, updateProfile, loading } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [alert, setAlert] = useState<AlertState | null>(null);
+
   const [formData, setFormData] = useState({
     nombre: "",
     email: "",
@@ -22,6 +27,7 @@ const EditProfile: React.FC = () => {
     descripcion: "",
     privado: false
   });
+
   useEffect(() => {
     if (usuario) {
       setFormData({
@@ -33,44 +39,72 @@ const EditProfile: React.FC = () => {
       });
     }
   }, [usuario]);
-  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       setUploading(true);
-      setUploadError(null);
       const res = await uploadImage(file);
       setFormData(prev => ({ ...prev, avatarUrl: res.url }));
-    } catch (err) {
-      console.error("Error al subir avatar:", err);
-      setUploadError("Error al subir el avatar. Inténtalo de nuevo.");
+
+      } catch (error: any) {
+          const msg =
+          error.response?.data?.message ||
+          error.message ||
+          'Error al contactar con el servidor';
+
+          setAlert({
+              type: 'error',
+              title: 'Error al subir imagen',
+              message: msg
+          });
     } finally {
       setUploading(false);
     }
   };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await updateProfile(formData);
       navigate("/profile");
-    } catch {
-      // error manejado en hook
+      } catch (error: any) {
+          const msg =
+          error.response?.data?.message ||
+          error.message ||
+          'Error al contactar con el servidor';
+
+          setAlert({
+              type: 'error',
+              title: 'Error al guardar cambios',
+              message: msg
+          });
     }
   };
+
   const handleUserUpdated = (updatedUser: any) => {
     // sincroniza UI tras editar asignaturas
     localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
+
   return (
     <div className="edit-profile-wrapper">
+      {alert && (
+        <Alert
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        onClose={() => setAlert(null)}
+        />
+      )}
       <Navbar usuario={usuario || undefined} />
       <div className="main-layout">
         <Sidebar aria-label="Navegación principal" />
@@ -103,12 +137,6 @@ const EditProfile: React.FC = () => {
                   accept="image/*"
                 />
               </div>
-              {error && (
-                <div className="form-error-banner">{error}</div>
-              )}
-              {uploadError && (
-                <div className="form-error-banner">{uploadError}</div>
-              )}
               {/* NOMBRE */}
               <div className="form-group-modern">
                 <label>{t('edit_profile.label_name')}</label>

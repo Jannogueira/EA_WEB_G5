@@ -18,7 +18,7 @@ export default function usePosts() {
       const { request } = PostService.getFollowing(pageNum, 10);
       const response = await request;
 
-      console.log("DEBUG: Datos recibidos en usePosts:", response.data);
+
 
       const { docs, hasNextPage: more } = response.data;
 
@@ -27,7 +27,7 @@ export default function usePosts() {
       setHasNextPage(more);
       setPage(pageNum);
     } catch (err) {
-      console.error("Error en fetchPosts:", err);
+
       setError("Error cargando posts");
     } finally {
       setLoading(false);

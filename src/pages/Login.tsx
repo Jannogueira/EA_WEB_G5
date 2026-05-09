@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import Alert from '../components/Alert';
+import type { AlertState } from '../components/Alert';
 import './Login.css';
 
 const Login = () => {
@@ -11,6 +13,8 @@ const Login = () => {
     email: '',
     password: ''
   });
+
+  const [alert, setAlert] = useState<AlertState | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,13 +35,28 @@ const Login = () => {
         error.response?.data?.message ||
         "Error al conectar con el servidor";
 
-      alert("Fallo el inicio de sesión: " + errorMsg);
+      setAlert({
+        type: 'error',  
+        title: 'Fallo de inicio de sesión',
+        message: errorMsg
+      });
+
     }
   };
 
   return (
     <div className="login-page">
       <div className="login-container">
+
+        {alert && (
+          <Alert
+            type={alert.type}
+            title={alert.title}
+            message={alert.message}
+            onClose={() => setAlert(null)}
+          />
+        )}
+        
         <h2>Iniciar Sesión</h2>
 
         <form onSubmit={handleLogin} className="login-form">
