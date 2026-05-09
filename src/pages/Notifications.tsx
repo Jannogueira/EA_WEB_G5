@@ -36,36 +36,42 @@ const Notifications: React.FC = () => {
         }
     }, [usuario]);
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            try {
-                const res = await notificationService.getNotifications(1, 50);
-                // Prevenir duplicados (validación requerida)
-                const uniqueNotifications = res.data.docs.filter(
-                    (notif: Notification, index: number, self: Notification[]) =>
-                        index === self.findIndex((n) => n._id === notif._id)
-                );
-                setNotifications(uniqueNotifications);
-                setNotificationCount(0); // Reset count when viewing
-                await notificationService.markAllAsRead();
-            } catch (error: any) {
-                const errorMsg = 
-                error.response?.data?.message ||
-                "Error al conectar con el servidor";
-                
-                setAlert({
-                    type: 'error',
-                    title: 'Error al cargar notificaciones',
-                    message: errorMsg
-                });
+    const fetchNotifications = async () => {
+        try {
+            const res = await notificationService.getNotifications(1, 50);
+            // Prevenir duplicados (validación requerida)
+            const uniqueNotifications = res.data.docs.filter(
+                (notif: Notification, index: number, self: Notification[]) =>
+                    index === self.findIndex((n) => n._id === notif._id)
+            );
+            setNotifications(uniqueNotifications);
+            setNotificationCount(0); // Reset count when viewing
+            await notificationService.markAllAsRead();
+        } catch (error: any) {
+            console.error("Error fetching notifications", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-            } finally {
-                setLoading(false);
-            }
-        };
+    useEffect(() => {
         fetchNotifications();
         refreshUser(); // Refrescar perfil para tener seguidos actualizados
     }, []); // Ejecutar solo al montar el componente
+
+    // Escuchar nuevas notificaciones en tiempo real
+    const { socket } = useSocket();
+    useEffect(() => {
+        if (!socket) return;
+        
+        socket.on('new_notification', () => {
+            fetchNotifications();
+        });
+
+        return () => {
+            socket.off('new_notification');
+        };
+    }, [socket]);
 
     const handleAccept = async (followerId: string, notificationId: string) => {
         if (processingId) return;
