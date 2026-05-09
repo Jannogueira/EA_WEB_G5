@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import usuarioService from "../services/usuario";
 import type { Usuario } from "../models/usuario";
+import apiClient from "../services/api-client";
 
 export default function useUser() {
   const navigate = useNavigate();
@@ -10,16 +11,33 @@ export default function useUser() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchMe = async () => {
+    try {
+      const res = await apiClient.get<Usuario>("/auth/me");
+      localStorage.setItem("usuario", JSON.stringify(res.data));
+      setUsuario(res.data);
+      return res.data;
+    } catch (err) {
+      console.error("Error fetching me:", err);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const userJson = localStorage.getItem("usuario");
 
-    if (!userJson && location.pathname !== "/register") {
-    navigate("/login");
-    return;
+    if (!userJson && location.pathname !== "/register" && location.pathname !== "/login") {
+      navigate("/login");
+      return;
     }
 
     if (userJson) {
-    setUsuario(JSON.parse(userJson));
+      setUsuario(JSON.parse(userJson));
+    }
+    
+    // Opcionalmente refrescar al cargar si estamos autenticados
+    if (userJson) {
+      fetchMe();
     }
 
   }, [navigate]);
@@ -46,6 +64,7 @@ export default function useUser() {
   return {
     usuario,
     updateProfile,
+    refreshUser: fetchMe,
     loading,
     error
   };

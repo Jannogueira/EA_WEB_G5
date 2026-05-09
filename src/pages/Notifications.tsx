@@ -16,7 +16,7 @@ import { es, ca } from "date-fns/locale";
 
 const Notifications: React.FC = () => {
     const { t, i18n } = useTranslation();
-    const { usuario } = useUser();
+    const { usuario, refreshUser } = useUser();
     const { setNotificationCount } = useSocket();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(true);
@@ -64,6 +64,7 @@ const Notifications: React.FC = () => {
             }
         };
         fetchNotifications();
+        refreshUser(); // Refrescar perfil para tener seguidos actualizados
     }, []); // Ejecutar solo al montar el componente
 
     const handleAccept = async (followerId: string, notificationId: string) => {
@@ -121,11 +122,9 @@ const Notifications: React.FC = () => {
             const res = await toggleFollow(targetId);
             const newStatus = res.data.status;
             
-            // Actualizar el estado local para cambiar el botón a Siguiendo o Solicitado
-            setFollowStatuses(prev => ({
-                ...prev,
-                [targetId]: newStatus || 'NONE'
-            }));
+            // Actualizar el perfil global para que el estado de "siguiendo" persista en otras páginas
+            await refreshUser();
+
         } catch (error: any) {
             const errorMsg = error.response?.data?.message || "Error al conectar con el servidor";
             setAlert({
