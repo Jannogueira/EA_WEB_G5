@@ -71,4 +71,4 @@ export default defineConfig([
   },
 ])
 ```
-prueba 2
+prueba 3
