@@ -5,7 +5,8 @@
     "explore": "Explorar",
     "university": "Universitat",
     "classes": "Classes",
-    "messages": "Missatges"
+    "messages": "Missatges",
+    "notifications": "Notificacions"
   },
   "home": {
     "title": "Feed",
@@ -37,7 +38,10 @@
     "following_count": "seguits",
     "posts_title": "PUBLICACIONS",
     "loading_posts": "Carregant publicacions...",
-    "empty_posts": "Encara no hi ha publicacions"
+    "empty_posts": "Encara no hi ha publicacions",
+    "pending": "Sol·licitat",
+    "private_title": "Aquest compte és privat",
+    "private_subtitle": "Segueix aquest usuari per veure les seves publicacions."
   },
   "edit_profile": {
     "title": "Editar Perfil",
@@ -45,11 +49,30 @@
     "label_name": "Nom",
     "label_email": "Email",
     "label_avatar": "Avatar URL",
+    "label_avatar_help": "O puja una imatge fent clic al cercle",
     "label_bio": "Descripció",
     "placeholder_bio": "Escriu una breu descripció sobre tu...",
+    "label_subjects": "Assignatures",
+    "edit_btn": "Editar",
+    "label_privacy": "Compte Privat",
+    "privacy_help": "Si el teu compte és privat, només els teus seguidors podran veure les teves publicacions.",
     "cancel": "Cancel·lar",
     "saving": "Guardant...",
-    "save": "Guardar Canvis"
+    "save": "Guardar Canvis",
+    "upload_error": "Error en pujar l'avatar. Torna-ho a intentar."
+  },
+  "notifications": {
+    "title": "Notificacions",
+    "loading": "Carregant notificacions...",
+    "empty_title": "No tens notificacions encara",
+    "empty_subtitle": "Les interaccions d'altres usuaris apareixeran aquí.",
+    "type": {
+      "like": "t'ha donat m'agrada a la teva publicació.",
+      "comment": "ha comentat: ",
+      "follow": "ha començat a seguir-te.",
+      "follow_request": "vol seguir-te.",
+      "follow_accepted": "ha acceptat la teva sol·licitud de seguiment."
+    }
   },
   "create_post": {
     "title": "Nova Publicació",

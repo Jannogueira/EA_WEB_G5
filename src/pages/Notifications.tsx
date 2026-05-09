@@ -8,13 +8,14 @@ import type { Notification } from "../services/notification";
 import { acceptFollowRequest, rejectFollowRequest } from "../services/usuario";
 import { useSocket } from "../context/SocketContext";
 import { Heart, MessageCircle, UserPlus, Clock, Check, X, Bell, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale";
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
-
+import { es, ca } from "date-fns/locale";
 
 const Notifications: React.FC = () => {
+    const { t, i18n } = useTranslation();
     const { usuario } = useUser();
     const { setNotificationCount } = useSocket();
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -112,11 +113,11 @@ const Notifications: React.FC = () => {
 
     const getMessage = (n: Notification) => {
         switch (n.type) {
-            case "like": return "le ha dado me gusta a tu publicación.";
-            case "comment": return "ha comentado: " + (n.post?.caption || "");
-            case "follow": return "ha empezado a seguirte.";
-            case "follow_request": return "quiere seguirte.";
-            case "follow_accepted": return "ha aceptado tu solicitud de seguimiento.";
+            case "like": return t('notifications.type.like');
+            case "comment": return t('notifications.type.comment') + (n.post?.caption || "");
+            case "follow": return t('notifications.type.follow');
+            case "follow_request": return t('notifications.type.follow_request');
+            case "follow_accepted": return t('notifications.type.follow_accepted');
             default: return "";
         }
     };
@@ -141,11 +142,11 @@ const Notifications: React.FC = () => {
                 <div className="content-area">
                     <main className="notifications-container">
                         <header className="notifications-header">
-                            <h1>Notificaciones</h1>
+                            <h1>{t('notifications.title')}</h1>
                         </header>
 
                         {loading ? (
-                            <div className="state-message">Cargando notificaciones...</div>
+                            <div className="state-message">{t('notifications.loading')}</div>
                         ) : notifications.length > 0 ? (
                             <div className="notifications-list">
                                 {notifications.map((n) => (
@@ -170,7 +171,10 @@ const Notifications: React.FC = () => {
                                             </p>
                                             <span className="notification-time">
                                                 <Clock size={12} />
-                                                {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: es })}
+                                                {formatDistanceToNow(new Date(n.createdAt), { 
+                                                    addSuffix: true, 
+                                                    locale: i18n.language.startsWith('ca') ? ca : es 
+                                                })}
                                             </span>
                                         </div>
 
@@ -208,8 +212,8 @@ const Notifications: React.FC = () => {
                         ) : (
                             <div className="empty-notifications">
                                 <Bell size={48} opacity={0.3} />
-                                <h3>No tienes notificaciones todavía</h3>
-                                <p>Las interacciones de otros usuarios aparecerán aquí.</p>
+                                <h3>{t('notifications.empty_title')}</h3>
+                                <p>{t('notifications.empty_subtitle')}</p>
                             </div>
                         )}
                     </main>

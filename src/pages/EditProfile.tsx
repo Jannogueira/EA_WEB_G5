@@ -164,7 +164,7 @@ const EditProfile: React.FC = () => {
                   name="avatarUrl"
                   value={formData.avatarUrl}
                   onChange={handleChange}
-                  placeholder="O sube una imagen haciendo clic en el círculo"
+                  placeholder={t('edit_profile.label_avatar_help')}
                 />
               </div>
               {/* DESCRIPCIÓN */}
@@ -181,13 +181,13 @@ const EditProfile: React.FC = () => {
               </div>
               {/* BOTÓN ASIGNATURAS */}
               <div className="form-group-modern">
-                <label>Asignaturas</label>
+                <label>{t('edit_profile.label_subjects')}</label>
                 <button
                   type="button"
                   className="edit-profile-btn-premium"
                   onClick={() => setModalOpen(true)}
                 >
-                  Editar
+                  {t('edit_profile.edit_btn')}
                 </button>
               </div>
               {/* BOTONES */}
@@ -200,9 +200,9 @@ const EditProfile: React.FC = () => {
                     checked={formData.privado}
                     onChange={(e) => setFormData(prev => ({ ...prev, privado: e.target.checked }))}
                   />
-                  <span>Cuenta Privada</span>
+                  <span>{t('edit_profile.label_privacy')}</span>
                 </label>
-                <p className="field-help">Si tu cuenta es privada, solo tus seguidores podrán ver tus publicaciones.</p>
+                <p className="field-help">{t('edit_profile.privacy_help')}</p>
               </div>
               {/* Buttons */}
               <div className="form-actions-modern">

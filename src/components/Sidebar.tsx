@@ -96,7 +96,7 @@ const Sidebar: React.FC = () => {
             style={{ position: 'relative' }}
           >
             <Bell size={20} className="btn-icon" />
-            <span className="btn-text">Notificaciones</span>
+            <span className="btn-text">{t('sidebar.notifications')}</span>
             {notificationCount > 0 && (
               <div className="sidebar-notification-badge">{notificationCount > 99 ? '99+' : notificationCount}</div>
             )}

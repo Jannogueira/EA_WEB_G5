@@ -5,7 +5,8 @@
     "explore": "Explorar",
     "university": "Universidad",
     "classes": "Clases",
-    "messages": "Mensajes"
+    "messages": "Mensajes",
+    "notifications": "Notificaciones"
   },
   "home": {
     "title": "Feed",
@@ -37,7 +38,10 @@
     "following_count": "seguidos",
     "posts_title": "PUBLICACIONES",
     "loading_posts": "Cargando publicaciones...",
-    "empty_posts": "Aún no hay publicaciones"
+    "empty_posts": "Aún no hay publicaciones",
+    "pending": "Solicitado",
+    "private_title": "Esta cuenta es privada",
+    "private_subtitle": "Sigue a este usuario para ver sus publicaciones."
   },
   "edit_profile": {
     "title": "Editar Perfil",
@@ -45,11 +49,30 @@
     "label_name": "Nombre",
     "label_email": "Email",
     "label_avatar": "Avatar URL",
+    "label_avatar_help": "O sube una imagen haciendo clic en el círculo",
     "label_bio": "Descripción",
     "placeholder_bio": "Escribe una breve descripción sobre ti...",
+    "label_subjects": "Asignaturas",
+    "edit_btn": "Editar",
+    "label_privacy": "Cuenta Privada",
+    "privacy_help": "Si tu cuenta es privada, solo tus seguidores podrán ver tus publicaciones.",
     "cancel": "Cancelar",
     "saving": "Guardando...",
-    "save": "Guardar Cambios"
+    "save": "Guardar Cambios",
+    "upload_error": "Error al subir el avatar. Inténtalo de nuevo."
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "loading": "Cargando notificaciones...",
+    "empty_title": "No tienes notificaciones todavía",
+    "empty_subtitle": "Las interacciones de otros usuarios aparecerán aquí.",
+    "type": {
+      "like": "le ha dado me gusta a tu publicación.",
+      "comment": "ha comentado: ",
+      "follow": "ha empezado a seguirte.",
+      "follow_request": "quiere seguirte.",
+      "follow_accepted": "ha aceptado tu solicitud de seguimiento."
+    }
   },
   "create_post": {
     "title": "Nueva Publicación",

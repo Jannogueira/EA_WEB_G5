@@ -124,8 +124,8 @@ const Profile: React.FC = () => {
 
   const isRestricted = profileUser?.privado && !isOwnProfile && !isFollowing;
 
-  if (loading && !profileUser) return <div className="state-message">Cargando perfil...</div>;
-  if (!profileUser && !loading) return <div className="state-message">Usuario no encontrado</div>;
+  if (loading && !profileUser) return <div className="state-message">{t('profile.loading')}</div>;
+  if (!profileUser && !loading) return <div className="state-message">{t('profile.not_found')}</div>;
 
   return (
     <div className="profile-wrapper">
@@ -182,7 +182,7 @@ const Profile: React.FC = () => {
                           </>
                         ) : isPending ? (
                           <>
-                            <Clock size={18} /> Solicitado
+                            <Clock size={18} /> {t('profile.pending')}
                           </>
                         ) : (
                           <>
@@ -258,12 +258,12 @@ const Profile: React.FC = () => {
             </div>
 
             {loading ? (
-              <div className="state-message">Cargando publicaciones...</div>
+              <div className="state-message">{t('profile.loading_posts')}</div>
             ) : isRestricted ? (
               <div className="private-account-empty">
                 <span className="empty-icon"><Lock size={48} /></span>
-                <h3>Esta cuenta es privada</h3>
-                <p>Sigue a este usuario para ver sus publicaciones.</p>
+                <h3>{t('profile.private_title')}</h3>
+                <p>{t('profile.private_subtitle')}</p>
               </div>
             ) : posts.length > 0 ? (
               <div className="univy-posts-grid">
