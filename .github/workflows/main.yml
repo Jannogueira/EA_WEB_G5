@@ -36,7 +36,9 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/eawebg5:${{ github.event.head_commit.message }}
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/eawebg5:latest
+          ${{ secrets.DOCKER_HUB_USERNAME }}/eawebg5:${{ github.sha }}
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
