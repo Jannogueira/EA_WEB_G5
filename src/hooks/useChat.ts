@@ -99,11 +99,12 @@ export default function useChat(currentUserId: string) {
   }, []);
 
   // Enviar mensaje
-  const sendMessage = useCallback((contenido: string) => {
-    if (!activeContact || !socket || !contenido.trim()) return;
+  const sendMessage = useCallback((contenido: string, parentMessageId?: string) => {
+    if (!activeContact || !socket || (!contenido.trim() && !parentMessageId)) return;
     socket.emit('send_message', {
       destinatarioId: activeContact._id,
       contenido: contenido.trim(),
+      parentMessageId
     });
   }, [activeContact, socket]);
 

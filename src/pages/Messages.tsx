@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import useChat from "../hooks/useChat";
 import { useSocket } from "../context/SocketContext";
-import { Send, User, MessageCircle, Search, X, Trash2, Smile } from "lucide-react";
+import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ChatContact } from "../models/message";
 
@@ -31,6 +31,7 @@ const Messages: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeReactionPicker, setActiveReactionPicker] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<any>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; messageId: string; isOwn: boolean }>({
     isOpen: false,
     messageId: "",
@@ -52,8 +53,9 @@ const Messages: React.FC = () => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
-    sendMessage(inputMessage);
+    sendMessage(inputMessage, replyingTo?._id);
     setInputMessage("");
+    setReplyingTo(null);
   };
 
   const filteredContacts = useMemo(() => {
@@ -132,6 +134,13 @@ const Messages: React.FC = () => {
                         className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
                       >
                         <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""} ${msg.post ? "post-msg" : ""}`}>
+                          {/* MENSAJE CITADO (PARENT) */}
+                          {msg.parentMessage && !msg.eliminadoParaTodos && (
+                            <div className="quoted-message-preview">
+                                <span className="quoted-author">{msg.parentMessage.remitente.nombre}</span>
+                                <p className="quoted-text">{msg.parentMessage.contenido}</p>
+                            </div>
+                          )}
                           {msg.eliminadoParaTodos ? (
                             t('messages.deleted')
                           ) : msg.post ? (
@@ -178,6 +187,12 @@ const Messages: React.FC = () => {
                           
                           {!msg.eliminadoParaTodos && (
                             <div className="message-hover-actions">
+                              <button 
+                                className="msg-action-btn"
+                                onClick={() => setReplyingTo(msg)}
+                              >
+                                <Reply size={14} />
+                              </button>
                               <button 
                                 className="msg-action-btn"
                                 onClick={() => setActiveReactionPicker(activeReactionPicker === msg._id ? null : msg._id)}
@@ -227,6 +242,19 @@ const Messages: React.FC = () => {
                       <span></span><span></span><span></span>
                     </div>
                     <span>{activeContact.nombre} {t('messages.typing')}</span>
+                  </div>
+                )}
+
+                {/* PREVIEW DE RESPUESTA */}
+                {replyingTo && (
+                  <div className="reply-preview-container">
+                    <div className="reply-preview-content">
+                      <span className="reply-author">{replyingTo.remitente.nombre}</span>
+                      <p className="reply-text">{replyingTo.contenido}</p>
+                    </div>
+                    <button className="cancel-reply-btn" onClick={() => setReplyingTo(null)}>
+                      <X size={18} />
+                    </button>
                   </div>
                 )}
 

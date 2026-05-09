@@ -21,6 +21,14 @@ export interface Message {
     usuario: string;
     emoji: string;
   }>;
+  parentMessage?: {
+    _id: string;
+    contenido: string;
+    remitente: {
+      _id: string;
+      nombre: string;
+    };
+  };
 }
 
 export interface ChatContact {
