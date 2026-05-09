@@ -5,7 +5,8 @@ WORKDIR /app
 
 # Install dependencies (use package-lock if present)
 COPY package.json package-lock.json* ./
-RUN npm ci --silent
+RUN npm install
+RUN npm install date-fns
 
 # Copy source and build
 COPY . .
