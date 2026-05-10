@@ -75,7 +75,9 @@
       "follow_request": "quiere seguirte.",
       "follow_accepted": "ha aceptado tu solicitud de seguimiento."
     },
-    "follow_back": "Devolver follow"
+    "follow_back": "Devolver follow",
+    "confirm": "Confirmar",
+    "reject": "Rechazar"
   },
   "create_post": {
     "title": "Nueva Publicación",

@@ -75,7 +75,9 @@
       "follow_request": "vol seguir-te.",
       "follow_accepted": "ha acceptat la teva sol·licitud de seguiment."
     },
-    "follow_back": "Tornar follow"
+    "follow_back": "Tornar follow",
+    "confirm": "Confirmar",
+    "reject": "Rebutjar"
   },
   "create_post": {
     "title": "Nova Publicació",

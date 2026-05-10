@@ -91,8 +91,12 @@ const Notifications: React.FC = () => {
         
         try {
             await acceptFollowRequest(followerId);
-            // Sincronización tras 200 OK
-            setNotifications(prev => prev.filter(n => n._id !== notificationId));
+            // En lugar de borrarla, la marcamos como aceptada para que salga el botón de follow back
+            setNotifications(prev => prev.map(n => 
+                n._id === notificationId ? { ...n, type: 'follow' as any } : n
+            ));
+            // Refrescar perfil para actualizar seguidos/seguidores
+            await refreshUser();
         } catch (error: any) {
                 const errorMsg = 
                 error.response?.data?.message ||
@@ -140,7 +144,13 @@ const Notifications: React.FC = () => {
             const res = await toggleFollow(targetId);
             const newStatus = res.data.status;
             
-            // Actualizar el perfil global para que el estado de "siguiendo" persista en otras páginas
+            // Actualizar estado local para el botón
+            setFollowStatuses(prev => ({
+                ...prev,
+                [targetId]: newStatus || 'NONE'
+            }));
+            
+            // Actualizar el perfil global
             await refreshUser();
 
         } catch (error: any) {
@@ -255,6 +265,7 @@ const Notifications: React.FC = () => {
                                                             disabled={!!processingId}
                                                         >
                                                             <Check size={18} />
+                                                            <span>{t('notifications.confirm')}</span>
                                                         </button>
                                                         <button 
                                                             className="reject-btn"
@@ -265,6 +276,7 @@ const Notifications: React.FC = () => {
                                                             disabled={!!processingId}
                                                         >
                                                             <X size={18} />
+                                                            <span>{t('notifications.reject')}</span>
                                                         </button>
                                                     </>
                                                 )}

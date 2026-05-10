@@ -178,6 +178,12 @@ const Profile: React.FC = () => {
                   <div className="username-row">
                     <h2 className="profile-display-name">
                       {profileUser?.nombre}
+                      {profileUser?.privado && (
+                        <span className="private-badge">
+                          <Lock size={14} />
+                          {t('edit_profile.label_privacy')}
+                        </span>
+                      )}
                     </h2>
 
                     {isOwnProfile ? (
