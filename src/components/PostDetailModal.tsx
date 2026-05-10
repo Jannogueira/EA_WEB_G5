@@ -119,7 +119,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 <button onClick={onLike} className={`detail-action-btn ${postLiked ? 'liked' : ''}`}>
                   <Heart size={28} fill={postLiked ? "currentColor" : "none"} />
                 </button>
-                <button className="detail-action-btn">
+                <button onClick={onClose} className="detail-action-btn">
                   <MessageCircle size={28} />
                 </button>
                 <button onClick={onShare} className="detail-action-btn share-accent">

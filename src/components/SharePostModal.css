@@ -288,3 +288,32 @@
     background: #334155;
     opacity: 0.5;
 }
+
+/* Éxito al enviar */
+.share-sent-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    text-align: center;
+    gap: 20px;
+    animation: fadeIn 0.4s ease;
+}
+
+.share-sent-success p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.share-sent-success svg {
+    filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.3));
+    animation: scaleCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleCheck {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}

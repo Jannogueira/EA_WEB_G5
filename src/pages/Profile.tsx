@@ -6,19 +6,49 @@ import Navbar from "../components/Navbar";
 import PostService from "../services/post";
 import { getFollowers, getFollowing, getUserById, toggleFollow} from "../services/usuario";
 import Postcard from "../components/Postcard";
+import PostDetailModal from "../components/PostDetailModal";
 import type { Post } from "../models/post";
+import usePost from "../hooks/usePost";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
 import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap, Clock, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
+import SharePostModal from "../components/SharePostModal";
+
+const ProfilePostModal: React.FC<{ post: Post; onClose: () => void; currentUserId: string | null }> = ({ post, onClose, currentUserId }) => {
+  const { post: p, likePost, likeComment, addComment, loadingComment } = usePost(post);
+  const [showShareModal, setShowShareModal] = useState(false);
+  
+  return (
+    <>
+      <PostDetailModal 
+        post={p}
+        currentUserId={currentUserId}
+        onClose={onClose}
+        onLike={likePost}
+        onLikeComment={likeComment}
+        onAddComment={addComment}
+        loadingComment={loadingComment}
+        onShare={() => setShowShareModal(true)}
+      />
+      {showShareModal && (
+        <SharePostModal 
+          postId={p._id}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
+    </>
+  );
+};
 
 const Profile: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const { usuario: currentUser } = useUser();
+  const currentUserId = currentUser?._id;
 
   const [profileUser, setProfileUser] = useState<Usuario | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -92,7 +122,7 @@ const Profile: React.FC = () => {
   // Manejar apertura de post desde URL (notificaciones)
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-    const postId = queryParams.get('post');
+    const postId = queryParams.get('postId') || queryParams.get('post');
     
     if (postId) {
       const postInList = posts.find(p => p._id === postId);
@@ -328,23 +358,11 @@ const Profile: React.FC = () => {
       </div>
 
       {selectedPost && (
-        <div
-          className="post-modal-overlay"
-          onClick={() => setSelectedPost(null)}
-        >
-          <div
-            className="post-modal-container"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="modal-close-x"
-              onClick={() => setSelectedPost(null)}
-            >
-              <X size={24} />
-            </button>
-            <Postcard post={selectedPost} />
-          </div>
-        </div>
+        <ProfilePostModal 
+          post={selectedPost} 
+          onClose={() => setSelectedPost(null)} 
+          currentUserId={currentUserId || null}
+        />
       )}
     </div>
   );

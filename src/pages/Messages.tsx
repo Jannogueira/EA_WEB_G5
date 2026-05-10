@@ -140,17 +140,26 @@ const Messages: React.FC = () => {
                         className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
                       >
                         <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""} ${msg.post ? "post-msg" : ""}`}>
-                          {/* MENSAJE CITADO (PARENT) */}
                           {msg.parentMessage && !msg.eliminadoParaTodos && (
-                            <div className="quoted-message-preview">
+                            <div className="quoted-message-preview" onClick={() => {
+                              // Opcional: scroll al mensaje original
+                              const el = document.getElementById(msg.parentMessage?._id);
+                              el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }}>
                                 <span className="quoted-author">{msg.parentMessage.remitente.nombre}</span>
-                                <p className="quoted-text">{msg.parentMessage.contenido}</p>
+                                <p className="quoted-text">
+                                  {msg.parentMessage.eliminadoParaTodos 
+                                    ? t('messages.deleted') 
+                                    : msg.parentMessage.post 
+                                      ? "📷 " + (msg.parentMessage.post.caption || "Publicación")
+                                      : msg.parentMessage.contenido}
+                                </p>
                             </div>
                           )}
                           {msg.eliminadoParaTodos ? (
                             t('messages.deleted')
                           ) : msg.post ? (
-                            <div className="shared-post-card" onClick={() => navigate(`/profile/${msg.post?.usuario?._id}`)}>
+                            <div className="shared-post-card" onClick={() => navigate(`/profile/${msg.post?.usuario?._id}?postId=${msg.post?._id}`)}>
                               <div className="shared-post-header">
                                 <img src={msg.post.usuario?.avatarUrl} alt="" className="shared-post-avatar" />
                                 <span>{msg.post.usuario?.nombre}</span>
@@ -181,7 +190,7 @@ const Messages: React.FC = () => {
                                 ).map(([emoji, count]: any) => (
                                   <div 
                                     key={emoji} 
-                                    className={`reaction-badge ${msg.reactions?.some(r => r.usuario === usuario?._id && r.emoji === emoji) ? 'user-reacted' : ''}`}
+                                    className={`reaction-badge ${msg.reactions?.some(r => (typeof r.usuario === 'string' ? r.usuario : r.usuario._id) === usuario?._id && r.emoji === emoji) ? 'user-reacted' : ''}`}
                                     onClick={() => reactToMessage(msg._id, emoji)}
                                   >
                                     <span>{emoji}</span>
