@@ -90,6 +90,24 @@ const Profile: React.FC = () => {
   fetchProfileData();
 }, [id, currentUser]);
 
+  // Manejar apertura de post desde URL (notificaciones)
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const postId = queryParams.get('post');
+    
+    if (postId) {
+      const postInList = posts.find(p => p._id === postId);
+      if (postInList) {
+        setSelectedPost(postInList);
+      } else if (!loading) {
+        // Carga el post individualmente si no está en la lista de perfil
+        PostService.getPostById(postId)
+          .then(res => setSelectedPost(res.data))
+          .catch(err => console.error("Error al cargar post enlazado:", err));
+      }
+    }
+  }, [posts, loading]);
+
   const handleToggleFollow = async () => {
     if (!profileUser || !currentUser) return;
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Notifications.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -15,6 +16,7 @@ import type { AlertState } from '../components/Alert';
 import { es, ca } from "date-fns/locale";
 
 const Notifications: React.FC = () => {
+    const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const { usuario, refreshUser } = useUser();
     const { setNotificationCount } = useSocket();
@@ -23,6 +25,16 @@ const Notifications: React.FC = () => {
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [alert, setAlert] = useState<AlertState | null>(null);
     const [followStatuses, setFollowStatuses] = useState<Record<string, string>>({});
+
+    const handleNotificationClick = (n: Notification) => {
+        if (n.type.startsWith('follow')) {
+            navigate(`/profile/${n.sender._id}`);
+        } else if (n.post) {
+            // Ir al perfil del dueño del post con el parámetro del post para abrirlo
+            const ownerId = n.post.usuario;
+            navigate(`/profile/${ownerId}?post=${n.post._id}`);
+        }
+    };
 
     // Inicializar estados de seguimiento basados en el usuario actual
     useEffect(() => {
@@ -195,7 +207,12 @@ const Notifications: React.FC = () => {
                         ) : notifications.length > 0 ? (
                             <div className="notifications-list">
                                 {notifications.map((n) => (
-                                    <div key={n._id} className={`notification-item ${n.isRead ? "" : "unread"} ${processingId === n._id ? "processing" : ""}`}>
+                                    <div 
+                                        key={n._id} 
+                                        className={`notification-item ${n.isRead ? "" : "unread"} ${processingId === n._id ? "processing" : ""}`}
+                                        onClick={() => handleNotificationClick(n)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <div className="notification-avatar">
                                             {n.sender.avatarUrl ? (
                                                 <img src={n.sender.avatarUrl} alt={n.sender.nombre} />
@@ -231,14 +248,20 @@ const Notifications: React.FC = () => {
                                                     <>
                                                         <button 
                                                             className="accept-btn"
-                                                            onClick={() => handleAccept(n.sender._id, n._id)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAccept(n.sender._id, n._id);
+                                                            }}
                                                             disabled={!!processingId}
                                                         >
                                                             <Check size={18} />
                                                         </button>
                                                         <button 
                                                             className="reject-btn"
-                                                            onClick={() => handleReject(n.sender._id, n._id)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleReject(n.sender._id, n._id);
+                                                            }}
                                                             disabled={!!processingId}
                                                         >
                                                             <X size={18} />
@@ -256,7 +279,10 @@ const Notifications: React.FC = () => {
                                                             followStatuses[n.sender._id] === 'ACCEPTED' ? 'following' : 
                                                             followStatuses[n.sender._id] === 'PENDING' ? 'pending' : ''
                                                         }`}
-                                                        onClick={() => handleFollowBack(n.sender._id, n._id)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleFollowBack(n.sender._id, n._id);
+                                                        }}
                                                         disabled={!!processingId}
                                                     >
                                                         {followStatuses[n.sender._id] === 'ACCEPTED' ? (

@@ -14,6 +14,7 @@ export interface Notification {
         _id: string;
         imageUrl: string;
         caption: string;
+        usuario: string;
     };
     isRead: boolean;
     createdAt: string;
