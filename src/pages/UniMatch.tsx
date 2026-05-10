@@ -5,12 +5,14 @@ import UniMatchWelcomeModal from '../components/UniMatchWelcomeModal';
 import MatchModal from '../components/MatchModal';
 import { discoverProfiles, recordSwipe, getMyPhotos, type DiscoverProfile } from '../services/unimatch';
 import { useSocket } from '../context/SocketContext';
+import { useNavigate } from 'react-router-dom';
 import useUser from '../hooks/useUser';
 import './UniMatch.css';
 
 const UniMatch: React.FC = () => {
     const { usuario, refreshUser } = useUser();
     const { socket } = useSocket();
+    const navigate = useNavigate();
 
     const [profiles, setProfiles] = useState<DiscoverProfile[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -136,16 +138,12 @@ const UniMatch: React.FC = () => {
         loadMyPhoto();
     };
 
-    const handlePhotoNav = (direction: 'prev' | 'next') => {
+    const handlePhotoNav = () => {
         if (currentIndex >= profiles.length) return;
         const totalPhotos = profiles[currentIndex].unimatchPhotos.length;
         if (totalPhotos <= 1) return;
 
-        if (direction === 'next') {
-            setCurrentPhotoIndex(prev => (prev + 1) % totalPhotos);
-        } else {
-            setCurrentPhotoIndex(prev => (prev - 1 + totalPhotos) % totalPhotos);
-        }
+        setCurrentPhotoIndex(prev => (prev + 1) % totalPhotos);
     };
 
     // Touch/Drag handling
@@ -179,6 +177,16 @@ const UniMatch: React.FC = () => {
     const thirdProfile = profiles[currentIndex + 2];
 
     const showFeedback = Math.abs(dragOffset) > 40;
+
+    // Matching logic for highlights
+    const myUniId = typeof usuario?.universidad === 'string' ? usuario.universidad : (usuario?.universidad as any)?._id;
+    const isMatchingUni = currentProfile && myUniId === currentProfile.universidad?._id;
+
+    const myGradoId = typeof usuario?.grado === 'string' ? usuario.grado : (usuario?.grado as any)?._id;
+    const isMatchingDegree = currentProfile && myGradoId === currentProfile.grado?._id;
+
+    const myAsigIds = usuario?.asignaturas?.map(a => typeof a === 'string' ? a : (a as any)._id) || [];
+    const commonSubjects = currentProfile?.asignaturas?.filter(a => myAsigIds.includes(a._id)) || [];
 
     return (
         <>
@@ -257,10 +265,9 @@ const UniMatch: React.FC = () => {
                                                 </div>
                                             )}
 
-                                            {/* Photo nav zones */}
+                                            {/* Photo nav zone (click anywhere to next) */}
                                             <div className="photo-nav-zones">
-                                                <div className="photo-nav-zone" onClick={() => handlePhotoNav('prev')} />
-                                                <div className="photo-nav-zone" onClick={() => handlePhotoNav('next')} />
+                                                <div className="photo-nav-zone full" onClick={handlePhotoNav} />
                                             </div>
 
                                             <img
@@ -287,13 +294,13 @@ const UniMatch: React.FC = () => {
                                                 )}
                                                 <div className="card-tags">
                                                     {currentProfile.universidad && (
-                                                        <span className="card-tag uni">🏫 {currentProfile.universidad.nombre}</span>
+                                                        <span className={`card-tag uni ${isMatchingUni ? 'highlight-match' : ''}`}>🏫 {currentProfile.universidad.nombre}</span>
                                                     )}
                                                     {currentProfile.grado && (
-                                                        <span className="card-tag grado">📚 {currentProfile.grado.nombre}</span>
+                                                        <span className={`card-tag grado ${isMatchingDegree ? 'highlight-match' : ''}`}>📚 {currentProfile.grado.nombre}</span>
                                                     )}
-                                                    {currentProfile.asignaturas?.slice(0, 2).map(a => (
-                                                        <span key={a._id} className="card-tag asig">📖 {a.nombre}</span>
+                                                    {commonSubjects.map(a => (
+                                                        <span key={a._id} className="card-tag asig highlight-match">📖 {a.nombre}</span>
                                                     ))}
                                                 </div>
                                             </div>
@@ -330,7 +337,10 @@ const UniMatch: React.FC = () => {
             </div>
 
             {showWelcome && (
-                <UniMatchWelcomeModal onComplete={handleWelcomeComplete} />
+                <UniMatchWelcomeModal 
+                    onComplete={handleWelcomeComplete} 
+                    onClose={() => navigate('/explore')}
+                />
             )}
 
             {matchData && (

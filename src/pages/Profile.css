@@ -190,7 +190,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin-bottom: 30px;
+  gap: 8px;
 }
 
 .section-title-modern {
@@ -202,10 +202,7 @@
 }
 
 .active-line {
-  width: 60px;
-  height: 2px;
-  background: var(--accent-purple);
-  box-shadow: 0 0 10px var(--accent-purple);
+  display: none;
 }
 
 /* --- Univy Posts Grid --- */
@@ -493,7 +490,7 @@
   gap: 15px;
   width: 100%;
   justify-content: center;
-  margin-bottom: -4px; /* Adjust with active-line */
+  margin-bottom: 20px;
 }
 
 .profile-tab {
@@ -509,6 +506,8 @@
   gap: 8px;
   transition: all 0.3s ease;
   letter-spacing: 0.05em;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 12px;
 }
 
 .profile-tab:hover {
@@ -517,6 +516,7 @@
 
 .profile-tab.active {
   color: var(--accent-purple);
+  border-bottom: 2px solid var(--accent-purple);
 }
 
 /* --- UniMatch Photos Tab --- */
@@ -575,14 +575,13 @@
 }
 
 .unimatch-add-photo {
-  width: 100%;
-  max-width: 300px;
+  width: auto;
   margin: 0 auto;
-  aspect-ratio: 3/4;
+  padding: 12px 24px;
   border: 2px dashed var(--border-subtle);
-  border-radius: 12px;
+  border-radius: 999px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 10px;

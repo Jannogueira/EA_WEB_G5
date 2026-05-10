@@ -5,6 +5,7 @@ import './UniMatchWelcomeModal.css';
 
 interface Props {
     onComplete: () => void;
+    onClose?: () => void;
 }
 
 interface PreviewPhoto {
@@ -12,7 +13,7 @@ interface PreviewPhoto {
     preview: string;
 }
 
-const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete }) => {
+const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
     const [photos, setPhotos] = useState<PreviewPhoto[]>([]);
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,6 +79,11 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete }) => {
     return (
         <div className="welcome-modal-overlay">
             <div className="welcome-modal">
+                {onClose && (
+                    <button className="welcome-close-btn" onClick={onClose}>
+                        <X size={24} />
+                    </button>
+                )}
                 <div className="welcome-icon">🔥</div>
                 <h2>Bienvenido a UniMatch</h2>
                 <p>
@@ -86,7 +92,6 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete }) => {
                 </p>
 
                 <div className="welcome-privacy-notice">
-                    <span className="privacy-icon">🔒</span>
                     <span>
                         Tus fotos de este modo serán visibles para otros usuarios de UniMatch. 
                         Nadie sabrá si les diste ❌ o ❤️ a menos que sea un Match mutuo.
@@ -139,7 +144,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete }) => {
                             Subiendo fotos...
                         </span>
                     ) : (
-                        `Empezar a descubrir 🚀`
+                        `Empezar a descubrir`
                     )}
                 </button>
             </div>

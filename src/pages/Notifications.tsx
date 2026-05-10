@@ -173,6 +173,7 @@ const Notifications: React.FC = () => {
             case "follow":
             case "follow_request": return <UserPlus size={16} color="#a78bfa" />;
             case "follow_accepted": return <Check size={16} color="#10b981" />;
+            case "match": return <Heart size={16} fill="#f59e0b" color="#f59e0b" />;
             default: return null;
         }
     };
@@ -185,6 +186,7 @@ const Notifications: React.FC = () => {
             case "follow": return t('notifications.type.follow');
             case "follow_request": return t('notifications.type.follow_request');
             case "follow_accepted": return t('notifications.type.follow_accepted');
+            case "match": return "¡Es un Match! Ya podéis chatear.";
             default: return "";
         }
     };
@@ -219,7 +221,7 @@ const Notifications: React.FC = () => {
                                 {notifications.map((n) => (
                                     <div 
                                         key={n._id} 
-                                        className={`notification-item ${n.isRead ? "" : "unread"} ${processingId === n._id ? "processing" : ""}`}
+                                        className={`notification-item ${n.isRead ? "" : "unread"} ${processingId === n._id ? "processing" : ""} ${n.type === "match" ? "match" : ""}`}
                                         onClick={() => handleNotificationClick(n)}
                                         style={{ cursor: 'pointer' }}
                                     >
