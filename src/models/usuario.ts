@@ -15,5 +15,6 @@ export interface Usuario {
     grado?: string;
     asignaturas?: string[];
     privado: boolean;
+    hasAcceptedUnimatchTerms?: boolean;
     followStatus?: 'PENDING' | 'ACCEPTED' | null;
 }

@@ -11,7 +11,8 @@ import type { Post } from "../models/post";
 import usePost from "../hooks/usePost";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
-import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap, Clock, Lock } from "lucide-react";
+import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap, Clock, Lock, Flame, Plus, Trash2 } from "lucide-react";
+import { getMyPhotos, getUserPhotos, uploadUnimatchPhoto, deleteUnimatchPhoto, type UnimatchPhoto } from '../services/unimatch';
 import { useTranslation } from "react-i18next";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
@@ -60,6 +61,9 @@ const Profile: React.FC = () => {
   const [isPending, setIsPending] = useState(false);
 
   const [alert, setAlert] = useState<AlertState | null>(null);
+  const [activeTab, setActiveTab] = useState<'posts' | 'unimatch'>('posts');
+  const [unimatchPhotos, setUnimatchPhotos] = useState<UnimatchPhoto[]>([]);
+  const [uploadingUnimatch, setUploadingUnimatch] = useState(false);
 
   const isOwnProfile = !id || id === currentUser?._id;
 
@@ -310,10 +314,37 @@ const Profile: React.FC = () => {
             </header>
 
             <div className="posts-section-divider">
-              <h3 className="section-title-modern">{t('profile.posts_title')}</h3>
+              <div className="profile-tabs">
+                <button
+                  className={`profile-tab ${activeTab === 'posts' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('posts')}
+                >
+                  {t('profile.posts_title')}
+                </button>
+                <button
+                  className={`profile-tab ${activeTab === 'unimatch' ? 'active' : ''}`}
+                  onClick={async () => {
+                    setActiveTab('unimatch');
+                    try {
+                      const targetId = id || currentUser?._id;
+                      if (!targetId) return;
+                      const res = isOwnProfile
+                        ? await getMyPhotos()
+                        : await getUserPhotos(targetId);
+                      setUnimatchPhotos(res.data);
+                    } catch (err) {
+                      console.error('Error loading unimatch photos:', err);
+                    }
+                  }}
+                >
+                  <Flame size={16} /> UniMatch
+                </button>
+              </div>
               <div className="active-line"></div>
             </div>
 
+            {activeTab === 'posts' ? (
+              <>
             {loading ? (
               <div className="state-message">{t('profile.loading_posts')}</div>
             ) : isRestricted ? (
@@ -351,6 +382,72 @@ const Profile: React.FC = () => {
               <div className="empty-state">
                 <span className="empty-icon"><FolderOpen size={48} /></span>
                 <h3>{t('profile.empty_posts')}</h3>
+              </div>
+            )}
+              </>
+            ) : (
+              /* UniMatch Photos Tab */
+              <div className="unimatch-photos-tab">
+                {isOwnProfile && (
+                  <div
+                    className="unimatch-add-photo"
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = async (e: any) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploadingUnimatch(true);
+                        try {
+                          const res = await uploadUnimatchPhoto(file);
+                          setUnimatchPhotos(prev => [...prev, res.data]);
+                        } catch (err) {
+                          console.error('Error uploading unimatch photo:', err);
+                        } finally {
+                          setUploadingUnimatch(false);
+                        }
+                      };
+                      input.click();
+                    }}
+                  >
+                    {uploadingUnimatch ? (
+                      <div className="unimatch-upload-spinner" />
+                    ) : (
+                      <Plus size={32} />
+                    )}
+                    <span>Añadir foto</span>
+                  </div>
+                )}
+                {unimatchPhotos.length > 0 ? (
+                  <div className="unimatch-photos-grid">
+                    {unimatchPhotos.map((photo) => (
+                      <div key={photo._id} className="unimatch-photo-item">
+                        <img src={photo.imageUrl} alt="UniMatch" />
+                        {isOwnProfile && (
+                          <button
+                            className="unimatch-delete-photo"
+                            onClick={async () => {
+                              try {
+                                await deleteUnimatchPhoto(photo._id);
+                                setUnimatchPhotos(prev => prev.filter(p => p._id !== photo._id));
+                              } catch (err) {
+                                console.error('Error deleting photo:', err);
+                              }
+                            }}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : !isOwnProfile ? (
+                  <div className="empty-state">
+                    <span className="empty-icon"><Flame size={48} /></span>
+                    <h3>Sin fotos de UniMatch</h3>
+                  </div>
+                ) : null}
               </div>
             )}
           </main>

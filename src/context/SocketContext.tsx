@@ -62,6 +62,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setNotificationCount(prev => prev + 1);
       });
 
+      newSocket.on('unimatch_match', () => {
+        setNotificationCount(prev => prev + 1);
+      });
+
       return () => {
         newSocket.disconnect();
       };

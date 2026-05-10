@@ -8,6 +8,7 @@ import EditProfile from './pages/EditProfile';
 import Explore from './pages/Explore';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
+import UniMatch from './pages/UniMatch';
 import { SocketProvider } from './context/SocketContext';
 import ThemedBackground from './components/ThemedBackground';
 import './App.css';
@@ -30,6 +31,7 @@ function App() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/unimatch" element={<UniMatch />} />
           <Route path="/profile/:id" element={<Profile />} />
         </Routes>
       </SocketProvider>
