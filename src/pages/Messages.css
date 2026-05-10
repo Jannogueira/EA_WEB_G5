@@ -769,3 +769,30 @@
 /* SCROLLBARS */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 10px; }
+
+/* ANIMACIÓN DE RESALTADO PARA CITAS */
+.message-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.5s;
+  padding: 4px 10px; /* Para que el resaltado tenga algo de espacio extra */
+  margin: -4px -10px; /* Compensa el padding para no romper el layout original */
+  border-radius: 8px;
+}
+
+.message-row.highlight-message {
+  animation: highlight-pulse 2s ease-out;
+}
+
+@keyframes highlight-pulse {
+  0% {
+    background-color: rgba(167, 139, 250, 0.3); /* Color lila suave */
+  }
+  30% {
+    background-color: rgba(167, 139, 250, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}

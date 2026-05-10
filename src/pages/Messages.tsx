@@ -135,16 +135,23 @@ const Messages: React.FC = () => {
                     <div className="modal-empty">{t('messages.loading')}</div>
                   ) : (
                     messages.map((msg) => (
-                      <div
-                        key={msg._id}
-                        className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
+                      <div 
+                        key={msg._id} 
+                        id={msg._id} 
+                        className="message-row"
                       >
+                        <div
+                          className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
+                        >
                         <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""} ${msg.post ? "post-msg" : ""}`}>
                           {msg.parentMessage && !msg.eliminadoParaTodos && (
                             <div className="quoted-message-preview" onClick={() => {
-                              // Opcional: scroll al mensaje original
                               const el = document.getElementById(msg.parentMessage?._id);
-                              el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              if (el) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                el.classList.add('highlight-message');
+                                setTimeout(() => el.classList.remove('highlight-message'), 2000);
+                              }
                             }}>
                                 <span className="quoted-author">{msg.parentMessage.remitente.nombre}</span>
                                 <p className="quoted-text">
@@ -245,6 +252,7 @@ const Messages: React.FC = () => {
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
+                    </div>
                     ))
                   )}
                   <div ref={messagesEndRef} />
