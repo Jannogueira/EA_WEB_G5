@@ -41,32 +41,31 @@ const Profile: React.FC = () => {
       if (!id && !currentUser?._id) return;
 
       const targetId = id || currentUser._id;
-      const res = await getUserById(targetId);
-      const targetUser = res.data;
-      setProfileUser(targetUser);
-      if (targetUser) {
-          setIsFollowing(targetUser.followStatus === 'ACCEPTED');
-          setIsPending(targetUser.followStatus === 'PENDING');
-        }
-
-
-      // Cargar posts
-      const { request } = PostService.getPostsByUserId(targetId);
-      const postsRes = await request;
-      setPosts(postsRes.data.docs || []);
-
-      // Cargar followers/following
-      const [followersRes, followingRes] = await Promise.all([
+      
+      // Lanzar todas las peticiones en paralelo para máxima velocidad
+      const [userRes, postsResRaw, followersRes, followingRes] = await Promise.all([
+        getUserById(targetId),
+        PostService.getPostsByUserId(targetId).request,
         getFollowers(targetId),
         getFollowing(targetId)
       ]);
 
+      const targetUser = userRes.data;
+      const postsData = postsResRaw.data.docs || [];
+
+      // Sincronizar todos los estados al final para evitar renderizado fragmentado ("bloque por bloque")
+      setProfileUser(targetUser);
+      setPosts(postsData);
       setFollowersCount(followersRes.data.seguidores?.length || 0);
       setFollowingCount(followingRes.data.seguidos?.length || 0);
 
-      // Saber si sigues al usuario
-      if (currentUser) {
-        const amIFollowing = (followersRes.data.seguidores || []).some(
+      if (targetUser) {
+        setIsFollowing(targetUser.followStatus === 'ACCEPTED');
+        setIsPending(targetUser.followStatus === 'PENDING');
+      }
+
+      if (currentUser && followersRes.data.seguidores) {
+        const amIFollowing = followersRes.data.seguidores.some(
           (f: any) => (typeof f === "string" ? f : f._id) === currentUser._id
         );
         setIsFollowing(amIFollowing);
@@ -168,7 +167,11 @@ const Profile: React.FC = () => {
                 <div className="profile-avatar-wrapper">
                   <div className="avatar-gradient-border">
                     <div className="profile-avatar-xl">
-                      {profileUser?.nombre?.charAt(0).toUpperCase() || "?"}
+                      {profileUser?.avatarUrl ? (
+                        <img src={profileUser.avatarUrl} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+                      ) : (
+                        profileUser?.nombre?.charAt(0).toUpperCase() || "?"
+                      )}
                     </div>
                   </div>
                 </div>
