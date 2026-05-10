@@ -112,10 +112,16 @@ const Messages: React.FC = () => {
             </div>
           </aside>
 
-          <main className="chat-window">
+          <main className={`chat-window ${activeContact ? "active-on-mobile" : ""}`}>
             {activeContact ? (
               <>
                 <header className="chat-header">
+                  <button 
+                    className="mobile-back-btn" 
+                    onClick={() => openConversation(null)}
+                  >
+                    <X size={20} />
+                  </button>
                   <div className="active-contact-info">
                     <div className="contact-avatar-small">
                       <img src={activeContact.avatarUrl} alt={activeContact.nombre} />

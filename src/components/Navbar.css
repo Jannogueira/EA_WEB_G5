@@ -181,3 +181,22 @@
 .dropdown-item.logout:hover {
   background-color: rgba(255, 75, 75, 0.1);
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+    height: 60px;
+  }
+
+  .user-info-brief {
+    display: none;
+  }
+
+  .navbar-right {
+    gap: 1rem;
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+  }
+}

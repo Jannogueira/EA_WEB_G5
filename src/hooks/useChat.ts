@@ -84,8 +84,12 @@ export default function useChat(currentUserId: string) {
   }, [socket, activeContact, currentUserId]);
 
   // Cargar historial al cambiar de contacto
-  const openConversation = useCallback(async (contact: ChatContact) => {
+  const openConversation = useCallback(async (contact: ChatContact | null) => {
     setActiveContact(contact);
+    if (!contact) {
+      setMessages([]);
+      return;
+    }
     setMessages([]);
     setLoadingHistory(true);
     try {

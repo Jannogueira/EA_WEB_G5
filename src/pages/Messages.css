@@ -14,9 +14,9 @@
 
 /* EL BLOQUE DEL CHAT - ANCLADO PARA EVITAR SALTOS */
 .chat-layout {
-  position: fixed; /* Cambiado a fixed para máxima estabilidad */
+  position: absolute;
   top: 90px;
-  left: 300px; /* 30 (borde) + 240 (sidebar) + 30 (gap) */
+  left: 300px; 
   right: 30px;
   bottom: 30px; 
   
@@ -31,6 +31,43 @@
   overflow: hidden;
   box-shadow: var(--shadow-main);
   z-index: 10;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 1200px) {
+  .chat-layout {
+    left: 100px;
+    right: 15px;
+    top: 80px;
+    bottom: 15px;
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-layout {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 70px;
+    border-radius: 0;
+    grid-template-columns: 1fr;
+    border: none;
+  }
+
+  /* Si hay un chat activo, ocultamos la lista de contactos en móvil */
+  /* Necesitaremos una clase condicional en el componente o usar CSS inteligente */
+  .chat-window.active-on-mobile {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    background: var(--bg-main);
+  }
 }
 
 /* COLUMNA DE CONTACTOS */
@@ -146,6 +183,21 @@
   padding: 15px 30px;
   border-bottom: 1px solid var(--divider);
   background: var(--navbar-bg);
+}
+
+.mobile-back-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .mobile-back-btn {
+    display: block;
+  }
 }
 
 .active-contact-info {

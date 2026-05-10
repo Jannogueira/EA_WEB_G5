@@ -290,17 +290,33 @@
     to { opacity: 1; }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 768px) {
     .post-detail-content {
         flex-direction: column;
-        height: 95vh;
-        width: 95%;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+    .post-detail-close {
+        top: 15px;
+        right: 15px;
+        z-index: 3000;
+        background: rgba(0,0,0,0.5);
     }
     .post-detail-image-side {
-        flex: 0.6;
+        flex: 0.5;
     }
     .post-detail-info-side {
         flex: 1;
         min-width: 0;
+    }
+    .post-detail-header {
+        padding: 10px 15px;
+    }
+    .detail-comment-input-container {
+        padding: 10px 15px;
+    }
+    .post-detail-comments-list {
+        padding: 15px;
     }
 }
