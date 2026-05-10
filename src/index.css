@@ -71,6 +71,58 @@ button {
   font-family: var(--sans);
 }
 
+/* --- GLOBAL RESPONSIVE LAYOUT --- */
+.main-layout {
+  display: flex;
+  flex: 1;
+  margin-top: 70px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.content-area {
+  flex: 1;
+  margin-left: 280px; /* Space for fixed sidebar */
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  width: calc(100% - 280px);
+}
+
+@media (max-width: 1200px) {
+  .content-area {
+    margin-left: 100px;
+    padding: 1.5rem;
+    width: calc(100% - 100px);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-layout {
+    margin-top: 60px;
+    margin-bottom: 70px; /* Space for bottom sidebar */
+  }
+  
+  .content-area {
+    margin-left: 0;
+    padding: 1rem;
+    width: 100%;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-area {
+    padding: 0.75rem;
+  }
+  
+  h1 {
+    font-size: 1.75rem !important;
+  }
+}
+
 /* Smooth theme transitions */
 body, nav, div, section, input, button, span, p {
   transition: background-color var(--transition-speed) ease, 

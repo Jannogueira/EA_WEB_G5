@@ -123,26 +123,41 @@
   background: var(--accent-purple);
   color: white;
   border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.accept-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .reject-btn {
   background: var(--bg-input);
   color: #ef4444;
   border: 1px solid var(--border-subtle);
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.reject-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  transform: translateY(-1px);
 }
 
 .notification-actions {
@@ -192,11 +207,30 @@
 }
 
 .notification-post-preview {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--border-subtle);
+  border: 1.5px solid var(--border-subtle);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notification-post-preview:hover {
+  transform: scale(1.1) rotate(2deg);
+  border-color: var(--accent-purple);
+  box-shadow: 0 6px 16px rgba(167, 139, 250, 0.3);
+}
+
+.notification-post-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  image-rendering: -webkit-optimize-contrast; /* Sharpness for Webkit */
+  image-rendering: crisp-edges;
 }
 
 .empty-notifications {

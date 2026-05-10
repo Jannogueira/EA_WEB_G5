@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Messages.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import useChat from "../hooks/useChat";
 import { useSocket } from "../context/SocketContext";
-import { Send, User, MessageCircle, Search, X, Trash2 } from "lucide-react";
+import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ChatContact } from "../models/message";
 
 const Messages: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { usuario } = useUser();
   const { unreadCounts, markAsRead } = useSocket();
   const {
@@ -23,10 +25,13 @@ const Messages: React.FC = () => {
     sendMessage,
     emitTyping,
     deleteMessage,
+    reactToMessage,
   } = useChat(usuario?._id || "");
 
   const [inputMessage, setInputMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeReactionPicker, setActiveReactionPicker] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<any>(null);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; messageId: string; isOwn: boolean }>({
     isOpen: false,
     messageId: "",
@@ -48,8 +53,9 @@ const Messages: React.FC = () => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
-    sendMessage(inputMessage);
+    sendMessage(inputMessage, replyingTo?._id);
     setInputMessage("");
+    setReplyingTo(null);
   };
 
   const filteredContacts = useMemo(() => {
@@ -106,10 +112,16 @@ const Messages: React.FC = () => {
             </div>
           </aside>
 
-          <main className="chat-window">
+          <main className={`chat-window ${activeContact ? "active-on-mobile" : ""}`}>
             {activeContact ? (
               <>
                 <header className="chat-header">
+                  <button 
+                    className="mobile-back-btn" 
+                    onClick={() => openConversation(null)}
+                  >
+                    <X size={20} />
+                  </button>
                   <div className="active-contact-info">
                     <div className="contact-avatar-small">
                       <img src={activeContact.avatarUrl} alt={activeContact.nombre} />
@@ -123,26 +135,124 @@ const Messages: React.FC = () => {
                     <div className="modal-empty">{t('messages.loading')}</div>
                   ) : (
                     messages.map((msg) => (
-                      <div
-                        key={msg._id}
-                        className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
+                      <div 
+                        key={msg._id} 
+                        id={msg._id} 
+                        className="message-row"
                       >
-                        <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""}`}>
-                          {msg.eliminadoParaTodos ? t('messages.deleted') : msg.contenido}
+                        <div
+                          className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
+                        >
+                        <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""} ${msg.post ? "post-msg" : ""}`}>
+                          {msg.parentMessage && !msg.eliminadoParaTodos && (
+                            <div className="quoted-message-preview" onClick={() => {
+                              const el = document.getElementById(msg.parentMessage?._id);
+                              if (el) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                el.classList.add('highlight-message');
+                                setTimeout(() => el.classList.remove('highlight-message'), 2000);
+                              }
+                            }}>
+                                <span className="quoted-author">{msg.parentMessage.remitente.nombre}</span>
+                                <p className="quoted-text">
+                                  {msg.parentMessage.eliminadoParaTodos 
+                                    ? t('messages.deleted') 
+                                    : msg.parentMessage.post 
+                                      ? "📷 " + (msg.parentMessage.post.caption || "Publicación")
+                                      : msg.parentMessage.contenido}
+                                </p>
+                            </div>
+                          )}
+                          {msg.eliminadoParaTodos ? (
+                            t('messages.deleted')
+                          ) : msg.post ? (
+                            <div className="shared-post-card" onClick={() => navigate(`/profile/${msg.post?.usuario?._id}?postId=${msg.post?._id}`)}>
+                              <div className="shared-post-header">
+                                <img src={msg.post.usuario?.avatarUrl} alt="" className="shared-post-avatar" />
+                                <span>{msg.post.usuario?.nombre}</span>
+                              </div>
+                              {msg.post.imageUrl && (
+                                <div className="shared-post-image">
+                                  <img src={msg.post.imageUrl} alt="" />
+                                </div>
+                              )}
+                              <div className="shared-post-caption">
+                                {msg.post.caption}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className={msg.contenido.includes('privada') ? 'private-msg-text' : ''}>
+                              {msg.contenido}
+                            </div>
+                          )}
+                          
+                          {/* REACCIONES ACTIVAS */}
+                          {msg.reactions && msg.reactions.length > 0 && !msg.eliminadoParaTodos && (
+                            <div className="message-reactions-container">
+                                {Object.entries(
+                                  msg.reactions.reduce((acc: any, curr) => {
+                                    acc[curr.emoji] = (acc[curr.emoji] || 0) + 1;
+                                    return acc;
+                                  }, {})
+                                ).map(([emoji, count]: any) => (
+                                  <div 
+                                    key={emoji} 
+                                    className={`reaction-badge ${msg.reactions?.some(r => (typeof r.usuario === 'string' ? r.usuario : r.usuario._id) === usuario?._id && r.emoji === emoji) ? 'user-reacted' : ''}`}
+                                    onClick={() => reactToMessage(msg._id, emoji)}
+                                  >
+                                    <span>{emoji}</span>
+                                    {count > 1 && <span className="reaction-count">{count}</span>}
+                                  </div>
+                                ))}
+                            </div>
+                          )}
                           
                           {!msg.eliminadoParaTodos && (
-                            <button 
-                              className="msg-delete-btn" 
-                              onClick={() => handleDeleteClick(msg._id, msg.remitente._id === usuario?._id)}
-                            >
-                              <Trash2 size={14} />
-                            </button>
+                            <div className="message-hover-actions">
+                              <button 
+                                className="msg-action-btn"
+                                onClick={() => setReplyingTo(msg)}
+                              >
+                                <Reply size={14} />
+                              </button>
+                              <button 
+                                className="msg-action-btn"
+                                onClick={() => setActiveReactionPicker(activeReactionPicker === msg._id ? null : msg._id)}
+                              >
+                                <Smile size={14} />
+                              </button>
+
+                              <button 
+                                className="msg-action-btn" 
+                                onClick={() => handleDeleteClick(msg._id, msg.remitente._id === usuario?._id)}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+
+                              {/* PICKER DE EMOJIS */}
+                              {activeReactionPicker === msg._id && (
+                                <div className="emoji-mini-picker">
+                                  {['❤️', '😂', '😮', '😢', '🔥', '👍'].map(emoji => (
+                                    <span 
+                                      key={emoji} 
+                                      onClick={() => {
+                                        reactToMessage(msg._id, emoji);
+                                        setActiveReactionPicker(null);
+                                      }}
+                                    >
+                                      {emoji}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           )}
                         </div>
                         <span className="message-time">
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
+                    </div>
                     ))
                   )}
                   <div ref={messagesEndRef} />
@@ -155,6 +265,19 @@ const Messages: React.FC = () => {
                       <span></span><span></span><span></span>
                     </div>
                     <span>{activeContact.nombre} {t('messages.typing')}</span>
+                  </div>
+                )}
+
+                {/* PREVIEW DE RESPUESTA */}
+                {replyingTo && (
+                  <div className="reply-preview-container">
+                    <div className="reply-preview-content">
+                      <span className="reply-author">{replyingTo.remitente.nombre}</span>
+                      <p className="reply-text">{replyingTo.contenido}</p>
+                    </div>
+                    <button className="cancel-reply-btn" onClick={() => setReplyingTo(null)}>
+                      <X size={18} />
+                    </button>
                   </div>
                 )}
 

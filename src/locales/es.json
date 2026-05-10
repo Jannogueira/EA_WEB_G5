@@ -75,7 +75,9 @@
       "follow_request": "quiere seguirte.",
       "follow_accepted": "ha aceptado tu solicitud de seguimiento."
     },
-    "follow_back": "Devolver follow"
+    "follow_back": "Devolver follow",
+    "confirm": "Confirmar",
+    "reject": "Rechazar"
   },
   "create_post": {
     "title": "Nueva Publicación",
@@ -89,7 +91,10 @@
   "postcard": {
     "comment_placeholder": "Escribe un comentario...",
     "send_comment": "Enviar comentario",
-    "like_comment": "Me gusta"
+    "like_comment": "Me gusta",
+    "likes": "Me gusta",
+    "share": "Compartir",
+    "like_post": "Me gusta"
   },
   "messages": {
     "search": "Buscar chat...",
@@ -103,7 +108,18 @@
     "delete_me": "Eliminar para mí",
     "delete_everyone": "Eliminar para todos",
     "cancel": "Cancelar",
-    "deleted": "El mensaje ha sido eliminado"
+    "deleted": "El mensaje ha sido eliminado",
+    "private_post": "Esta publicación es privada y no puedes verla."
+  },
+  "share": {
+    "title": "Enviar publicación",
+    "send": "Enviar",
+    "success": "¡Enviado con éxito!",
+    "empty": "No se encontraron amigos"
+  },
+  "post_detail": {
+    "reply": "Responder",
+    "view_more": "Ver los {{count}} comentarios"
   },
   "navbar": {
     "loading": "Cargando...",

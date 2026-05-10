@@ -157,16 +157,7 @@ const EditProfile: React.FC = () => {
                   required
                 />
               </div>
-              {/* AVATAR URL */}
-              <div className="form-group-modern">
-                <label>{t('edit_profile.label_avatar')}</label>
-                <input
-                  name="avatarUrl"
-                  value={formData.avatarUrl}
-                  onChange={handleChange}
-                  placeholder={t('edit_profile.label_avatar_help')}
-                />
-              </div>
+
               {/* DESCRIPCIÓN */}
               <div className="form-group-modern">
                 <label>{t('edit_profile.label_bio')}</label>
@@ -192,15 +183,18 @@ const EditProfile: React.FC = () => {
               </div>
               {/* BOTONES */}
               {/* Privacidad */}
-              <div className="form-group-modern checkbox-group">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="privado"
-                    checked={formData.privado}
-                    onChange={(e) => setFormData(prev => ({ ...prev, privado: e.target.checked }))}
-                  />
-                  <span>{t('edit_profile.label_privacy')}</span>
+              <div className="form-group-modern switch-group">
+                <label className="switch-label">
+                  <div className="switch-text">{t('edit_profile.label_privacy')}</div>
+                  <div className="univy-switch">
+                    <input
+                      type="checkbox"
+                      name="privado"
+                      checked={formData.privado}
+                      onChange={(e) => setFormData(prev => ({ ...prev, privado: e.target.checked }))}
+                    />
+                    <span className="slider round"></span>
+                  </div>
                 </label>
                 <p className="field-help">{t('edit_profile.privacy_help')}</p>
               </div>

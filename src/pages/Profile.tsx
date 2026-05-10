@@ -6,19 +6,49 @@ import Navbar from "../components/Navbar";
 import PostService from "../services/post";
 import { getFollowers, getFollowing, getUserById, toggleFollow} from "../services/usuario";
 import Postcard from "../components/Postcard";
+import PostDetailModal from "../components/PostDetailModal";
 import type { Post } from "../models/post";
+import usePost from "../hooks/usePost";
 import useUser from "../hooks/useUser";
 import type { Usuario } from "../models/usuario";
 import { X, Heart, MessageCircle, FolderOpen, UserPlus, UserMinus, NotebookPen, GraduationCap, Clock, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
+import SharePostModal from "../components/SharePostModal";
+
+const ProfilePostModal: React.FC<{ post: Post; onClose: () => void; currentUserId: string | null }> = ({ post, onClose, currentUserId }) => {
+  const { post: p, likePost, likeComment, addComment, loadingComment } = usePost(post);
+  const [showShareModal, setShowShareModal] = useState(false);
+  
+  return (
+    <>
+      <PostDetailModal 
+        post={p}
+        currentUserId={currentUserId}
+        onClose={onClose}
+        onLike={likePost}
+        onLikeComment={likeComment}
+        onAddComment={addComment}
+        loadingComment={loadingComment}
+        onShare={() => setShowShareModal(true)}
+      />
+      {showShareModal && (
+        <SharePostModal 
+          postId={p._id}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
+    </>
+  );
+};
 
 const Profile: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const { usuario: currentUser } = useUser();
+  const currentUserId = currentUser?._id;
 
   const [profileUser, setProfileUser] = useState<Usuario | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -41,32 +71,31 @@ const Profile: React.FC = () => {
       if (!id && !currentUser?._id) return;
 
       const targetId = id || currentUser._id;
-      const res = await getUserById(targetId);
-      const targetUser = res.data;
-      setProfileUser(targetUser);
-      if (targetUser) {
-          setIsFollowing(targetUser.followStatus === 'ACCEPTED');
-          setIsPending(targetUser.followStatus === 'PENDING');
-        }
-
-
-      // Cargar posts
-      const { request } = PostService.getPostsByUserId(targetId);
-      const postsRes = await request;
-      setPosts(postsRes.data.docs || []);
-
-      // Cargar followers/following
-      const [followersRes, followingRes] = await Promise.all([
+      
+      // Lanzar todas las peticiones en paralelo para máxima velocidad
+      const [userRes, postsResRaw, followersRes, followingRes] = await Promise.all([
+        getUserById(targetId),
+        PostService.getPostsByUserId(targetId).request,
         getFollowers(targetId),
         getFollowing(targetId)
       ]);
 
+      const targetUser = userRes.data;
+      const postsData = postsResRaw.data.docs || [];
+
+      // Sincronizar todos los estados al final para evitar renderizado fragmentado ("bloque por bloque")
+      setProfileUser(targetUser);
+      setPosts(postsData);
       setFollowersCount(followersRes.data.seguidores?.length || 0);
       setFollowingCount(followingRes.data.seguidos?.length || 0);
 
-      // Saber si sigues al usuario
-      if (currentUser) {
-        const amIFollowing = (followersRes.data.seguidores || []).some(
+      if (targetUser) {
+        setIsFollowing(targetUser.followStatus === 'ACCEPTED');
+        setIsPending(targetUser.followStatus === 'PENDING');
+      }
+
+      if (currentUser && followersRes.data.seguidores) {
+        const amIFollowing = followersRes.data.seguidores.some(
           (f: any) => (typeof f === "string" ? f : f._id) === currentUser._id
         );
         setIsFollowing(amIFollowing);
@@ -89,6 +118,24 @@ const Profile: React.FC = () => {
 
   fetchProfileData();
 }, [id, currentUser]);
+
+  // Manejar apertura de post desde URL (notificaciones)
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const postId = queryParams.get('postId') || queryParams.get('post');
+    
+    if (postId) {
+      const postInList = posts.find(p => p._id === postId);
+      if (postInList) {
+        setSelectedPost(postInList);
+      } else if (!loading) {
+        // Carga el post individualmente si no está en la lista de perfil
+        PostService.getPostById(postId)
+          .then(res => setSelectedPost(res.data))
+          .catch(err => console.error("Error al cargar post enlazado:", err));
+      }
+    }
+  }, [posts, loading]);
 
   const handleToggleFollow = async () => {
     if (!profileUser || !currentUser) return;
@@ -150,7 +197,11 @@ const Profile: React.FC = () => {
                 <div className="profile-avatar-wrapper">
                   <div className="avatar-gradient-border">
                     <div className="profile-avatar-xl">
-                      {profileUser?.nombre?.charAt(0).toUpperCase() || "?"}
+                      {profileUser?.avatarUrl ? (
+                        <img src={profileUser.avatarUrl} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+                      ) : (
+                        profileUser?.nombre?.charAt(0).toUpperCase() || "?"
+                      )}
                     </div>
                   </div>
                 </div>
@@ -160,6 +211,12 @@ const Profile: React.FC = () => {
                   <div className="username-row">
                     <h2 className="profile-display-name">
                       {profileUser?.nombre}
+                      {profileUser?.privado && (
+                        <span className="private-badge">
+                          <Lock size={14} />
+                          {t('edit_profile.label_privacy')}
+                        </span>
+                      )}
                     </h2>
 
                     {isOwnProfile ? (
@@ -301,23 +358,11 @@ const Profile: React.FC = () => {
       </div>
 
       {selectedPost && (
-        <div
-          className="post-modal-overlay"
-          onClick={() => setSelectedPost(null)}
-        >
-          <div
-            className="post-modal-container"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="modal-close-x"
-              onClick={() => setSelectedPost(null)}
-            >
-              <X size={24} />
-            </button>
-            <Postcard post={selectedPost} />
-          </div>
-        </div>
+        <ProfilePostModal 
+          post={selectedPost} 
+          onClose={() => setSelectedPost(null)} 
+          currentUserId={currentUserId || null}
+        />
       )}
     </div>
   );
