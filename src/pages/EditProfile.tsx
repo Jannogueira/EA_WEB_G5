@@ -6,10 +6,13 @@ import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import { useTranslation } from "react-i18next";
 import AsignaturasModal from "../components/AsignaturasModal";
+import AcademicSelectorModal from "../components/AcademicSelectorModal";
 import { uploadImage } from "../services/upload";
-import { Loader2, Camera } from "lucide-react";
+import { Loader2, Camera, GraduationCap, Library, AlertTriangle } from "lucide-react";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
+import type { Universidad } from "../models/universidad";
+import type { Grado } from "../models/grado";
 
 const EditProfile: React.FC = () => {
   const { t } = useTranslation();
@@ -17,8 +20,15 @@ const EditProfile: React.FC = () => {
   const { usuario, updateProfile, loading } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [academicModalOpen, setAcademicModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
   const [alert, setAlert] = useState<AlertState | null>(null);
+
+  const [selectedUni, setSelectedUni] = useState<Universidad | null>(null);
+  const [selectedGrado, setSelectedGrado] = useState<Grado | null>(null);
+  const [userAsignaturas, setUserAsignaturas] = useState<any[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -29,7 +39,7 @@ const EditProfile: React.FC = () => {
   });
 
   useEffect(() => {
-    if (usuario) {
+    if (usuario && !isInitialized) {
       setFormData({
         nombre: usuario.nombre || "",
         email: usuario.email || "",
@@ -37,8 +47,22 @@ const EditProfile: React.FC = () => {
         descripcion: usuario.descripcion || "",
         privado: usuario.privado || false
       });
+      
+      if (usuario.universidad && typeof usuario.universidad === 'object') {
+        setSelectedUni(usuario.universidad as Universidad);
+      }
+      
+      if (usuario.grado && typeof usuario.grado === 'object') {
+        setSelectedGrado(usuario.grado as Grado);
+      }
+
+      if (usuario.asignaturas) {
+        setUserAsignaturas(usuario.asignaturas);
+      }
+      
+      setIsInitialized(true);
     }
-  }, [usuario]);
+  }, [usuario, isInitialized]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -73,9 +97,48 @@ const EditProfile: React.FC = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validación: El grado depende de la universidad
+    if (selectedUni && !selectedGrado) {
+        setAlert({
+            type: 'error',
+            title: 'Información incompleta',
+            message: 'Si seleccionas una universidad, debes seleccionar también un grado académico.'
+        });
+        return;
+    }
+
     try {
-      await updateProfile(formData);
-      navigate("/profile");
+      setSavingProfile(true);
+      const dataToSave = {
+        ...formData,
+        universidad: selectedUni?._id,
+        grado: selectedGrado?._id
+      };
+      
+      const updatedUser = await updateProfile(dataToSave);
+      
+      // Actualizamos los estados locales con los datos frescos del servidor
+      if (updatedUser) {
+        if (updatedUser.universidad && typeof updatedUser.universidad === 'object') {
+            setSelectedUni(updatedUser.universidad);
+        }
+        if (updatedUser.grado && typeof updatedUser.grado === 'object') {
+            setSelectedGrado(updatedUser.grado);
+        }
+        setUserAsignaturas(updatedUser.asignaturas || []);
+      }
+
+      setAlert({
+        type: 'success',
+        title: t('edit_profile.save_success_title') || '¡Éxito!',
+        message: t('edit_profile.save_success_msg') || 'Tu perfil se ha actualizado correctamente.'
+      });
+
+      setTimeout(() => {
+        navigate("/profile");
+      }, 1500);
+
       } catch (error: any) {
           const msg =
           error.response?.data?.message ||
@@ -87,11 +150,25 @@ const EditProfile: React.FC = () => {
               title: 'Error al guardar cambios',
               message: msg
           });
+    } finally {
+        setSavingProfile(false);
     }
+  };
+
+  const handleAcademicSelect = (uni: Universidad, grado: Grado) => {
+    setSelectedUni(uni);
+    setSelectedGrado(grado);
+    
+    setAlert({
+        type: 'info',
+        title: 'Cambio Académico detectado',
+        message: `Has seleccionado: ${uni.nombre} - ${grado.nombre}. Recuerda guardar los cambios para aplicarlos.`
+    });
   };
 
   const handleUserUpdated = (updatedUser: any) => {
     // sincroniza UI tras editar asignaturas
+    setUserAsignaturas(updatedUser.asignaturas || []);
     localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
 
@@ -170,16 +247,65 @@ const EditProfile: React.FC = () => {
                   style={{ resize: "vertical", minHeight: "80px" }}
                 />
               </div>
-              {/* BOTÓN ASIGNATURAS */}
-              <div className="form-group-modern">
-                <label>{t('edit_profile.label_subjects')}</label>
-                <button
-                  type="button"
-                  className="edit-profile-btn-premium"
-                  onClick={() => setModalOpen(true)}
-                >
-                  {t('edit_profile.edit_btn')}
-                </button>
+
+              {/* SECCIÓN ACADÉMICA UNIFICADA */}
+              <div className="academic-edit-section">
+                <h2 className="section-title-modern">Información Académica</h2>
+                
+                <div className="academic-unified-card">
+                    <div className="academic-details-grid">
+                        <div className="academic-detail-item">
+                            <div className="detail-icon"><Library size={20} /></div>
+                            <div className="detail-info">
+                                <label>Universidad</label>
+                                <p>{selectedUni?.nombre || 'No seleccionada'}</p>
+                            </div>
+                        </div>
+
+                        <div className="academic-detail-item">
+                            <div className="detail-icon"><GraduationCap size={20} /></div>
+                            <div className="detail-info">
+                                <label>Grado</label>
+                                <p>{selectedGrado?.nombre || 'No seleccionado'}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        className="change-academic-btn-centered"
+                        onClick={() => setAcademicModalOpen(true)}
+                    >
+                        Cambiar Universidad o Grado
+                    </button>
+
+                    <div className="academic-divider"></div>
+
+                    <div className="subjects-section-inside">
+                        <div className="subjects-header">
+                            <label>Mis Asignaturas</label>
+                            <button
+                                type="button"
+                                className="small-edit-link"
+                                onClick={() => setModalOpen(true)}
+                            >
+                                Gestionar
+                            </button>
+                        </div>
+                        
+                        <div className="subjects-chips-container">
+                            {userAsignaturas.length > 0 ? (
+                                userAsignaturas.map((asig: any) => (
+                                    <span key={asig._id || asig} className="subject-chip">
+                                        {typeof asig === 'object' ? asig.nombre : 'Cargando...'}
+                                    </span>
+                                ))
+                            ) : (
+                                <p className="no-subjects-text">No has seleccionado ninguna asignatura aún.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
               </div>
               {/* BOTONES */}
               {/* Privacidad */}
@@ -210,9 +336,14 @@ const EditProfile: React.FC = () => {
                 <button
                   type="submit"
                   className="save-btn-premium"
-                  disabled={loading || uploading}
+                  disabled={loading || uploading || savingProfile}
                 >
-                  {loading || uploading ? t('edit_profile.saving') : t('edit_profile.save')}
+                  {loading || uploading || savingProfile ? (
+                    <span className="btn-loading-flex">
+                      <Loader2 size={18} className="animate-spin" />
+                      {t('edit_profile.saving')}
+                    </span>
+                  ) : t('edit_profile.save')}
                 </button>
               </div>
             </form>
@@ -222,12 +353,21 @@ const EditProfile: React.FC = () => {
       {/* MODAL ASIGNATURAS */}
       {usuario && (
         <AsignaturasModal
-          gradoId={usuario.grado || ""}
+          gradoId={typeof selectedGrado === 'object' ? selectedGrado?._id : (selectedGrado || "")}
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           onUpdated={handleUserUpdated}
         />
       )}
+
+      {/* MODAL ACADÉMICO */}
+      <AcademicSelectorModal
+        open={academicModalOpen}
+        onClose={() => setAcademicModalOpen(false)}
+        onSelect={handleAcademicSelect}
+        initialUni={selectedUni}
+        initialGrado={selectedGrado}
+      />
     </div>
   );
 };

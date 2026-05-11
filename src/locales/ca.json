@@ -60,7 +60,14 @@
     "cancel": "Cancel·lar",
     "saving": "Guardant...",
     "save": "Guardar Canvis",
-    "upload_error": "Error en pujar l'avatar. Torna-ho a intentar."
+    "upload_error": "Error en pujar l'avatar. Torna-ho a intentar.",
+    "save_success_title": "Èxit!",
+    "save_success_msg": "El teu perfil s'ha actualitzat correctament.",
+    "label_academic": "Informació Acadèmica",
+    "label_university": "Universitat",
+    "label_degree": "Grau",
+    "change_academic_btn": "Canviar Universitat o Grau",
+    "academic_change_warning": "Has canviat la teva universitat o grau. No oblidis guardar els canvis i actualitzar les teves assignatures si cal."
   },
   "notifications": {
     "title": "Notificacions",

@@ -60,7 +60,14 @@
     "cancel": "Cancelar",
     "saving": "Guardando...",
     "save": "Guardar Cambios",
-    "upload_error": "Error al subir el avatar. Inténtalo de nuevo."
+    "upload_error": "Error al subir el avatar. Inténtalo de nuevo.",
+    "save_success_title": "¡Éxito!",
+    "save_success_msg": "Tu perfil se ha actualizado correctamente.",
+    "label_academic": "Información Académica",
+    "label_university": "Universidad",
+    "label_degree": "Grado",
+    "change_academic_btn": "Cambiar Universidad o Grado",
+    "academic_change_warning": "Has cambiado tu universidad o grado. No olvides guardar los cambios y actualizar tus asignaturas si es necesario."
   },
   "notifications": {
     "title": "Notificaciones",
