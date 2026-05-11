@@ -11,7 +11,8 @@ const Register = () => {
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
 
   const [alert, setAlert] = useState<AlertState | null>(null);
@@ -28,8 +29,18 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (formData.password !== formData.confirmPassword) {
+      setAlert({
+        type: 'error',
+        title: 'Error de validación',
+        message: 'Las contraseñas no coinciden'
+      });
+      return;
+    }
+
     try {
-      await register(formData);
+      const { confirmPassword, ...dataToSubmit } = formData;
+      await register(dataToSubmit);
             
     } catch (error: any) {
       const msg =
@@ -95,6 +106,19 @@ const Register = () => {
               type="password"
               name="password"
               value={formData.password}
+              onChange={handleChange}
+              disabled={loading}
+              minLength={6}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Repetir Contraseña</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
               onChange={handleChange}
               disabled={loading}
               minLength={6}
