@@ -34,8 +34,11 @@ const AcademicSelectorModal: React.FC<Props> = ({
         if (open) {
             fetchUniversidades();
             setStep(1);
+            // Sincronizar con los valores del padre por si han cambiado
+            setSelectedUni(initialUni || null);
+            setSelectedGrado(initialGrado || null);
         }
-    }, [open]);
+    }, [open, initialUni, initialGrado]);
 
     useEffect(() => {
         if (selectedUni?._id && step === 2) {
@@ -80,6 +83,7 @@ const AcademicSelectorModal: React.FC<Props> = ({
 
     const handleSelectGrado = (id: string) => {
         const grado = grados.find(g => g._id === id);
+        console.log('Seleccionando grado:', id, grado);
         if (grado) {
             setSelectedGrado(grado);
         }

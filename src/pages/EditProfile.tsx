@@ -28,7 +28,6 @@ const EditProfile: React.FC = () => {
   const [selectedUni, setSelectedUni] = useState<Universidad | null>(null);
   const [selectedGrado, setSelectedGrado] = useState<Grado | null>(null);
   const [userAsignaturas, setUserAsignaturas] = useState<any[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -39,30 +38,42 @@ const EditProfile: React.FC = () => {
   });
 
   useEffect(() => {
-    if (usuario && !isInitialized) {
-      setFormData({
+    if (usuario) {
+      setFormData(prev => ({
+        ...prev,
         nombre: usuario.nombre || "",
         email: usuario.email || "",
         avatarUrl: usuario.avatarUrl || "",
         descripcion: usuario.descripcion || "",
         privado: usuario.privado || false
-      });
+      }));
       
-      if (usuario.universidad && typeof usuario.universidad === 'object') {
-        setSelectedUni(usuario.universidad as Universidad);
+      // Solo actualizamos si no hay una selección local activa o si es la primera carga
+      if (!selectedUni || (typeof usuario.universidad === 'object' && usuario.universidad?._id !== selectedUni._id)) {
+          if (usuario.universidad) {
+            if (typeof usuario.universidad === 'object') {
+              setSelectedUni(usuario.universidad as Universidad);
+            } else {
+              setSelectedUni({ _id: usuario.universidad, nombre: 'Universidad' } as any);
+            }
+          }
       }
       
-      if (usuario.grado && typeof usuario.grado === 'object') {
-        setSelectedGrado(usuario.grado as Grado);
+      if (!selectedGrado || (typeof usuario.grado === 'object' && usuario.grado?._id !== selectedGrado._id)) {
+          if (usuario.grado) {
+            if (typeof usuario.grado === 'object') {
+              setSelectedGrado(usuario.grado as Grado);
+            } else {
+              setSelectedGrado({ _id: usuario.grado, nombre: 'Grado' } as any);
+            }
+          }
       }
 
       if (usuario.asignaturas) {
         setUserAsignaturas(usuario.asignaturas);
       }
-      
-      setIsInitialized(true);
     }
-  }, [usuario, isInitialized]);
+  }, [usuario]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -98,12 +109,13 @@ const EditProfile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validación: El grado depende de la universidad
-    if (selectedUni && !selectedGrado) {
+    // Validación: Solo bloqueamos si hay una universidad nueva seleccionada sin grado
+    // Pero si el usuario ya tenía datos parciales o no quiere poner nada, dejamos pasar.
+    if (selectedUni && !selectedGrado && selectedUni.nombre !== 'Universidad guardada') {
         setAlert({
             type: 'error',
             title: 'Información incompleta',
-            message: 'Si seleccionas una universidad, debes seleccionar también un grado académico.'
+            message: 'Si seleccionas una nueva universidad, por favor selecciona también su grado correspondiente.'
         });
         return;
     }
@@ -118,13 +130,13 @@ const EditProfile: React.FC = () => {
       
       const updatedUser = await updateProfile(dataToSave);
       
-      // Actualizamos los estados locales con los datos frescos del servidor
+      // Sincronización forzada tras guardado exitoso
       if (updatedUser) {
-        if (updatedUser.universidad && typeof updatedUser.universidad === 'object') {
-            setSelectedUni(updatedUser.universidad);
+        if (updatedUser.universidad) {
+          setSelectedUni(typeof updatedUser.universidad === 'object' ? updatedUser.universidad : { _id: updatedUser.universidad, nombre: selectedUni?.nombre || 'Universidad' } as any);
         }
-        if (updatedUser.grado && typeof updatedUser.grado === 'object') {
-            setSelectedGrado(updatedUser.grado);
+        if (updatedUser.grado) {
+          setSelectedGrado(typeof updatedUser.grado === 'object' ? updatedUser.grado : { _id: updatedUser.grado, nombre: selectedGrado?.nombre || 'Grado' } as any);
         }
         setUserAsignaturas(updatedUser.asignaturas || []);
       }
@@ -156,6 +168,7 @@ const EditProfile: React.FC = () => {
   };
 
   const handleAcademicSelect = (uni: Universidad, grado: Grado) => {
+    console.log('Recibida selección académica en EditProfile:', uni, grado);
     setSelectedUni(uni);
     setSelectedGrado(grado);
     
@@ -266,7 +279,9 @@ const EditProfile: React.FC = () => {
                             <div className="detail-icon"><GraduationCap size={20} /></div>
                             <div className="detail-info">
                                 <label>Grado</label>
-                                <p>{selectedGrado?.nombre || 'No seleccionado'}</p>
+                                <p className={!selectedGrado?.nombre || selectedGrado?.nombre === 'No seleccionado' ? 'text-error-highlight' : ''}>
+                                    {selectedGrado?.nombre || 'No seleccionado'}
+                                </p>
                             </div>
                         </div>
                     </div>

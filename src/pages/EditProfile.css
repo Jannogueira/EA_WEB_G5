@@ -213,8 +213,9 @@
 
 .academic-details-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    width: 100%;
 }
 
 .academic-detail-item {
@@ -249,7 +250,7 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    overflow: hidden;
+    min-width: 0; /* Clave para que el texto contenido respete el ancho del grid */
 }
 
 .detail-info label {
@@ -265,9 +266,8 @@
     font-weight: 600;
     color: var(--text-main);
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.4;
+    word-break: break-word; /* Permite romper palabras si son demasiado largas */
 }
 
 .change-academic-btn-centered {
@@ -346,6 +346,11 @@
     color: var(--text-muted);
     font-style: italic;
     text-align: center;
+}
+
+.text-error-highlight {
+    color: #ef4444 !important;
+    font-weight: 700 !important;
 }
 
 @keyframes scaleIn {
