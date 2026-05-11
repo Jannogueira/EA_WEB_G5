@@ -9,7 +9,7 @@
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10000;
   height: 70px;
 }
 
@@ -79,6 +79,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  min-width: 120px;
+  justify-content: center;
+  gap: 4px;
 }
 
 .user-nav-name {
@@ -116,6 +119,67 @@
 
 .profile-initial-trigger:hover {
   transform: scale(1.05);
+}
+
+/* --- SKELETONS --- */
+.nav-skeleton {
+  background: var(--bg-input);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+[data-theme='light'] .nav-skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    rgba(0, 0, 0, 0.03) 50%,
+    transparent 100%
+  );
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.nav-skeleton-name {
+  width: 100px;
+  height: 14px;
+}
+
+.nav-skeleton-email {
+  width: 140px;
+  height: 10px;
+}
+
+.nav-skeleton-avatar {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-input);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }
 
 /* --- DROPDOWN --- */

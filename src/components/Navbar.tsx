@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import type { Usuario } from "../models/usuario";
 import useAuth from "../hooks/useAuth";
+import useUser from "../hooks/useUser";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
 import { Sun, Moon } from "lucide-react";
@@ -11,13 +12,16 @@ interface NavbarProps {
   usuario?: Usuario;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
+const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const { logout } = useAuth();
+  const { usuario: hookUsuario } = useUser();
+  
+  const usuario = propUsuario || hookUsuario;
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,8 +57,17 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
 
         <div className="profile-container">
           <div className="user-info-brief">
-            <span className="user-nav-name">{usuario?.nombre || t('navbar.loading')}</span>
-            <span className="user-nav-email">{usuario?.email}</span>
+            {usuario ? (
+              <>
+                <span className="user-nav-name">{usuario.nombre}</span>
+                <span className="user-nav-email">{usuario.email}</span>
+              </>
+            ) : (
+              <>
+                <div className="nav-skeleton nav-skeleton-name"></div>
+                <div className="nav-skeleton nav-skeleton-email"></div>
+              </>
+            )}
           </div>
           
           <div 
@@ -63,8 +76,10 @@ const Navbar: React.FC<NavbarProps> = ({ usuario }) => {
           >
             {usuario?.avatarUrl ? (
               <img src={usuario.avatarUrl} alt={usuario.nombre} className="nav-avatar-img" />
-            ) : (
+            ) : usuario ? (
               userInitial
+            ) : (
+              <div className="nav-skeleton-avatar"></div>
             )}
           </div>
 
