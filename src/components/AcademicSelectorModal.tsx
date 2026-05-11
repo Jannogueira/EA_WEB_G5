@@ -83,7 +83,6 @@ const AcademicSelectorModal: React.FC<Props> = ({
 
     const handleSelectGrado = (id: string) => {
         const grado = grados.find(g => g._id === id);
-        console.log('Seleccionando grado:', id, grado);
         if (grado) {
             setSelectedGrado(grado);
         }

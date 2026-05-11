@@ -168,7 +168,6 @@ const EditProfile: React.FC = () => {
   };
 
   const handleAcademicSelect = (uni: Universidad, grado: Grado) => {
-    console.log('Recibida selección académica en EditProfile:', uni, grado);
     setSelectedUni(uni);
     setSelectedGrado(grado);
     
