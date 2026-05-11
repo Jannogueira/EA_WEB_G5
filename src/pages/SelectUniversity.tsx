@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GraduationCap, BookOpen, Library, ChevronRight, ChevronLeft, CheckCircle } from 'lucide-react';
 
 import universidadService from '../services/universidad';
 import gradoService from '../services/grado';
 import usuarioService from '../services/usuario';
 
-import AsignaturasModal from '../components/AsignaturasModal';
+import SelectionStep from '../components/SelectionStep';
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
 
 import type { Universidad } from '../models/universidad';
 import type { Grado } from '../models/grado';
+import type { Asignatura } from '../models/asignatura';
 import type { Usuario } from '../models/usuario';
 
 import './Register.css';
@@ -18,97 +20,127 @@ import './Register.css';
 const SelectUniversity = () => {
   const navigate = useNavigate();
 
+  // Paso actual (1: Uni, 2: Grado, 3: Asignaturas)
+  const [step, setStep] = useState(1);
+
+  // Datos cargados
   const [universidades, setUniversidades] = useState<Universidad[]>([]);
   const [grados, setGrados] = useState<Grado[]>([]);
+  const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
 
-  const [selectedUni, setSelectedUni] = useState('');
-  const [selectedGrado, setSelectedGrado] = useState('');
+  // Selecciones
+  const [selectedUniId, setSelectedUniId] = useState('');
+  const [selectedGradoId, setSelectedGradoId] = useState('');
+  const [selectedAsigIds, setSelectedAsigIds] = useState<string[]>([]);
 
+  // Estados de carga
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
 
   const [user, setUser] = useState<Usuario | null>(null);
-
-  const [modalOpen, setModalOpen] = useState(false);
-
   const [alert, setAlert] = useState<AlertState | null>(null);
 
   useEffect(() => {
     const userJson = localStorage.getItem('usuario');
-
     if (!userJson) {
       navigate('/login');
       return;
     }
+    setUser(JSON.parse(userJson));
 
-    const parsedUser = JSON.parse(userJson);
-    setUser(parsedUser);
-
-    const fetchUniversidades = async () => {
-      try {
-        const { request } = universidadService.getAll({ limit: 100 });
-        const res = await request;
-        setUniversidades(res.data.docs || []);
-      } catch (error: any) {
-        const errorMsg =
-        error.response?.data?.message ||
-        "Error al conectar con el servidor";
-
-        setAlert({
-          type: 'error',
-          title: 'Error',
-          message: errorMsg
-        });
-      }
-    };
-
+    // Cargar universidades al inicio
     fetchUniversidades();
   }, [navigate]);
 
+  // Cargar grados cuando cambia la universidad
   useEffect(() => {
-    if (!selectedUni) {
-      setGrados([]);
-      setSelectedGrado('');
-      return;
+    if (selectedUniId && step === 2) {
+      fetchGrados();
     }
+  }, [selectedUniId, step]);
 
-    const fetchGrados = async () => {
-      try {
-        const res = await gradoService.getByUniversidad(selectedUni);
-        setGrados(res.data);
-      } catch (error: any) {
-        const errorMsg =
-        error.response?.data?.message ||
-        "Error al conectar con el servidor";
+  // Cargar asignaturas cuando cambia el grado
+  useEffect(() => {
+    if (selectedGradoId && step === 3) {
+      fetchAsignaturas();
+    }
+  }, [selectedGradoId, step]);
 
-        setAlert({
-          type: 'error',
-          title: 'Error',
-          message: errorMsg
-        });
-      }
-    };
-
-    fetchGrados();
-  }, [selectedUni]);
-
-  const handleUserUpdated = (updatedUser: Usuario) => {
-    setUser(updatedUser);
-    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+  const fetchUniversidades = async () => {
+    setLoadingData(true);
+    try {
+      const { request } = universidadService.getAll({ limit: 1000 });
+      const res = await request;
+      setUniversidades(res.data.docs || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingData(false);
+    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchGrados = async () => {
+    setLoadingData(true);
+    try {
+      const res = await gradoService.getByUniversidad(selectedUniId);
+      setGrados(res.data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
 
-    if (!selectedUni || !selectedGrado || !user) return;
+  const fetchAsignaturas = async () => {
+    setLoadingData(true);
+    try {
+      const res = await gradoService.getAsignaturas(selectedGradoId);
+      setAsignaturas(res.data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const handleSelectUni = (id: string) => {
+    setSelectedUniId(id);
+    setSelectedGradoId('');
+    setSelectedAsigIds([]);
+  };
+
+  const handleSelectGrado = (id: string) => {
+    setSelectedGradoId(id);
+    setSelectedAsigIds([]);
+  };
+
+  const handleToggleAsignatura = (id: string) => {
+    setSelectedAsigIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleNext = () => {
+    if (step < 3) setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    if (step > 1) setStep(step - 1);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedUniId || !selectedGradoId || !user) return;
 
     setLoading(true);
-
     try {
-      const response = await usuarioService.updateSelf({
-        universidad: selectedUni,
-        grado: selectedGrado
+      // 1. Actualizar Uni y Grado
+      await usuarioService.updateSelf({
+        universidad: selectedUniId,
+        grado: selectedGradoId
       });
 
+      // 2. Actualizar Asignaturas
+      const response = await usuarioService.updateAsignaturas(user._id, selectedAsigIds);
       const updatedUser = response.data;
 
       localStorage.setItem('usuario', JSON.stringify(updatedUser));
@@ -116,34 +148,34 @@ const SelectUniversity = () => {
 
       setAlert({
         type: 'success',
-        title: 'Perfil actualizado',
-        message: 'Tu información se ha guardado correctamente'
+        title: '¡Registro completado!',
+        message: 'Tu perfil académico se ha configurado correctamente.'
       });
 
       setTimeout(() => {
         navigate('/home');
-      }, 1200);
+      }, 1500);
 
     } catch (error: any) {
-      const errorMsg =
-        error.response?.data?.message ||
-        "Error al conectar con el servidor";
-
       setAlert({
         type: 'error',
         title: 'Error al guardar',
-        message: errorMsg
+        message: error.response?.data?.message || "Error al conectar con el servidor"
       });
-
     } finally {
       setLoading(false);
     }
   };
 
+  const isNextDisabled = () => {
+    if (step === 1) return !selectedUniId;
+    if (step === 2) return !selectedGradoId;
+    if (step === 3) return selectedAsigIds.length === 0;
+    return false;
+  };
+
   return (
     <div className="register-page">
-
-      {/* GLOBAL CENTER ALERT */}
       {alert && (
         <Alert
           type={alert.type}
@@ -153,88 +185,102 @@ const SelectUniversity = () => {
         />
       )}
 
-      <div className="register-container">
+      <div className="register-container selection-flow">
+        {/* Progress Bar */}
+        <div className="step-progress">
+          <div className={`progress-dot ${step >= 1 ? 'active' : ''}`}>1</div>
+          <div className={`progress-line ${step >= 2 ? 'active' : ''}`}></div>
+          <div className={`progress-dot ${step >= 2 ? 'active' : ''}`}>2</div>
+          <div className={`progress-line ${step >= 3 ? 'active' : ''}`}></div>
+          <div className={`progress-dot ${step >= 3 ? 'active' : ''}`}>3</div>
+        </div>
 
-        <h2 className="register-title">
-          Personaliza tu Perfil
-        </h2>
+        <div className="selection-step-wrapper">
+          {step === 1 && (
+            <SelectionStep
+              title="¿Dónde estudias?"
+              subtitle="Selecciona tu universidad para encontrar a tus compañeros"
+              items={universidades}
+              selectedIds={[selectedUniId]}
+              onSelect={handleSelectUni}
+              loading={loadingData}
+              placeholder="Buscar universidad..."
+              icon={<Library className="step-icon-main" />}
+            />
+          )}
 
-        <p className="register-subtitle">
-          Selecciona tu centro de estudios
-        </p>
+          {step === 2 && (
+            <SelectionStep
+              title="¿Qué carrera cursas?"
+              subtitle="Filtra por tu grado académico"
+              items={grados}
+              selectedIds={[selectedGradoId]}
+              onSelect={handleSelectGrado}
+              loading={loadingData}
+              placeholder="Buscar grado..."
+              icon={<GraduationCap className="step-icon-main" />}
+            />
+          )}
 
-        <form onSubmit={handleSubmit} className="register-form">
+          {step === 3 && (
+            <SelectionStep
+              title="Tus asignaturas"
+              subtitle="Selecciona las materias que estás cursando este semestre"
+              items={asignaturas}
+              selectedIds={selectedAsigIds}
+              onSelect={handleToggleAsignatura}
+              multiple={true}
+              loading={loadingData}
+              placeholder="Buscar asignatura..."
+              icon={<BookOpen className="step-icon-main" />}
+            />
+          )}
+        </div>
 
-          {/* UNIVERSIDAD */}
-          <div className="form-group">
-            <label>Universidad</label>
-            <select
-              className="select-input"
-              value={selectedUni}
-              onChange={(e) => setSelectedUni(e.target.value)}
+        <div className="step-navigation-footer">
+          {step > 1 && (
+            <button 
+              className="btn-back" 
+              onClick={handleBack}
               disabled={loading}
-              required
             >
-              <option value="">Selecciona universidad</option>
-              {universidades.map((u) => (
-                <option key={u._id} value={u._id}>
-                  {u.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* GRADO */}
-          <div className="form-group">
-            <label>Grado</label>
-            <select
-              className="select-input"
-              value={selectedGrado}
-              onChange={(e) => setSelectedGrado(e.target.value)}
-              disabled={!selectedUni || loading}
-              required
-            >
-              <option value="">Selecciona grado</option>
-              {grados.map((g) => (
-                <option key={g._id} value={g._id}>
-                  {g.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* ASIGNATURAS */}
-          <div className="form-group">
-            <label>Asignaturas</label>
-            <button
-              type="button"
-              className="edit-btn-premium secondary"
-              disabled={!selectedGrado || loading}
-              onClick={() => setModalOpen(true)}
-            >
-              Selecciona asignaturas
+              <ChevronLeft size={20} />
+              Atrás
             </button>
-          </div>
+          )}
+          
+          <div className="spacer"></div>
 
-          {/* SUBMIT */}
-          <button
-            type="submit"
-            className="register-btn"
-            disabled={loading || !selectedUni || !selectedGrado}
-          >
-            {loading ? "Guardando..." : "Finalizar Registro"}
-          </button>
-
-        </form>
+          {step < 3 ? (
+            <button 
+              className="btn-next" 
+              onClick={handleNext}
+              disabled={isNextDisabled() || loading}
+            >
+              Siguiente
+              <ChevronRight size={20} />
+            </button>
+          ) : (
+            <button 
+              className="btn-finish" 
+              onClick={handleSubmit}
+              disabled={isNextDisabled() || loading}
+            >
+              {loading ? (
+                <span className="btn-loading">
+                  <div className="mini-spinner"></div>
+                  Guardando...
+                </span>
+              ) : (
+                <>
+                  Finalizar Registro
+                  <CheckCircle size={20} />
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
-
-      {/* MODAL */}
-      <AsignaturasModal
-        gradoId={selectedGrado}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onUpdated={handleUserUpdated}
-      />
     </div>
   );
 };
