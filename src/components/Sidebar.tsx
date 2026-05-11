@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart } from "lucide-react";
+import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search } from "lucide-react";
 import CreatePostModal from "./CreatePostModal";
 import { useSocket } from "../context/SocketContext";
 import { useTranslation } from "react-i18next";
@@ -63,7 +63,7 @@ const Sidebar: React.FC = () => {
             className={`sidebar-btn ${isActive("/explore") ? "active" : ""}`} 
             onClick={() => navigate("/explore")}
           >
-            <Compass size={20} className="btn-icon" />
+            <Search size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.explore')}</span>
           </button>
 
