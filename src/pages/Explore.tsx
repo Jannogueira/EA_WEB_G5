@@ -9,7 +9,7 @@ import useUnis from "../hooks/useUni";
 import gradoService from "../services/grado";
 import postService from "../services/post";
 import { searchUsers } from "../services/usuario";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, Heart, MessageCircle } from "lucide-react";
 import ExploreFilter from "../components/ExploreFilterModal";
 import { useTranslation } from "react-i18next";
 import type { AlertState } from "../components/Alert";
@@ -18,6 +18,22 @@ import type { Usuario } from "../models/usuario";
 import type { Grado } from "../models/grado";
 import type { Asignatura } from "../models/asignatura";
 import type { Post } from "../models/post";
+import PostDetailModal from "../components/PostDetailModal";
+import usePost from "../hooks/usePost";
+
+const DiscoveryPostItem: React.FC<{ post: Post, onClick: () => void }> = ({ post, onClick }) => {
+    return (
+        <div className="discovery-grid-item" onClick={onClick}>
+            <img src={post.imageUrl} alt="" className="discovery-grid-img" />
+            <div className="discovery-grid-hover">
+                <div className="hover-stats">
+                    <span><Heart size={18} fill="white" /> {post.likes?.length || 0}</span>
+                    <span><MessageCircle size={18} fill="white" /> {post.comments?.length || 0}</span>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const Explore: React.FC = () => {
     const { t } = useTranslation();
@@ -35,6 +51,7 @@ const Explore: React.FC = () => {
     // Discovery Feed State
     const [discoveryPosts, setDiscoveryPosts] = useState<Post[]>([]);
     const [loadingDiscovery, setLoadingDiscovery] = useState(false);
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
     // Filter & Data State
     const [showFilter, setShowFilter] = useState(false);
@@ -134,6 +151,15 @@ const Explore: React.FC = () => {
         return () => observer.disconnect();
     }, [hasNextPage, loading, page, performSearch]);
 
+    const handlePostClick = async (post: Post) => {
+        try {
+            const res = await postService.getPostById(post._id);
+            setSelectedPost(res.data);
+        } catch (error) {
+            setSelectedPost(post);
+        }
+    };
+
     return (
         <div className="home-wrapper">
             {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
@@ -141,7 +167,7 @@ const Explore: React.FC = () => {
             <div className="main-layout">
                 <Sidebar />
                 <div className="content-area">
-                    <main className="feed-container">
+                    <main className={`feed-container explore-container ${!hasTyped ? 'grid-view' : 'list-view'}`}>
                         <header className="feed-header">
                             <h1>{t('explore.title')}</h1>
                             <p>{t('explore.subtitle')}</p>
@@ -166,9 +192,13 @@ const Explore: React.FC = () => {
 
                         <div className="explore-results-area">
                             {!hasTyped ? (
-                                <div className="posts-list">
+                                <div className="discovery-grid">
                                     {discoveryPosts.map((post) => (
-                                        <Postcard key={post._id} post={post} />
+                                        <DiscoveryPostItem 
+                                            key={post._id} 
+                                            post={post} 
+                                            onClick={() => handlePostClick(post)} 
+                                        />
                                     ))}
                                     {loadingDiscovery && <p>{t('home.loading')}</p>}
                                 </div>
@@ -190,6 +220,19 @@ const Explore: React.FC = () => {
                     </main>
                 </div>
             </div>
+
+            {selectedPost && (
+                <PostDetailModal 
+                    post={selectedPost}
+                    currentUserId={usuario?._id || null}
+                    onClose={() => setSelectedPost(null)}
+                    onLike={() => {}} // Could implement local like updates if needed
+                    onLikeComment={() => {}}
+                    onAddComment={() => {}}
+                    loadingComment={false}
+                    onShare={() => {}}
+                />
+            )}
 
             {showFilter && (
                 <ExploreFilter

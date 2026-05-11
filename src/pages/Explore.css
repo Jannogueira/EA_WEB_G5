@@ -126,6 +126,72 @@
   gap: 0;
   animation: fadeIn 0.8s ease-out;
   align-items: center;
+  transition: max-width 0.5s ease;
+}
+
+.explore-container.grid-view {
+  max-width: 1000px;
+}
+
+/* --- DISCOVERY GRID --- */
+.discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.discovery-grid-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--bg-card);
+}
+
+.discovery-grid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.discovery-grid-item:hover .discovery-grid-img {
+    transform: scale(1.1);
+}
+
+.discovery-grid-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.discovery-grid-item:hover .discovery-grid-hover {
+    opacity: 1;
+}
+
+.hover-stats {
+    display: flex;
+    gap: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.hover-stats span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 /* --- RESPONSIVE --- */
@@ -149,5 +215,11 @@
 
     .feed-header h1 {
         font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .discovery-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
