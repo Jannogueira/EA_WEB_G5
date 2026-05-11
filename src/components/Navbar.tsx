@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import useUser from "../hooks/useUser";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
-import { Sun, Moon } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 interface NavbarProps {
   usuario?: Usuario;
@@ -14,7 +14,6 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
   const { t } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -44,16 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
       </div>
 
       <div className="navbar-right">
-        {/* THEME TOGGLE SWITCH */}
-        <div className="theme-switch" onClick={toggleTheme} title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}>
-          <div className="theme-switch-thumb">
-            {theme === 'light' ? (
-              <Sun className="theme-icon" />
-            ) : (
-              <Moon className="theme-icon" />
-            )}
-          </div>
-        </div>
+        <ThemeToggle />
 
         <div className="profile-container">
           <div className="user-info-brief">

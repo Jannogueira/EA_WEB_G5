@@ -82,13 +82,6 @@ const Sidebar: React.FC = () => {
             <span className="btn-text">{t('sidebar.university')}</span>
           </button>
           <button 
-            className={`sidebar-btn ${isActive("/classes") ? "active" : ""}`} 
-            onClick={() => navigate("/home")}
-          >
-            <BookOpen size={20} className="btn-icon" />
-            <span className="btn-text">{t('sidebar.classes')}</span>
-          </button>
-          <button 
             className={`sidebar-btn ${isActive("/messages") ? "active" : ""}`} 
             onClick={() => navigate("/messages")}
             style={{ position: 'relative' }}

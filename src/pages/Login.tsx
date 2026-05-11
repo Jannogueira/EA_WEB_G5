@@ -4,6 +4,7 @@ import useAuth from '../hooks/useAuth';
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
 import './Login.css';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Login = () => {
   const { login, loading } = useAuth();
@@ -46,6 +47,7 @@ const Login = () => {
 
   return (
     <div className="login-page">
+      <ThemeToggle className="theme-toggle-absolute" />
       <div className="login-container">
 
         {alert && (

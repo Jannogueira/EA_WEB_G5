@@ -4,6 +4,7 @@ import useAuth from '../hooks/useAuth';
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
 import './Register.css';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Register = () => {
   const { register, loading } = useAuth();
@@ -58,6 +59,7 @@ const Register = () => {
 
   return (
     <div className="register-page">
+      <ThemeToggle className="theme-toggle-absolute" />
 
       {alert && (
         <Alert
