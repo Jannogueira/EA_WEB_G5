@@ -149,7 +149,10 @@ const UniMatch: React.FC = () => {
     // Touch/Drag handling
     const handlePointerDown = (e: React.PointerEvent) => {
         const startX = e.clientX;
+        const startY = e.clientY;
+        const startTime = Date.now();
         const card = e.currentTarget as HTMLElement;
+        
         card.setPointerCapture(e.pointerId);
 
         const handleMove = (moveEvent: PointerEvent) => {
@@ -160,6 +163,19 @@ const UniMatch: React.FC = () => {
         const handleUp = (upEvent: PointerEvent) => {
             card.removeEventListener('pointermove', handleMove);
             card.removeEventListener('pointerup', handleUp);
+            card.releasePointerCapture(e.pointerId);
+
+            const duration = Date.now() - startTime;
+            const deltaX = upEvent.clientX - startX;
+            const deltaY = upEvent.clientY - startY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            // Si es un toque rápido y corto, es un cambio de foto
+            if (distance < 10 && duration < 300) {
+                setDragOffset(0);
+                handlePhotoNav(e as any);
+                return;
+            }
 
             if (Math.abs(dragOffset) > 100) {
                 handleSwipe(dragOffset > 0 ? 'like' : 'dislike');
@@ -337,8 +353,8 @@ const UniMatch: React.FC = () => {
             </div>
 
             {showWelcome && (
-                <UniMatchWelcomeModal 
-                    onComplete={handleWelcomeComplete} 
+                <UniMatchWelcomeModal
+                    onComplete={handleWelcomeComplete}
                     onClose={() => navigate('/explore')}
                 />
             )}
