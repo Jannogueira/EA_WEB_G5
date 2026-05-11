@@ -98,7 +98,7 @@ const Messages: React.FC = () => {
                   className={`contact-item ${activeContact?._id === contact._id ? "active" : ""}`}
                   onClick={() => openConversation(contact)}
                 >
-                  <div className="contact-avatar">
+                  <div className="contact-avatar" onClick={(e) => { e.stopPropagation(); navigate(`/profile/${contact._id}`); }} style={{ cursor: 'pointer' }}>
                     <img src={contact.avatarUrl} alt={contact.nombre} />
                   </div>
                   <div className="contact-info">
@@ -122,7 +122,7 @@ const Messages: React.FC = () => {
                   >
                     <X size={20} />
                   </button>
-                  <div className="active-contact-info">
+                  <div className="active-contact-info" onClick={() => navigate(`/profile/${activeContact._id}`)} style={{ cursor: 'pointer' }}>
                     <div className="contact-avatar-small">
                       <img src={activeContact.avatarUrl} alt={activeContact.nombre} />
                     </div>
@@ -143,6 +143,11 @@ const Messages: React.FC = () => {
                         <div
                           className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
                         >
+                          {msg.remitente._id !== usuario?._id && (
+                            <div className="msg-sender-avatar" onClick={() => navigate(`/profile/${msg.remitente._id}`)} style={{ cursor: 'pointer' }}>
+                              <img src={msg.remitente.avatarUrl} alt="" />
+                            </div>
+                          )}
                         <div className={`message-bubble ${msg.remitente._id === usuario?._id ? "own" : "received"} ${msg.eliminadoParaTodos ? "deleted-msg" : ""} ${msg.post ? "post-msg" : ""}`}>
                           {msg.parentMessage && !msg.eliminadoParaTodos && (
                             <div className="quoted-message-preview" onClick={() => {
