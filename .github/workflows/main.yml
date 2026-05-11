@@ -36,9 +36,7 @@ jobs:
         context: ./
         file: ./Dockerfile
         push: true
-        tags: |
-          ${{ secrets.DOCKER_HUB_USERNAME }}/web-ea:latest
-          ${{ secrets.DOCKER_HUB_USERNAME }}/web-ea:${{ github.sha }}
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/web-ea:${{ github.event.head_commit.message }}
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
