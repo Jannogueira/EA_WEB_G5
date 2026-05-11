@@ -1,7 +1,8 @@
 import axios, { CanceledError } from 'axios';
+import { config as appConfig } from '../config';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:1337'
+  baseURL: appConfig.apiUrl
 });
 
 // Interceptor para añadir el token a todas las peticiones
@@ -37,7 +38,7 @@ apiClient.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          const response = await axios.post('http://localhost:1337/auth/refresh', {
+          const response = await axios.post(`${appConfig.apiUrl}/auth/refresh`, {
             refreshToken
           });
 

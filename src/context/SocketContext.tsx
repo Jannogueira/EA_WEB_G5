@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import useUser from '../hooks/useUser';
+import { config } from '../config';
 
 interface SocketContextType {
   socket: Socket | null;
@@ -34,7 +35,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     if (usuario) {
       const token = localStorage.getItem('accessToken');
-      const newSocket = io('http://localhost:1337', {
+      const newSocket = io(config.apiUrl, {
         auth: { token },
         transports: ['websocket'],
       });

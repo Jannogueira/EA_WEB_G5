@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { config } from '../config';
 
-const API_URL = 'http://localhost:1337/upload';
+const API_URL = `${config.apiUrl}/upload`;
 
 export const uploadImage = async (file: File) => {
     const formData = new FormData();
