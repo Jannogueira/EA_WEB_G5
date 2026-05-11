@@ -108,11 +108,6 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             {post.caption}
         </div>
 
-        {post.comments && post.comments.length > 0 && (
-            <button className="view-comments-link" onClick={() => setShowDetailModal(true)}>
-                {t('post_detail.view_more', { count: post.comments.length })}
-            </button>
-        )}
 
         {error && <p className="error-message" style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}>{error}</p>}
       </div>
