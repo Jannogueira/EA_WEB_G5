@@ -1,3 +1,22 @@
+/* --- LAYOUT WRAPPERS --- */
+.home-wrapper {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+}
+
+.main-layout {
+  display: flex;
+  margin-top: 60px;
+}
+
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* --- FEED CONTAINER --- */
 .feed-container {
   width: 100%;
   max-width: 650px;
@@ -5,8 +24,8 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  animation: fadeIn 0.8s ease-out;
   align-items: center;
+  animation: fadeIn 0.8s ease-out;
 }
 
 @keyframes fadeIn {
@@ -14,6 +33,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- FEED HEADER --- */
 .feed-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -35,20 +55,132 @@
   color: var(--text-muted);
   font-size: 1.1rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 0.5rem;
 }
 
-/* --- LLISTA DE POSTS --- */
+/* --- POSTS LIST (Grid of Cards) --- */
 .posts-list {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
+  align-items: stretch; /* Forces equal width for all children */
+  width: 100%;
+}
+
+/* --- SUBJECT CARD --- */
+.subject-card {
+  width: 100%;
+  min-height: 80px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.subject-card:hover {
+  transform: scale(1.01);
+  background: var(--card-hover, rgba(255, 255, 255, 0.08));
+  border-color: var(--accent-purple);
+}
+
+.subject-info {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.subject-info > div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.subject-info h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.subject-info span {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  background: rgba(var(--accent-purple-rgb), 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* --- USERS GRID --- */
+.users-grid {
+  display: flex;
+  flex-direction: column; /* Stacked vertically */
+  gap: 8px; /* Space between each user card */
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-top: none;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  margin-top: -10px !important; 
+  box-sizing: border-box;
+  animation: slideDown 0.4s ease-out;
+}
+
+/* Ensure each individual user card stretches to fill the width */
+.users-grid > * {
+  width: 100%;
+}
+
+/* Optional: Add a subtle separator between users if you don't have borders on UserCard */
+.users-grid > *:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-bottom: 8px;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- UTILS & STATES --- */
+.content-area > p {
+  font-weight: 500;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 3rem;
 }
 
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .feed-header h1 {
     font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .subject-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .users-grid {
+    grid-template-columns: 1fr;
   }
 }

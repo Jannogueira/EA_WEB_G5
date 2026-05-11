@@ -1,4 +1,5 @@
 import type { Universidad } from "./universidad";
+import type { Grado } from "./grado";
 
 export interface Usuario {
     _id: string;
@@ -12,7 +13,7 @@ export interface Usuario {
     activo: boolean;
     seguidores?: string[];
     seguidos?: string[];
-    grado?: string;
+    grado?: string | Grado;
     asignaturas?: string[];
     privado: boolean;
     hasAcceptedUnimatchTerms?: boolean;

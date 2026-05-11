@@ -76,7 +76,7 @@ const Sidebar: React.FC = () => {
           </button>
           <button 
             className={`sidebar-btn ${isActive("/university") ? "active" : ""}`} 
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/university")}
           >
             <GraduationCap size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.university')}</span>
