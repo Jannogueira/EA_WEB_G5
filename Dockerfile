@@ -1,22 +1,28 @@
-# 1. Usamos una versión ligera de Node.js
-FROM node:20-alpine
+# ETAPA 1: Construcción (Build)
+FROM node:20-alpine AS build-step
 
-# 2. Creamos la carpeta donde vivirá el código en el contenedor
 WORKDIR /app
 
-# 3. Copiamos los archivos de dependencias y el código fuente a la vez
+# Copiamos dependencias
 COPY package*.json ./
-COPY tsconfig.json ./
-COPY . .
 
-# 4. Instalamos todas las dependencias (ahora TypeScript sí encontrará la carpeta src/)
+# Instalamos
 RUN npm install
 
-# 5. Compilamos usando vite directamente para saltar errores de tsc
-RUN npx vite build
+# Copiamos el resto del código
+COPY . .
 
-# 6. Exponemos el puerto de preview
-EXPOSE 5173
+# Compilamos la aplicación de Vite
+RUN npm run build
 
-# 7. Arrancamos el servidor de preview de vite
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5173"]
+# ETAPA 2: Servidor de producción (Nginx)
+FROM nginx:stable-alpine
+
+# En Vite, el resultado del build va por defecto a la carpeta /dist
+COPY --from=build-step /app/dist /usr/share/nginx/html
+
+# Exponemos el puerto 80 del servidor Nginx
+EXPOSE 80
+
+# Arrancamos Nginx
+CMD ["nginx", "-g", "daemon off;"]
