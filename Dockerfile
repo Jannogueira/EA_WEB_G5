@@ -18,8 +18,7 @@ RUN npm run build
 # ETAPA 2: Servidor de producción (Nginx)
 FROM nginx:stable-alpine
 
-COPY --from=build-step /app/dist /usr/share/nginx/html
-
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 # En Vite, el resultado del build va por defecto a la carpeta /dist
 COPY --from=build-step /app/dist /usr/share/nginx/html
 
