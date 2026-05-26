@@ -24,6 +24,21 @@ export default function useAuth() {
     }
   };
 
+  const loginWithGoogle = async (token: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await authService.googleLogin(token);
+      return data;
+    } catch (err) {
+      setError("Error en login con Google");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const register = async (data: {
     nombre: string;
     email: string;
@@ -54,6 +69,7 @@ export default function useAuth() {
 
   return {
     login,
+    loginWithGoogle,
     register,
     logout,
     loading,

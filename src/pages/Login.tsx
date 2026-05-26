@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import useAuth from '../hooks/useAuth';
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
+import { useTheme } from '../context/ThemeContext';
 import './Login.css';
 import ThemeToggle from '../components/ThemeToggle';
 
 const Login = () => {
-  const { login, loading } = useAuth();
+  const { login, loginWithGoogle, loading } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -42,6 +45,32 @@ const Login = () => {
         message: errorMsg
       });
 
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    if (!credentialResponse.credential) {
+      setAlert({
+        type: 'error',
+        title: 'Error de Google OAuth',
+        message: 'No se recibieron credenciales de Google'
+      });
+      return;
+    }
+
+    try {
+      await loginWithGoogle(credentialResponse.credential);
+      navigate('/home');
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message ||
+        "Error al iniciar sesión con Google";
+
+      setAlert({
+        type: 'error',
+        title: 'Fallo de inicio de sesión',
+        message: errorMsg
+      });
     }
   };
 
@@ -89,6 +118,25 @@ const Login = () => {
             {loading ? "Cargando..." : "Entrar"}
           </button>
         </form>
+
+        <div className="oauth-divider">o también</div>
+
+        <div className="google-login-wrapper">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => {
+              setAlert({
+                type: 'error',
+                title: 'Fallo de Google OAuth',
+                message: 'No se pudo iniciar sesión con Google'
+              });
+            }}
+            theme={theme === 'dark' ? 'filled_black' : 'outline'}
+            size="large"
+            shape="pill"
+            width="350px"
+          />
+        </div>
 
         <div className="register-link-section">
           ¿No tienes cuenta?

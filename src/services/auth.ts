@@ -27,6 +27,20 @@ const register = async (userData: any) => {
   return response.data;
 };
 
+const googleLogin = async (token: string) => {
+  const response = await apiClient.post('/auth/google', {
+    token
+  });
+
+  if (response.data.accessToken) {
+    localStorage.setItem('accessToken', response.data.accessToken);
+    localStorage.setItem('refreshToken', response.data.refreshToken);
+    localStorage.setItem('usuario', JSON.stringify(response.data.usuario));
+  }
+
+  return response.data;
+};
+
 const logout = async () => {
   try {
     // 1. Avisamos al backend para que destruya la cookie del refresh token
@@ -44,5 +58,6 @@ const logout = async () => {
 export default {
   login,
   register,
-  logout
+  logout,
+  googleLogin
 };
