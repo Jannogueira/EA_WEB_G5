@@ -98,7 +98,7 @@ const Messages: React.FC = () => {
                   className={`contact-item ${activeContact?._id === contact._id ? "active" : ""}`}
                   onClick={() => openConversation(contact)}
                 >
-                  <div className="contact-avatar" onClick={(e) => { e.stopPropagation(); navigate(`/profile/${contact._id}`); }} style={{ cursor: 'pointer' }}>
+                  <div className="contact-avatar cursor-pointer" onClick={(e) => { e.stopPropagation(); navigate(`/profile/${contact._id}`); }}>
                     <img src={contact.avatarUrl} alt={contact.nombre} />
                   </div>
                   <div className="contact-info">
@@ -122,7 +122,7 @@ const Messages: React.FC = () => {
                   >
                     <X size={20} />
                   </button>
-                  <div className="active-contact-info" onClick={() => navigate(`/profile/${activeContact._id}`)} style={{ cursor: 'pointer' }}>
+                  <div className="active-contact-info cursor-pointer" onClick={() => navigate(`/profile/${activeContact._id}`)}>
                     <div className="contact-avatar-small">
                       <img src={activeContact.avatarUrl} alt={activeContact.nombre} />
                     </div>
@@ -144,7 +144,7 @@ const Messages: React.FC = () => {
                           className={`message-wrapper ${msg.remitente._id === usuario?._id ? "own" : "received"}`}
                         >
                           {msg.remitente._id !== usuario?._id && (
-                            <div className="msg-sender-avatar" onClick={() => navigate(`/profile/${msg.remitente._id}`)} style={{ cursor: 'pointer' }}>
+                            <div className="msg-sender-avatar cursor-pointer" onClick={() => navigate(`/profile/${msg.remitente._id}`)}>
                               <img src={msg.remitente.avatarUrl} alt="" />
                             </div>
                           )}

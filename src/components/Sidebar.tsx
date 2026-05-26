@@ -82,9 +82,8 @@ const Sidebar: React.FC = () => {
             <span className="btn-text">{t('sidebar.university')}</span>
           </button>
           <button 
-            className={`sidebar-btn ${isActive("/messages") ? "active" : ""}`} 
+            className={`sidebar-btn pos-relative ${isActive("/messages") ? "active" : ""}`} 
             onClick={() => navigate("/messages")}
-            style={{ position: 'relative' }}
           >
             <MessageSquare size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.messages')}</span>
@@ -92,9 +91,8 @@ const Sidebar: React.FC = () => {
           </button>
 
           <button 
-            className={`sidebar-btn ${isActive("/notifications") ? "active" : ""}`} 
+            className={`sidebar-btn pos-relative ${isActive("/notifications") ? "active" : ""}`} 
             onClick={() => navigate("/notifications")}
-            style={{ position: 'relative' }}
           >
             <Bell size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.notifications')}</span>

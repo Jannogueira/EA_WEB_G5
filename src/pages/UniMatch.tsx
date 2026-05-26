@@ -304,7 +304,7 @@ const UniMatch: React.FC = () => {
                                             <div className="card-image-overlay">
                                                 <div className="card-name">{currentProfile.nombre}</div>
                                                 {currentProfile.descripcion && (
-                                                    <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', marginTop: '4px' }}>
+                                                    <div className="card-desc">
                                                         {currentProfile.descripcion}
                                                     </div>
                                                 )}
@@ -343,7 +343,7 @@ const UniMatch: React.FC = () => {
 
                                 <div className="keyboard-hint">
                                     <span className="key-badge">←</span> Pasar
-                                    <span style={{ margin: '0 0.5rem' }}>|</span>
+                                    <span className="mx-2">|</span>
                                     <span className="key-badge">→</span> Like
                                 </div>
                             </>

@@ -202,7 +202,7 @@ const Profile: React.FC = () => {
                   <div className="avatar-gradient-border">
                     <div className="profile-avatar-xl">
                       {profileUser?.avatarUrl ? (
-                        <img src={profileUser.avatarUrl} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+                        <img src={profileUser.avatarUrl} alt="Avatar" className="avatar-img" />
                       ) : (
                         profileUser?.nombre?.charAt(0).toUpperCase() || "?"
                       )}

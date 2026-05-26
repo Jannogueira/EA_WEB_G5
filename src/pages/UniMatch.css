@@ -406,3 +406,9 @@
         display: none;
     }
 }
+
+.card-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin-top: 4px;
+}

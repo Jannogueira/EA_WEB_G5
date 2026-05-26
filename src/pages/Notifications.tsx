@@ -221,9 +221,8 @@ const Notifications: React.FC = () => {
                                 {notifications.map((n) => (
                                     <div 
                                         key={n._id} 
-                                        className={`notification-item ${n.isRead ? "" : "unread"} ${processingId === n._id ? "processing" : ""} ${n.type === "match" ? "match" : ""}`}
+                                        className={`notification-item cursor-pointer ${n.isRead ? "" : "unread"} ${processingId === n._id ? "processing" : ""} ${n.type === "match" ? "match" : ""}`}
                                         onClick={() => handleNotificationClick(n)}
-                                        style={{ cursor: 'pointer' }}
                                     >
                                         <div className="notification-avatar">
                                             {n.sender.avatarUrl ? (

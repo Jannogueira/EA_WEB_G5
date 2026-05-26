@@ -118,14 +118,13 @@ const Universidad: React.FC = () => {
                         <div key={asig._id}>
                           {/* CARD ASIGNATURA */}
                           <section
-                            className="subject-card"
+                            className="subject-card cursor-pointer"
                             onClick={() =>
                               setOpen(isOpen ? null : asig._id)
                             }
-                            style={{ cursor: "pointer" }}
                           >
                             <div className="subject-info">
-                              <div style={{ display: "flex", gap: 10 }}>
+                              <div className="flex-gap-10">
                                 <BookOpen size={22} />
                                 <h2>{asig.nombre}</h2>
                               </div>
@@ -138,7 +137,7 @@ const Universidad: React.FC = () => {
 
                           {/* USERS EXPANDIBLE */}
                           {isOpen && (
-                            <div className="users-grid" style={{ marginTop: 10 }}>
+                            <div className="users-grid mt-10">
                               {usuariosSinMi.length === 0 ? (
                                 <p>No hay compañeros en esta asignatura.</p>
                               ) : (

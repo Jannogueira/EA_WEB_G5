@@ -38,7 +38,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
 
   return (
     <div className="post-card">
-      <div className="post-header" onClick={handleProfileClick} style={{ cursor: "pointer" }}>
+      <div className="post-header cursor-pointer" onClick={handleProfileClick}>
         <img
           src={userAvatar}
           alt={post.usuario?.nombre || "Usuario"}
@@ -53,7 +53,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
       </div>
 
       {post.imageUrl && (
-        <div className="post-image-container" onClick={() => setShowDetailModal(true)} style={{ cursor: "pointer" }}>
+        <div className="post-image-container cursor-pointer" onClick={() => setShowDetailModal(true)}>
           <img
             src={post.imageUrl}
             alt="Post content"
@@ -109,7 +109,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         </div>
 
 
-        {error && <p className="error-message" style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}>{error}</p>}
+        {error && <p className="error-message error-text">{error}</p>}
       </div>
 
       {showShareModal && (

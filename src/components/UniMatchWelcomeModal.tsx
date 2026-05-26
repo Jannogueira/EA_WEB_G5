@@ -130,7 +130,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
                     accept="image/*"
                     multiple
                     onChange={handleFileSelect}
-                    style={{ display: 'none' }}
+                    className="hidden"
                 />
 
                 <button

@@ -222,7 +222,7 @@ const EditProfile: React.FC = () => {
                   type="file" 
                   ref={fileInputRef} 
                   onChange={handleFileChange} 
-                  style={{ display: 'none' }} 
+                  className="hidden" 
                   accept="image/*"
                 />
               </div>
@@ -256,7 +256,7 @@ const EditProfile: React.FC = () => {
                   onChange={handleChange}
                   rows={3}
                   placeholder={t('edit_profile.placeholder_bio')}
-                  style={{ resize: "vertical", minHeight: "80px" }}
+                  className="resizable-vertical"
                 />
               </div>
 

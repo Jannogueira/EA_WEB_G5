@@ -7,21 +7,6 @@
   font-family: var(--sans);
 }
 
-.main-layout {
-  display: flex;
-  flex: 1;
-  margin-top: 70px;
-  width: 100%;
-}
-
-.content-area {
-  flex: 1;
-  margin-left: 280px;
-  padding: 3rem;
-  display: flex;
-  justify-content: center;
-}
-
 /* --- Edit Form Container --- */
 .edit-form-container {
   width: 100%;
@@ -487,20 +472,7 @@ input:checked + .slider:before {
 }
 
 /* --- Responsive --- */
-@media (max-width: 1024px) {
-  .content-area {
-    margin-left: 100px;
-    padding: 2rem;
-  }
-}
-
 @media (max-width: 768px) {
-  .content-area {
-    margin-left: 0;
-    padding: 1rem;
-    width: 100%;
-  }
-
   .univy-glass-form {
     padding: 24px;
   }

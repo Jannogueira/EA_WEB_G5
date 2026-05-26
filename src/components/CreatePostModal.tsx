@@ -93,14 +93,14 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
               type="file" 
               ref={fileInputRef} 
               onChange={handleFileChange} 
-              style={{ display: 'none' }} 
+              className="hidden" 
               accept="image/*"
             />
           </div>
 
           <div className="input-section">
             {error && (
-              <div className="form-error-banner" style={{ marginBottom: '15px' }}>
+              <div className="form-error-banner mb-15">
                 {error}
               </div>
             )}

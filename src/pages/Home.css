@@ -4,18 +4,6 @@
   background-color: var(--bg-main);
 }
 
-.main-layout {
-  display: flex;
-  margin-top: 60px;
-}
-
-.content-area {
-  flex: 1;
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-}
-
 /* --- FEED CONTAINER --- */
 .feed-container {
   width: 100%;
