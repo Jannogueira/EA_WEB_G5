@@ -1,74 +1,31 @@
-# React + TypeScript + Vite
-h
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# EETAC Virtual Assistant - Frontend (EA_WEB_G5)
 
-Currently, two official plugins are available:
+Aquest és el directori del frontend per a la implementació de la interfície de l'assistent virtual acadèmic **"Toni"** de la EETAC.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Descripció de l'Estat de l'Exercici
+L'exercici s'ha completat al **100%** i es troba completament connectat amb el backend i operatiu.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Parts Operatives
 
-## Expanding the ESLint configuration
+1. **Pàgina de l'Assistent (`src/pages/Assistant.tsx`)**:
+   - Desenvolupament de la interfície de xat per a l'assistent.
+   - Connexió amb els serveis de backend a través de l'endpoint de xat (`/assistant/chat`) mitjançant peticions axios.
+   - **Formatejador de text millorat**: Detecció i renderització de negretes (`**`), títols i capçaleres (`#`, `##`, `###`) convertits a formats elegants, i suport per a llistes de viñetes utilitzant diferents marcadors (`-`, `*`, `•`).
+   - Scroll automàtic al final de la llista en rebre nous missatges.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2. **Estils i Maquetació (`src/pages/Assistant.css`)**:
+   - Posicionament i maquetació fixes i simètriques en paral·lel al Sidebar i Navbar existents.
+   - Integració harmoniosa de fons i targetes de color mitjançant l'ús de les variables de disseny de l'aplicació (`var(--bg-card)`, `var(--border-subtle)`, `var(--text-main)`).
+   - Estil adaptat per al mode clar i el mode fosc respectant els estils globals del projecte.
+   - Cabecera plana sense ombra per a una millor estètica sobre el degradat principal de la web.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+3. **Navegació i Traduccions (`src/components/Sidebar.tsx` i fitxers JSON de `src/locales`)**:
+   - Botó d'accés integrat a la barra lateral esquerra amb rutes configurades a `App.tsx`.
+   - Traduccions configurades per al botó de l'assistent tant en castellà (`es.json`) com en català (`ca.json`).
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-prueba 4
+## Parts Pendents de Codificar
+- **Cap**: Totes les funcionalitats i ajustos visuals demanats en el frontend estan completament tancats i operatius.
