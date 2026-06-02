@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search } from "lucide-react";
+import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search, Bot } from "lucide-react";
 import CreatePostModal from "./CreatePostModal";
 import { useSocket } from "../context/SocketContext";
 import { useTranslation } from "react-i18next";
@@ -101,6 +101,14 @@ const Sidebar: React.FC = () => {
             {notificationCount > 0 && (
               <div className="sidebar-notification-badge">{notificationCount > 99 ? '99+' : notificationCount}</div>
             )}
+          </button>
+
+          <button 
+            className={`sidebar-btn ${isActive("/assistant") ? "active" : ""}`} 
+            onClick={() => navigate("/assistant")}
+          >
+            <Bot size={20} className="btn-icon" />
+            <span className="btn-text">{t('sidebar.assistant')}</span>
           </button>
         </nav>
 
