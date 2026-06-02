@@ -1,74 +1,27 @@
-# React + TypeScript + Vite
-h
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Front-end WEB - Mòdul de Mapa Interactiu d'Esdeveniments
 
-Currently, two official plugins are available:
+Aquest repositori conté el codi de l'aplicació WEB per donar suport a la història d'usuari:
+> **"Com a usuari, vull veure un mapa interactiu a la web i a l'app per a visualitzar els esdeveniments disponibles al meu voltant."**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+S'han realitzat les integracions i el disseny de la interfície visual del mapa per connectar-se amb els serveis del backend.
 
-## React Compiler
+## 📋 Estat de l'Exercici (WEB)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+La plataforma WEB està completament operativa pel que fa a la interfície d'usuari, la renderització del mapa i la gestió d'esdeveniments. Visualitza correctament els elements i permet realitzar totes les accions interactives de l'usuari. Actualment, es planteja una millora en la lògica de visualització geogràfica per optimitzar l'experiència d'usuari (UX).
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✅ Parts Operatives (Funciona correctament)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* **Visualització i Disseny del Mapa:** El mapa interactiu es carrega correctament a la pantalla i es renderitza sense errors.
+* **Formulari de Creació:** Interfície operativa per enviar les dades i coordenades de nous esdeveniments al backend.
+* **Detall de l'Esdeveniment:** Es pot seleccionar un esdeveniment per veure'n la informació detallada i actualitzada.
+* **Interacció d'Usuari (Unir-se / Abandonar / Eliminar):** Els botons per apuntar-se a un esdeveniment, donar-se de baixa o esborrar-lo estan totalment vinculats i responen correctament a les accions de l'usuari en la interfície web.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⏳ Millores Pendents i Futures Funcionalitats
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-prueba 4
+* **Optimització de la Visualització d'Esdeveniments al Mapa:**
+    * **Comportament actual:** Actualment la web renderitza tots els esdeveniments que rep de l'API.
+    * **Millora proposada:** S'ha de modificar la secció d'**"esdeveniments propers"** per delimitar visualment o mitjançant algun filtre aquells que es troben en el radi de proximitat de l'usuari. No obstant això, es mantindrà la capacitat de la WEB per permetre a l'usuari explorar i visualitzar també els esdeveniments més llunyans si es desplaça pel mapa (evitant ocultar completament la resta del catàleg).

@@ -6,7 +6,8 @@
     "university": "Universidad",
     "classes": "Clases",
     "messages": "Mensajes",
-    "notifications": "Notificaciones"
+    "notifications": "Notificaciones",
+    "map": "Mapa"
   },
   "home": {
     "title": "Feed",
@@ -137,5 +138,30 @@
     "language": "Idioma",
     "spanish": "Español",
     "catalan": "Catalán"
+  },
+  "map_events": {
+    "title": "Mapa de Eventos",
+    "subtitle": "Descubre y participa en eventos a tu alrededor",
+    "create_btn": "Crear Evento",
+    "loading": "Obteniendo ubicación y eventos...",
+    "form_title": "Crear Nuevo Evento",
+    "form_click_map": "Haz clic en el mapa para situar el evento",
+    "form_title_label": "Título del evento",
+    "form_desc_label": "Descripción",
+    "form_date_label": "Fecha y Hora",
+    "form_loc_label": "Nombre de la ubicación (ej: Aula 101, Campus Nord)",
+    "form_max_attendees": "Asistentes máximos (opcional)",
+    "form_submit": "Crear Evento",
+    "form_cancel": "Cancelar",
+    "details_title": "Detalles del Evento",
+    "details_created_by": "Creado por",
+    "details_attendees": "Asistentes",
+    "details_join": "Asistir",
+    "details_leave": "Cancelar Asistencia",
+    "details_delete": "Eliminar Evento",
+    "list_title": "Eventos Cercanos",
+    "list_empty": "No hay eventos creados todavía. ¡Sé el primero!",
+    "list_distance": "a {{distance}}m de ti",
+    "error_location": "No se pudo acceder a tu geolocalización. Centrando en tu universidad."
   }
 }

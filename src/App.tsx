@@ -10,6 +10,7 @@ import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import UniMatch from './pages/UniMatch';
 import Universidad from './pages/Universidad';
+import MapEvents from './pages/MapEvents';
 import { SocketProvider } from './context/SocketContext';
 import ThemedBackground from './components/ThemedBackground';
 import './App.css';
@@ -34,6 +35,7 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/unimatch" element={<UniMatch />} />
           <Route path="/university" element={<Universidad />} />
+          <Route path="/map" element={<MapEvents />} />
           <Route path="/profile/:id" element={<Profile />} />
         </Routes>
       </SocketProvider>
