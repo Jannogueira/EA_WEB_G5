@@ -3,7 +3,8 @@ import "./Postcard.css";
 import type { Post } from "../models/post";
 import usePost from "../hooks/usePost";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Send } from "lucide-react";
+// Added Bookmark here
+import { Heart, MessageCircle, Send, Bookmark } from "lucide-react"; 
 import { useTranslation } from "react-i18next";
 
 import SharePostModal from "./SharePostModal";
@@ -12,7 +13,7 @@ import PostDetailModal from "./PostDetailModal";
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { post, likePost, likeComment, addComment, loadingComment, error } = usePost(postProp);
+  const { post, likePost, likeComment, addComment, loadingComment, error, toggleSave, isSaved } = usePost(postProp);
 
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -32,6 +33,11 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
     if (post.usuario?._id) {
       navigate(`/profile/${post.usuario._id}`);
     }
+  };
+
+  const handleBookmarkClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await toggleSave();
   };
 
   const postLiked = currentUserId && post.likes?.some((u: any) => (u._id || u) === currentUserId);
@@ -63,7 +69,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
       )}
 
       <div className="post-content">
-        <div className="post-actions">
+        <div className="post-actions" style={{ display: "flex", justifyContent: "between", alignItems: "center" }}>
           <div className="main-actions">
             <button 
               onClick={(e) => {
@@ -97,6 +103,20 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
               <Send size={24} />
             </button>
           </div>
+
+          {/* New Bookmark Button Added Here */}
+          <div className="secondary-actions">
+            <button
+              onClick={handleBookmarkClick}
+              className="share-btn-action"
+            >
+              <Bookmark
+                    size={24}
+                    className={isSaved ? "bookmarked" : ""}
+                    fill={isSaved ? "currentColor" : "none"}
+                />
+            </button>
+          </div>
         </div>
 
         <div className="post-likes-count">
@@ -107,7 +127,6 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             <span className="author-name-inline">{post.usuario?.nombre}</span>{" "}
             {post.caption}
         </div>
-
 
         {error && <p className="error-message" style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}>{error}</p>}
       </div>
@@ -121,14 +140,16 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
 
       {showDetailModal && (
           <PostDetailModal 
-            post={post}
-            currentUserId={currentUserId}
-            onClose={() => setShowDetailModal(false)}
-            onLike={likePost}
-            onLikeComment={likeComment}
-            onAddComment={addComment}
-            loadingComment={loadingComment}
-            onShare={() => setShowShareModal(true)}
+              post={post}
+              currentUserId={currentUserId}
+              onClose={() => setShowDetailModal(false)}
+              onLike={likePost}
+              onLikeComment={likeComment}
+              onAddComment={addComment}
+              loadingComment={loadingComment}
+              onShare={() => setShowShareModal(true)}
+              onToggleSave={toggleSave}
+              isSaved={isSaved}
           />
       )}
     </div>

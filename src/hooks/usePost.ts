@@ -13,15 +13,21 @@ export default function usePost(initialPost: Post) {
   const [loadingComment, setLoadingComment] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [isSaved, setIsSaved] = useState<boolean>(
+    false
+  );
+
   useEffect(() => {
     setPost({
       ...initialPost,
       comments: (initialPost.comments ?? []).map(c => ({
         ...c,
-        likes: c.likes ?? []
+        likes: c.likes ?? [],
       })),
       likes: initialPost.likes ?? [],
     });
+
+    setIsSaved((initialPost as any).isSaved ?? false);
   }, [initialPost]);
 
   const likePost = async () => {
@@ -32,7 +38,7 @@ export default function usePost(initialPost: Post) {
         ...prev,
         likes: res.data.likes,
       }));
-    } catch (err) {
+    } catch {
       setError("Error al dar like");
     }
   };
@@ -53,7 +59,7 @@ export default function usePost(initialPost: Post) {
         ...prev,
         comments: [...prev.comments, { ...res.data, likes: [] }],
       }));
-    } catch (err) {
+    } catch {
       setError("Error al crear comentario");
     } finally {
       setLoadingComment(false);
@@ -63,15 +69,28 @@ export default function usePost(initialPost: Post) {
   const likeComment = async (commentId: string) => {
     try {
       const res = await CommentService.like(commentId);
-      // Backend returns the updated comment
+
       setPost(prev => ({
         ...prev,
-        comments: prev.comments.map(c => 
+        comments: prev.comments.map(c =>
           c._id === commentId ? { ...c, likes: res.data.likes } : c
         ),
       }));
-    } catch (err) {
+    } catch {
       setError("Error al dar like al comentario");
+    }
+  };
+
+
+  const toggleSave = async () => {
+    try {
+      const res = await PostService.toggleSave(post._id);
+
+      setIsSaved(res.data.saved);
+
+      return res.data.saved;
+    } catch (err) {
+      return null;
     }
   };
 
@@ -82,5 +101,7 @@ export default function usePost(initialPost: Post) {
     addComment,
     loadingComment,
     error,
+    toggleSave,
+    isSaved,
   };
 }
