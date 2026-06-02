@@ -18,4 +18,5 @@ export interface Usuario {
     privado: boolean;
     hasAcceptedUnimatchTerms?: boolean;
     followStatus?: 'PENDING' | 'ACCEPTED' | null;
+    fcmToken?: string | null;
 }
