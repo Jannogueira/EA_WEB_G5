@@ -14,12 +14,7 @@ interface AlertProps extends AlertState {
   onClose: () => void;
 }
 
-const Alert: React.FC<AlertProps> = ({
-  type = 'info',
-  title,
-  message,
-  onClose
-}) => {
+const Alert: React.FC<AlertProps> = ({ type = 'info', title, message, onClose }) => {
   const renderIcon = () => {
     const size = 28;
 
@@ -39,18 +34,13 @@ const Alert: React.FC<AlertProps> = ({
   return (
     <div className="alert-overlay" onClick={onClose}>
       <div className={`alert-modal alert-${type}`} onClick={(e) => e.stopPropagation()}>
-
         {/* HEADER ROW */}
         <div className="alert-header">
-          <div className="alert-icon">
-            {renderIcon()}
-          </div>
+          <div className="alert-icon">{renderIcon()}</div>
 
           <div className="alert-text">
             <h3 className="alert-title">{title}</h3>
-            <p className={`alert-message alert-message-${type}`}>
-              {message}
-            </p>
+            <p className={`alert-message alert-message-${type}`}>{message}</p>
           </div>
         </div>
 
@@ -59,7 +49,6 @@ const Alert: React.FC<AlertProps> = ({
           <X size={18} />
           Close
         </button>
-
       </div>
     </div>
   );

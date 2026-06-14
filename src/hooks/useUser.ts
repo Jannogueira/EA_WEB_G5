@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import usuarioService from "../services/usuario";
-import type { Usuario } from "../models/usuario";
-import apiClient from "../services/api-client";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import usuarioService from '../services/usuario';
+import type { Usuario } from '../models/usuario';
+import apiClient from '../services/api-client';
 
 export default function useUser() {
   const navigate = useNavigate();
@@ -13,33 +13,32 @@ export default function useUser() {
 
   const fetchMe = async () => {
     try {
-      const res = await apiClient.get<Usuario>("/auth/me");
-      localStorage.setItem("usuario", JSON.stringify(res.data));
+      const res = await apiClient.get<Usuario>('/auth/me');
+      localStorage.setItem('usuario', JSON.stringify(res.data));
       setUsuario(res.data);
       return res.data;
     } catch (err) {
-      console.error("Error fetching me:", err);
+      console.error('Error fetching me:', err);
       return null;
     }
   };
 
   useEffect(() => {
-    const userJson = localStorage.getItem("usuario");
+    const userJson = localStorage.getItem('usuario');
 
-    if (!userJson && location.pathname !== "/register" && location.pathname !== "/login") {
-      navigate("/login");
+    if (!userJson && location.pathname !== '/register' && location.pathname !== '/login') {
+      navigate('/login');
       return;
     }
 
     if (userJson) {
       setUsuario(JSON.parse(userJson));
     }
-    
+
     // Opcionalmente refrescar al cargar si estamos autenticados
     if (userJson) {
       fetchMe();
     }
-
   }, [navigate]);
 
   const updateProfile = async (data: Partial<Usuario>) => {
@@ -49,12 +48,12 @@ export default function useUser() {
     try {
       const response = await usuarioService.updateSelf(data);
 
-      localStorage.setItem("usuario", JSON.stringify(response.data));
+      localStorage.setItem('usuario', JSON.stringify(response.data));
       setUsuario(response.data);
 
       return response.data;
     } catch (err: any) {
-      setError(err.response?.data?.message || "Error al actualizar el perfil");
+      setError(err.response?.data?.message || 'Error al actualizar el perfil');
       throw err;
     } finally {
       setLoading(false);
@@ -66,6 +65,6 @@ export default function useUser() {
     updateProfile,
     refreshUser: fetchMe,
     loading,
-    error
+    error,
   };
 }

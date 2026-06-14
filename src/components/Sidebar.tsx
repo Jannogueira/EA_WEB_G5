@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search } from "lucide-react";
-import CreatePostModal from "./CreatePostModal";
-import { useSocket } from "../context/SocketContext";
-import { useTranslation } from "react-i18next";
-import "./Sidebar.css";
-import type { Usuario } from "../models/usuario";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  Home,
+  Compass,
+  GraduationCap,
+  BookOpen,
+  MessageSquare,
+  PlusSquare,
+  Bell,
+  Heart,
+  Search,
+} from 'lucide-react';
+import CreatePostModal from './CreatePostModal';
+import { useSocket } from '../context/SocketContext';
+import { useTranslation } from 'react-i18next';
+import './Sidebar.css';
+import type { Usuario } from '../models/usuario';
 
 const Sidebar: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -27,10 +37,10 @@ const Sidebar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const handlePostCreated = () => {
-    if (location.pathname === "/home" || location.pathname === "/profile") {
+    if (location.pathname === '/home' || location.pathname === '/profile') {
       window.location.reload();
     } else {
-      navigate("/home");
+      navigate('/home');
     }
   };
 
@@ -43,76 +53,79 @@ const Sidebar: React.FC = () => {
     <>
       <div className="sidebar">
         <nav className="sidebar-nav">
-          <button 
-            className={`sidebar-btn ${isActive("/home") ? "active" : ""}`} 
-            onClick={() => navigate("/home")}
+          <button
+            className={`sidebar-btn ${isActive('/home') ? 'active' : ''}`}
+            onClick={() => navigate('/home')}
           >
             <Home size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.home')}</span>
           </button>
-          
-          <button 
-            className="sidebar-btn" 
-            onClick={() => setIsModalOpen(true)}
-          >
+
+          <button className="sidebar-btn" onClick={() => setIsModalOpen(true)}>
             <PlusSquare size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.create')}</span>
           </button>
 
-          <button 
-            className={`sidebar-btn ${isActive("/explore") ? "active" : ""}`} 
-            onClick={() => navigate("/explore")}
+          <button
+            className={`sidebar-btn ${isActive('/explore') ? 'active' : ''}`}
+            onClick={() => navigate('/explore')}
           >
             <Search size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.explore')}</span>
           </button>
 
-          <button 
-            className={`sidebar-btn ${isActive("/unimatch") ? "active" : ""}`} 
-            onClick={() => navigate("/unimatch")}
+          <button
+            className={`sidebar-btn ${isActive('/unimatch') ? 'active' : ''}`}
+            onClick={() => navigate('/unimatch')}
           >
             <Heart size={20} className="btn-icon" />
             <span className="btn-text">UniMatch</span>
           </button>
-          <button 
-            className={`sidebar-btn ${isActive("/university") ? "active" : ""}`} 
-            onClick={() => navigate("/university")}
+          <button
+            className={`sidebar-btn ${isActive('/university') ? 'active' : ''}`}
+            onClick={() => navigate('/university')}
           >
             <GraduationCap size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.university')}</span>
           </button>
-          <button 
-            className={`sidebar-btn ${isActive("/messages") ? "active" : ""}`} 
-            onClick={() => navigate("/messages")}
+          <button
+            className={`sidebar-btn ${isActive('/messages') ? 'active' : ''}`}
+            onClick={() => navigate('/messages')}
             style={{ position: 'relative' }}
           >
             <MessageSquare size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.messages')}</span>
-            {totalUnread > 0 && <div className="sidebar-notification-badge">{totalUnread > 99 ? '99+' : totalUnread}</div>}
+            {totalUnread > 0 && (
+              <div className="sidebar-notification-badge">
+                {totalUnread > 99 ? '99+' : totalUnread}
+              </div>
+            )}
           </button>
 
-          <button 
-            className={`sidebar-btn ${isActive("/notifications") ? "active" : ""}`} 
-            onClick={() => navigate("/notifications")}
+          <button
+            className={`sidebar-btn ${isActive('/notifications') ? 'active' : ''}`}
+            onClick={() => navigate('/notifications')}
             style={{ position: 'relative' }}
           >
             <Bell size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.notifications')}</span>
             {notificationCount > 0 && (
-              <div className="sidebar-notification-badge">{notificationCount > 99 ? '99+' : notificationCount}</div>
+              <div className="sidebar-notification-badge">
+                {notificationCount > 99 ? '99+' : notificationCount}
+              </div>
             )}
           </button>
         </nav>
 
         <div className="sidebar-footer">
           <div className="lang-segmented-control">
-            <button 
+            <button
               className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
               onClick={() => i18n.changeLanguage('es')}
             >
               ES
             </button>
-            <button 
+            <button
               className={`lang-option ${i18n.language.startsWith('ca') ? 'active' : ''}`}
               onClick={() => i18n.changeLanguage('ca')}
             >
@@ -123,10 +136,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {isModalOpen && usuario && (
-        <CreatePostModal 
-          onClose={() => setIsModalOpen(false)} 
-          onPostCreated={handlePostCreated}
-        />
+        <CreatePostModal onClose={() => setIsModalOpen(false)} onPostCreated={handlePostCreated} />
       )}
     </>
   );

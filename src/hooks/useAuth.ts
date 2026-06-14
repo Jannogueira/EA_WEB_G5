@@ -1,13 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import authService from "../services/auth";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/auth';
 
 export default function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -17,7 +15,7 @@ export default function useAuth() {
       const data = await authService.login(email, password);
       return data;
     } catch (err) {
-      setError("Error en login");
+      setError('Error en login');
       throw err;
     } finally {
       setLoading(false);
@@ -32,26 +30,22 @@ export default function useAuth() {
       const data = await authService.googleLogin(token);
       return data;
     } catch (err) {
-      setError("Error en login con Google");
+      setError('Error en login con Google');
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (data: {
-    nombre: string;
-    email: string;
-    password: string;
-  }) => {
+  const register = async (data: { nombre: string; email: string; password: string }) => {
     setLoading(true);
     setError(null);
 
     try {
       await authService.register(data);
-      navigate("/select-university");
+      navigate('/select-university');
     } catch (err) {
-      setError("Error en registro");
+      setError('Error en registro');
       throw err;
     } finally {
       setLoading(false);
@@ -61,9 +55,9 @@ export default function useAuth() {
   const logout = async () => {
     try {
       await authService.logout();
-      navigate("/login");
+      navigate('/login');
     } catch (err) {
-      setError("Error al cerrar sesión");
+      setError('Error al cerrar sesión');
     }
   };
 

@@ -1,5 +1,5 @@
 .sidebar {
-  box-sizing: border-box; 
+  box-sizing: border-box;
   width: 240px;
   height: calc(100vh - 135px);
   background: var(--bg-card);
@@ -25,16 +25,16 @@
     left: 10px;
     padding: 1.5rem 0.5rem;
   }
-  
+
   .sidebar-btn span {
     display: none;
   }
-  
+
   .sidebar-btn {
     justify-content: center;
     padding: 14px;
   }
-  
+
   .sidebar-footer {
     display: none;
   }
@@ -79,8 +79,14 @@
   }
 
   @keyframes slideInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 

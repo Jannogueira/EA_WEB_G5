@@ -1,152 +1,179 @@
 .match-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(12px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    animation: fadeIn 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
 }
 
 .match-content {
-    text-align: center;
-    animation: matchBounce 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  animation: matchBounce 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes matchBounce {
-    0% { opacity: 0; transform: scale(0.5); }
-    60% { transform: scale(1.1); }
-    100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .match-title {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9ff3, #54a0ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 300% 300%;
-    animation: gradientShift 3s ease infinite;
-    margin-bottom: 2rem;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9ff3, #54a0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: gradientShift 3s ease infinite;
+  margin-bottom: 2rem;
 }
 
 @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .match-photos {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .match-photo-container {
-    position: relative;
+  position: relative;
 }
 
 .match-photo {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid;
-    animation: photoGlow 2s ease-in-out infinite alternate;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid;
+  animation: photoGlow 2s ease-in-out infinite alternate;
 }
 
 .match-photo.my-photo {
-    border-color: #ff6b6b;
-    box-shadow: 0 0 30px rgba(255, 107, 107, 0.4);
+  border-color: #ff6b6b;
+  box-shadow: 0 0 30px rgba(255, 107, 107, 0.4);
 }
 
 .match-photo.their-photo {
-    border-color: #54a0ff;
-    box-shadow: 0 0 30px rgba(84, 160, 255, 0.4);
+  border-color: #54a0ff;
+  box-shadow: 0 0 30px rgba(84, 160, 255, 0.4);
 }
 
 @keyframes photoGlow {
-    from { filter: brightness(1); }
-    to { filter: brightness(1.15); }
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(1.15);
+  }
 }
 
 .match-heart {
-    font-size: 2.5rem;
-    animation: heartbeat 1s ease-in-out infinite;
+  font-size: 2.5rem;
+  animation: heartbeat 1s ease-in-out infinite;
 }
 
 @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.2); }
-    50% { transform: scale(1); }
-    75% { transform: scale(1.15); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.15);
+  }
 }
 
 .match-name {
-    color: white;
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
 }
 
 .match-subtitle {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
 }
 
 .match-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
 }
 
 .match-btn {
-    padding: 12px 28px;
-    border: none;
-    border-radius: 14px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .match-btn.primary {
-    background: linear-gradient(135deg, #54a0ff, #5f27cd);
-    color: white;
-    box-shadow: 0 4px 20px rgba(84, 160, 255, 0.3);
+  background: linear-gradient(135deg, #54a0ff, #5f27cd);
+  color: white;
+  box-shadow: 0 4px 20px rgba(84, 160, 255, 0.3);
 }
 
 .match-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(84, 160, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(84, 160, 255, 0.4);
 }
 
 .match-btn.secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .match-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* Canvas for confetti */
 .match-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 10001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10001;
 }

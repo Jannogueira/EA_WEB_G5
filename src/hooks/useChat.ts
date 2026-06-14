@@ -13,7 +13,7 @@ export default function useChat(currentUserId: string) {
 
   // Cargar contactos mutuos
   useEffect(() => {
-    getContacts().then(res => setContacts(res.data));
+    getContacts().then((res) => setContacts(res.data));
   }, []);
 
   // Escuchar eventos del socket global
@@ -21,14 +21,17 @@ export default function useChat(currentUserId: string) {
     if (!socket) return;
 
     const handleReceiveMessage = (msg: Message) => {
-      if (activeContact && (msg.remitente._id === activeContact._id || msg.remitente._id === currentUserId)) {
-        setMessages(prev => [...prev, msg]);
+      if (
+        activeContact &&
+        (msg.remitente._id === activeContact._id || msg.remitente._id === currentUserId)
+      ) {
+        setMessages((prev) => [...prev, msg]);
       }
     };
 
     const handleMessageSent = (msg: Message) => {
       if (activeContact && msg.destinatario._id === activeContact._id) {
-        setMessages(prev => [...prev, msg]);
+        setMessages((prev) => [...prev, msg]);
       }
     };
 
@@ -49,22 +52,36 @@ export default function useChat(currentUserId: string) {
       clearTimeout(typingTimeout);
     };
 
-    const handleMessagesDeleted = ({ messageIds, type }: { messageIds: string[], type: 'me' | 'everyone' }) => {
-      setMessages(prev => prev.map(msg => {
-        if (messageIds.includes(msg._id)) {
-          if (type === 'everyone') {
-            return { ...msg, contenido: 'El mensaje ha sido eliminado', eliminadoParaTodos: true };
-          }
-          return { ...msg, _hidden: true };
-        }
-        return msg;
-      }).filter(msg => !(msg as any)._hidden));
+    const handleMessagesDeleted = ({
+      messageIds,
+      type,
+    }: {
+      messageIds: string[];
+      type: 'me' | 'everyone';
+    }) => {
+      setMessages((prev) =>
+        prev
+          .map((msg) => {
+            if (messageIds.includes(msg._id)) {
+              if (type === 'everyone') {
+                return {
+                  ...msg,
+                  contenido: 'El mensaje ha sido eliminado',
+                  eliminadoParaTodos: true,
+                };
+              }
+              return { ...msg, _hidden: true };
+            }
+            return msg;
+          })
+          .filter((msg) => !(msg as any)._hidden),
+      );
     };
 
     const handleMessageUpdated = (msg: Message) => {
-      setMessages(prev => prev.map(m => m._id === msg._id ? msg : m));
+      setMessages((prev) => prev.map((m) => (m._id === msg._id ? msg : m)));
     };
-    
+
     socket.on('receive_message', handleReceiveMessage);
     socket.on('message_sent', handleMessageSent);
     socket.on('user_typing', handleTyping);
@@ -103,14 +120,17 @@ export default function useChat(currentUserId: string) {
   }, []);
 
   // Enviar mensaje
-  const sendMessage = useCallback((contenido: string, parentMessageId?: string) => {
-    if (!activeContact || !socket || (!contenido.trim() && !parentMessageId)) return;
-    socket.emit('send_message', {
-      destinatarioId: activeContact._id,
-      contenido: contenido.trim(),
-      parentMessageId
-    });
-  }, [activeContact, socket]);
+  const sendMessage = useCallback(
+    (contenido: string, parentMessageId?: string) => {
+      if (!activeContact || !socket || (!contenido.trim() && !parentMessageId)) return;
+      socket.emit('send_message', {
+        destinatarioId: activeContact._id,
+        contenido: contenido.trim(),
+        parentMessageId,
+      });
+    },
+    [activeContact, socket],
+  );
 
   // Emitir evento "typing"
   const emitTyping = useCallback(() => {
@@ -119,24 +139,30 @@ export default function useChat(currentUserId: string) {
   }, [activeContact, socket]);
 
   // Eliminar mensaje
-  const deleteMessage = useCallback((messageId: string, type: 'me' | 'everyone') => {
-    if (!socket || !activeContact) return;
-    socket.emit('delete_messages', {
-      messageIds: [messageId],
-      type,
-      destinatarioId: activeContact._id
-    });
-  }, [socket, activeContact]);
+  const deleteMessage = useCallback(
+    (messageId: string, type: 'me' | 'everyone') => {
+      if (!socket || !activeContact) return;
+      socket.emit('delete_messages', {
+        messageIds: [messageId],
+        type,
+        destinatarioId: activeContact._id,
+      });
+    },
+    [socket, activeContact],
+  );
 
   // Reaccionar a un mensaje
-  const reactToMessage = useCallback((messageId: string, emoji: string) => {
-    if (!socket || !activeContact) return;
-    socket.emit('react_message', {
-      messageId,
-      emoji,
-      destinatarioId: activeContact._id
-    });
-  }, [socket, activeContact]);
+  const reactToMessage = useCallback(
+    (messageId: string, emoji: string) => {
+      if (!socket || !activeContact) return;
+      socket.emit('react_message', {
+        messageId,
+        emoji,
+        destinatarioId: activeContact._id,
+      });
+    },
+    [socket, activeContact],
+  );
 
   return {
     contacts,

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import "./Postcard.css";
-import type { Post } from "../models/post";
-import usePost from "../hooks/usePost";
-import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Send } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import React, { useState } from 'react';
+import './Postcard.css';
+import type { Post } from '../models/post';
+import usePost from '../hooks/usePost';
+import { useNavigate } from 'react-router-dom';
+import { Heart, MessageCircle, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-import SharePostModal from "./SharePostModal";
-import PostDetailModal from "./PostDetailModal";
+import SharePostModal from './SharePostModal';
+import PostDetailModal from './PostDetailModal';
 
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   const navigate = useNavigate();
@@ -19,11 +19,13 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
 
   const currentUserId = (() => {
     try {
-      const u = localStorage.getItem("usuario");
+      const u = localStorage.getItem('usuario');
       if (!u) return null;
       const parsed = JSON.parse(u);
       return parsed._id || parsed.id;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   })();
 
   const userAvatar = post.usuario?.avatarUrl;
@@ -38,42 +40,40 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
 
   return (
     <div className="post-card">
-      <div className="post-header" onClick={handleProfileClick} style={{ cursor: "pointer" }}>
-        <img
-          src={userAvatar}
-          alt={post.usuario?.nombre || "Usuario"}
-          className="author-avatar"
-        />
+      <div className="post-header" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+        <img src={userAvatar} alt={post.usuario?.nombre || 'Usuario'} className="author-avatar" />
 
         <div className="author-info">
-          <h3 className="author-name">
-            {post.usuario?.nombre || "Usuario"}
-          </h3>
+          <h3 className="author-name">{post.usuario?.nombre || 'Usuario'}</h3>
         </div>
       </div>
 
       {post.imageUrl && (
-        <div className="post-image-container" onClick={() => setShowDetailModal(true)} style={{ cursor: "pointer" }}>
-          <img
-            src={post.imageUrl}
-            alt="Post content"
-            className="post-image"
-          />
+        <div
+          className="post-image-container"
+          onClick={() => setShowDetailModal(true)}
+          style={{ cursor: 'pointer' }}
+        >
+          <img src={post.imageUrl} alt="Post content" className="post-image" />
         </div>
       )}
 
       <div className="post-content">
         <div className="post-actions">
           <div className="main-actions">
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 likePost();
-              }} 
-              className="like-button" 
+              }}
+              className="like-button"
               title={t('postcard.like_post')}
             >
-              <Heart size={24} className={postLiked ? "liked" : ""} fill={postLiked ? "currentColor" : "none"} />
+              <Heart
+                size={24}
+                className={postLiked ? 'liked' : ''}
+                fill={postLiked ? 'currentColor' : 'none'}
+              />
             </button>
 
             <button
@@ -100,36 +100,38 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         </div>
 
         <div className="post-likes-count">
-            {post.likes?.length || 0} {t('postcard.likes')}
+          {post.likes?.length || 0} {t('postcard.likes')}
         </div>
 
         <div className="post-caption">
-            <span className="author-name-inline">{post.usuario?.nombre}</span>{" "}
-            {post.caption}
+          <span className="author-name-inline">{post.usuario?.nombre}</span> {post.caption}
         </div>
 
-
-        {error && <p className="error-message" style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}>{error}</p>}
+        {error && (
+          <p
+            className="error-message"
+            style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '5px' }}
+          >
+            {error}
+          </p>
+        )}
       </div>
 
       {showShareModal && (
-        <SharePostModal 
-          postId={post._id} 
-          onClose={() => setShowShareModal(false)} 
-        />
+        <SharePostModal postId={post._id} onClose={() => setShowShareModal(false)} />
       )}
 
       {showDetailModal && (
-          <PostDetailModal 
-            post={post}
-            currentUserId={currentUserId}
-            onClose={() => setShowDetailModal(false)}
-            onLike={likePost}
-            onLikeComment={likeComment}
-            onAddComment={addComment}
-            loadingComment={loadingComment}
-            onShare={() => setShowShareModal(true)}
-          />
+        <PostDetailModal
+          post={post}
+          currentUserId={currentUserId}
+          onClose={() => setShowDetailModal(false)}
+          onLike={likePost}
+          onLikeComment={likeComment}
+          onAddComment={addComment}
+          loadingComment={loadingComment}
+          onShare={() => setShowShareModal(true)}
+        />
       )}
     </div>
   );

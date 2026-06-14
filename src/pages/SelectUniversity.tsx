@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, BookOpen, Library, ChevronRight, ChevronLeft, CheckCircle } from 'lucide-react';
+import {
+  GraduationCap,
+  BookOpen,
+  Library,
+  ChevronRight,
+  ChevronLeft,
+  CheckCircle,
+} from 'lucide-react';
 
 import universidadService from '../services/universidad';
 import gradoService from '../services/grado';
@@ -115,8 +122,8 @@ const SelectUniversity = () => {
   };
 
   const handleToggleAsignatura = (id: string) => {
-    setSelectedAsigIds(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    setSelectedAsigIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -136,7 +143,7 @@ const SelectUniversity = () => {
       // 1. Actualizar Uni y Grado
       await usuarioService.updateSelf({
         universidad: selectedUniId,
-        grado: selectedGradoId
+        grado: selectedGradoId,
       });
 
       // 2. Actualizar Asignaturas
@@ -149,18 +156,17 @@ const SelectUniversity = () => {
       setAlert({
         type: 'success',
         title: '¡Registro completado!',
-        message: 'Tu perfil académico se ha configurado correctamente.'
+        message: 'Tu perfil académico se ha configurado correctamente.',
       });
 
       setTimeout(() => {
         navigate('/home');
       }, 1500);
-
     } catch (error: any) {
       setAlert({
         type: 'error',
         title: 'Error al guardar',
-        message: error.response?.data?.message || "Error al conectar con el servidor"
+        message: error.response?.data?.message || 'Error al conectar con el servidor',
       });
     } finally {
       setLoading(false);
@@ -239,21 +245,17 @@ const SelectUniversity = () => {
 
         <div className="step-navigation-footer">
           {step > 1 && (
-            <button 
-              className="btn-back" 
-              onClick={handleBack}
-              disabled={loading}
-            >
+            <button className="btn-back" onClick={handleBack} disabled={loading}>
               <ChevronLeft size={20} />
               Atrás
             </button>
           )}
-          
+
           <div className="spacer"></div>
 
           {step < 3 ? (
-            <button 
-              className="btn-next" 
+            <button
+              className="btn-next"
               onClick={handleNext}
               disabled={isNextDisabled() || loading}
             >
@@ -261,8 +263,8 @@ const SelectUniversity = () => {
               <ChevronRight size={20} />
             </button>
           ) : (
-            <button 
-              className="btn-finish" 
+            <button
+              className="btn-finish"
               onClick={handleSubmit}
               disabled={isNextDisabled() || loading}
             >

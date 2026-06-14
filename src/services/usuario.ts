@@ -1,15 +1,15 @@
-import create from "./http";
-import apiClient from "./api-client";
-import type { PaginatedResponse } from "../models/pagination";
-import type { Usuario } from "../models/usuario";
-import type { Universidad } from "../models/universidad";
-import type { Grado } from "../models/grado";
-import type { Asignatura } from "../models/asignatura";
+import create from './http';
+import apiClient from './api-client';
+import type { PaginatedResponse } from '../models/pagination';
+import type { Usuario } from '../models/usuario';
+import type { Universidad } from '../models/universidad';
+import type { Grado } from '../models/grado';
+import type { Asignatura } from '../models/asignatura';
 
-const service = create("/usuarios");
+const service = create('/usuarios');
 
 export const updateSelf = (data: any) => {
-  return apiClient.patch("/auth/me", data);
+  return apiClient.patch('/auth/me', data);
 };
 
 export const getFollowers = (usuarioId: string, isAdmin: boolean = false) => {
@@ -21,7 +21,7 @@ export const getFollowing = (usuarioId: string, isAdmin: boolean = false) => {
 };
 
 export const getUsers = (params?: any) => {
-  return apiClient.get<PaginatedResponse<Usuario>>("/usuarios", { params });
+  return apiClient.get<PaginatedResponse<Usuario>>('/usuarios', { params });
 };
 
 export const searchUsers = (
@@ -30,20 +30,20 @@ export const searchUsers = (
   allUnis: Universidad[],
   allGrados: Grado[],
   allAsignaturas: Asignatura[],
-  page: number = 1
+  page: number = 1,
 ) => {
-  const unis = allIds.filter(id => allUnis.some(u => u._id === id));
-  const grados = allIds.filter(id => allGrados.some(g => g._id === id));
-  const asigs = allIds.filter(id => allAsignaturas.some(a => a._id === id));
+  const unis = allIds.filter((id) => allUnis.some((u) => u._id === id));
+  const grados = allIds.filter((id) => allGrados.some((g) => g._id === id));
+  const asigs = allIds.filter((id) => allAsignaturas.some((a) => a._id === id));
 
-  return apiClient.get("/usuarios", {
+  return apiClient.get('/usuarios', {
     params: {
       search: query,
-      universidades: unis.length > 0 ? unis.join(",") : undefined,
-      grados: grados.length > 0 ? grados.join(",") : undefined,
-      asignaturas: asigs.length > 0 ? asigs.join(",") : undefined,
+      universidades: unis.length > 0 ? unis.join(',') : undefined,
+      grados: grados.length > 0 ? grados.join(',') : undefined,
+      asignaturas: asigs.length > 0 ? asigs.join(',') : undefined,
       page,
-      limit: 10
+      limit: 10,
     },
   });
 };
@@ -57,10 +57,7 @@ export const getUserById = (id: string) => {
 };
 
 export const updateAsignaturas = (usuarioId: string, asignaturas: string[]) => {
-  return apiClient.patch(
-    `/usuarios/${usuarioId}/asignaturas`,
-    { asignaturas }
-  );
+  return apiClient.patch(`/usuarios/${usuarioId}/asignaturas`, { asignaturas });
 };
 
 export const acceptFollowRequest = (followerId: string) => {
@@ -82,7 +79,7 @@ const exportedService = {
   getUserById,
   updateAsignaturas,
   acceptFollowRequest,
-  rejectFollowRequest
+  rejectFollowRequest,
 };
 
 export default exportedService;

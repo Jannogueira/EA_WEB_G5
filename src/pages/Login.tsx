@@ -15,16 +15,16 @@ const Login = () => {
 
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
 
   const [alert, setAlert] = useState<AlertState | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -35,16 +35,13 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate('/home');
     } catch (error: any) {
-      const errorMsg =
-        error.response?.data?.message ||
-        "Error al conectar con el servidor";
+      const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
 
       setAlert({
-        type: 'error',  
+        type: 'error',
         title: 'Fallo de inicio de sesión',
-        message: errorMsg
+        message: errorMsg,
       });
-
     }
   };
 
@@ -53,7 +50,7 @@ const Login = () => {
       setAlert({
         type: 'error',
         title: 'Error de Google OAuth',
-        message: 'No se recibieron credenciales de Google'
+        message: 'No se recibieron credenciales de Google',
       });
       return;
     }
@@ -62,14 +59,12 @@ const Login = () => {
       await loginWithGoogle(credentialResponse.credential);
       navigate('/home');
     } catch (error: any) {
-      const errorMsg =
-        error.response?.data?.message ||
-        "Error al iniciar sesión con Google";
+      const errorMsg = error.response?.data?.message || 'Error al iniciar sesión con Google';
 
       setAlert({
         type: 'error',
         title: 'Fallo de inicio de sesión',
-        message: errorMsg
+        message: errorMsg,
       });
     }
   };
@@ -78,7 +73,6 @@ const Login = () => {
     <div className="login-page">
       <ThemeToggle className="theme-toggle-absolute" />
       <div className="login-container">
-
         {alert && (
           <Alert
             type={alert.type}
@@ -87,7 +81,7 @@ const Login = () => {
             onClose={() => setAlert(null)}
           />
         )}
-        
+
         <h2>Iniciar Sesión</h2>
 
         <form onSubmit={handleLogin} className="login-form">
@@ -115,7 +109,7 @@ const Login = () => {
           </div>
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Cargando..." : "Entrar"}
+            {loading ? 'Cargando...' : 'Entrar'}
           </button>
         </form>
 
@@ -128,7 +122,7 @@ const Login = () => {
               setAlert({
                 type: 'error',
                 title: 'Fallo de Google OAuth',
-                message: 'No se pudo iniciar sesión con Google'
+                message: 'No se pudo iniciar sesión con Google',
               });
             }}
             theme={theme === 'dark' ? 'filled_black' : 'outline'}

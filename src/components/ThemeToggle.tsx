@@ -11,9 +11,9 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div 
-      className={`theme-toggle-switch ${className || ''}`} 
-      onClick={toggleTheme} 
+    <div
+      className={`theme-toggle-switch ${className || ''}`}
+      onClick={toggleTheme}
       title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
     >
       <div className="theme-toggle-thumb">

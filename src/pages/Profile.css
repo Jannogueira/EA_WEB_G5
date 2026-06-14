@@ -17,8 +17,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- Univy Header Section --- */
@@ -161,27 +167,27 @@
 }
 
 .user-bio-univy {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .full-name-label {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--text-main);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-main);
 }
 
 .bio-description {
-    color: var(--text-muted);
-    margin: 4px 0;
-    line-height: 1.5;
+  color: var(--text-muted);
+  margin: 4px 0;
+  line-height: 1.5;
 }
 
 .bio-contact {
-    font-size: 0.85rem;
-    color: var(--accent-purple);
-    margin: 0;
+  font-size: 0.85rem;
+  color: var(--accent-purple);
+  margin: 0;
 }
 
 /* --- Section Heading --- */
@@ -262,7 +268,8 @@
 }
 
 /* --- Empty/Loading --- */
-.state-message, .empty-state {
+.state-message,
+.empty-state {
   padding: 80px 0;
   text-align: center;
   color: var(--text-muted);
@@ -290,8 +297,14 @@
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .private-account-empty h3 {
@@ -457,7 +470,7 @@
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .profile-social-stats {
     width: 100%;
     justify-content: space-around;
@@ -469,7 +482,7 @@
     height: 100px;
     font-size: 2.5rem;
   }
-  
+
   .univy-posts-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -562,7 +575,9 @@
   justify-content: center;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .unimatch-photo-item:hover .unimatch-delete-photo {
@@ -611,4 +626,3 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
-

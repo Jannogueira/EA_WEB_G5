@@ -28,20 +28,23 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
   onSelect,
   multiple = false,
   loading = false,
-  placeholder = "Buscar...",
-  icon
+  placeholder = 'Buscar...',
+  icon,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Función para normalizar texto (quitar acentos)
   const normalize = (text: string) => {
-    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
   };
 
   const filteredItems = useMemo(() => {
     const query = normalize(searchQuery);
     if (!query) return items;
-    return items.filter(item => normalize(item.nombre).includes(query));
+    return items.filter((item) => normalize(item.nombre).includes(query));
   }, [items, searchQuery]);
 
   // Función para resaltar el texto coincidente
@@ -50,7 +53,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
     const normalizedText = normalize(text);
     const normalizedQuery = normalize(query);
     const startIndex = normalizedText.indexOf(normalizedQuery);
-    
+
     if (startIndex === -1) return text;
 
     const before = text.substring(0, startIndex);
@@ -104,12 +107,8 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
                   onClick={() => onSelect(item._id)}
                 >
                   <div className="card-content">
-                    <span className="card-name">
-                      {highlightMatch(item.nombre, searchQuery)}
-                    </span>
-                    {isSelected && (
-                      <CheckCircle2 size={18} className="selection-check" />
-                    )}
+                    <span className="card-name">{highlightMatch(item.nombre, searchQuery)}</span>
+                    {isSelected && <CheckCircle2 size={18} className="selection-check" />}
                   </div>
                 </div>
               );
@@ -117,7 +116,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
           </div>
         ) : (
           <div className="no-results">
-            <p>No se encontraron coincidencias para "{searchQuery}"</p>
+            <p>No se encontraron coincidencias para &quot;{searchQuery}&quot;</p>
           </div>
         )}
       </div>

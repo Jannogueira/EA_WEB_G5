@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import universidadService from "../services/universidad";
-import type { Universidad } from "../models/universidad";
+import { useEffect, useState } from 'react';
+import universidadService from '../services/universidad';
+import type { Universidad } from '../models/universidad';
 
 export default function useUnis() {
   const [universidades, setUniversidades] = useState<Universidad[]>([]);
@@ -20,7 +20,7 @@ export default function useUnis() {
         setUniversidades(response.data.docs || []);
       } catch (err: any) {
         if (err.name !== 'CanceledError') {
-          setError(err.message || "Error cargando universidades");
+          setError(err.message || 'Error cargando universidades');
         }
       } finally {
         setLoading(false);

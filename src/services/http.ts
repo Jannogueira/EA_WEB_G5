@@ -1,5 +1,5 @@
-import type { PaginatedResponse } from "../models/pagination";
-import apiClient from "./api-client";
+import type { PaginatedResponse } from '../models/pagination';
+import apiClient from './api-client';
 
 type EntityWithId = { id: number } | { _id: string };
 
@@ -19,8 +19,8 @@ class HttpService {
     return { request, cancel: () => controller.abort() };
   }
 
-  delete(id: string | number) { 
-    return apiClient.delete(this.endpoint + "/" + id);
+  delete(id: string | number) {
+    return apiClient.delete(this.endpoint + '/' + id);
   }
 
   create<T>(entity: T) {
@@ -29,7 +29,7 @@ class HttpService {
 
   update<T extends EntityWithId>(entity: T) {
     // Get the ID for the URL path
-    const entityId = "_id" in entity ? entity._id : entity.id;
+    const entityId = '_id' in entity ? entity._id : entity.id;
 
     // Create a clean payload for the request body
     const payload = { ...entity };
@@ -41,14 +41,13 @@ class HttpService {
     delete (payload as any).updatedAt;
     delete (payload as any).__v; // Also common in Mongoose
 
-    return apiClient.put(this.endpoint + "/" + entityId, payload);
+    return apiClient.put(this.endpoint + '/' + entityId, payload);
   }
 
   patch(id: string | number, data: any) {
-    return apiClient.patch(this.endpoint + "/" + id, data);
+    return apiClient.patch(this.endpoint + '/' + id, data);
   }
 }
-
 
 const create = (endpoint: string) => new HttpService(endpoint);
 

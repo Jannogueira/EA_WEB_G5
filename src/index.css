@@ -3,9 +3,9 @@
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
   --heading: 'Inter', system-ui, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
-  
+
   --transition-speed: 0.3s;
-  
+
   /* Shared Accent Colors */
   --accent-purple: #8a2be2;
   --accent-glow: rgba(138, 43, 226, 0.3);
@@ -50,7 +50,9 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: var(--sans);
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition:
+    background-color var(--transition-speed),
+    color var(--transition-speed);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -61,7 +63,10 @@ body {
   margin: 0 auto;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--heading);
   color: var(--text-main);
   margin: 0;
@@ -104,7 +109,7 @@ button {
     margin-top: 60px;
     margin-bottom: 70px; /* Space for bottom sidebar */
   }
-  
+
   .content-area {
     margin-left: 0;
     padding: 1rem;
@@ -117,16 +122,24 @@ button {
   .content-area {
     padding: 0.75rem;
   }
-  
+
   h1 {
     font-size: 1.75rem !important;
   }
 }
 
 /* Smooth theme transitions */
-body, nav, div, section, input, button, span, p {
-  transition: background-color var(--transition-speed) ease, 
-              border-color var(--transition-speed) ease, 
-              color var(--transition-speed) ease,
-              box-shadow var(--transition-speed) ease;
+body,
+nav,
+div,
+section,
+input,
+button,
+span,
+p {
+  transition:
+    background-color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease,
+    color var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease;
 }

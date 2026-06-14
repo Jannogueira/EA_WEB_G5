@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import gradoService from "../services/grado";
-import type { Asignatura } from "../models/asignatura";
-import type { Usuario } from "../models/usuario";
+import { useEffect, useState } from 'react';
+import gradoService from '../services/grado';
+import type { Asignatura } from '../models/asignatura';
+import type { Usuario } from '../models/usuario';
 
 export default function useAsignatura(gradoId: string, usuario: Usuario | null) {
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
@@ -19,7 +19,7 @@ export default function useAsignatura(gradoId: string, usuario: Usuario | null) 
         const res = await gradoService.getAsignaturas(gradoId);
         setAsignaturas(res.data);
       } catch (err: any) {
-        setError(err.message || "Error cargando asignaturas");
+        setError(err.message || 'Error cargando asignaturas');
       } finally {
         setLoading(false);
       }
@@ -35,11 +35,7 @@ export default function useAsignatura(gradoId: string, usuario: Usuario | null) 
   }, [usuario, gradoId]);
 
   const toggle = (id: string) => {
-    setSelected(prev =>
-      prev.includes(id)
-        ? prev.filter(x => x !== id)
-        : [...prev, id]
-    );
+    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   return {
@@ -47,6 +43,6 @@ export default function useAsignatura(gradoId: string, usuario: Usuario | null) 
     selected,
     toggle,
     loading,
-    error
+    error,
   };
 }

@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
-import PostService from "../services/post";
-import type { Post } from "../models/post";
+import { useEffect, useState, useCallback } from 'react';
+import PostService from '../services/post';
+import type { Post } from '../models/post';
 
 export default function usePosts() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -9,30 +9,30 @@ export default function usePosts() {
   const [page, setPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(true);
 
-  const fetchPosts = useCallback(async (pageNum: number, isInitial: boolean = false) => {
-    if (loading || (!isInitial && !hasNextPage)) return;
+  const fetchPosts = useCallback(
+    async (pageNum: number, isInitial: boolean = false) => {
+      if (loading || (!isInitial && !hasNextPage)) return;
 
-    setLoading(true);
-    try {
-      // Ahora pasamos la página al servicio para obtener los posts de seguidos
-      const { request } = PostService.getFollowing(pageNum, 10);
-      const response = await request;
+      setLoading(true);
+      try {
+        // Ahora pasamos la página al servicio para obtener los posts de seguidos
+        const { request } = PostService.getFollowing(pageNum, 10);
+        const response = await request;
 
+        const { docs, hasNextPage: more } = response.data;
 
-
-      const { docs, hasNextPage: more } = response.data;
-
-      // Acumulamos si no es la carga inicial
-      setPosts(prev => isInitial ? docs : [...prev, ...docs]);
-      setHasNextPage(more);
-      setPage(pageNum);
-    } catch (err) {
-
-      setError("Error cargando posts");
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, hasNextPage]);
+        // Acumulamos si no es la carga inicial
+        setPosts((prev) => (isInitial ? docs : [...prev, ...docs]));
+        setHasNextPage(more);
+        setPage(pageNum);
+      } catch (err) {
+        setError('Error cargando posts');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, hasNextPage],
+  );
 
   const fetchNextPage = () => {
     if (hasNextPage && !loading) {

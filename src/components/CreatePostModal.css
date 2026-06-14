@@ -135,7 +135,7 @@
   letter-spacing: 0.05em;
 }
 
-.form-group-modern input, 
+.form-group-modern input,
 .form-group-modern textarea {
   background: var(--bg-input);
   border: 1px solid var(--border-subtle);
@@ -195,13 +195,13 @@
   .create-post-form {
     flex-direction: column;
   }
-  
+
   .preview-container {
     height: 300px;
     border-right: none;
     border-bottom: 1px solid var(--divider);
   }
-  
+
   .create-modal-content {
     max-height: 90vh;
     overflow-y: auto;
@@ -209,20 +209,26 @@
 }
 
 .preview-container.clickable {
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .preview-container.clickable:hover {
-    background: var(--bg-card);
-    transform: scale(1.01);
+  background: var(--bg-card);
+  transform: scale(1.01);
 }
 
 .animate-spin {
-    animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

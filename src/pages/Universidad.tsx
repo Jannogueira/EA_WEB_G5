@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import "./Home.css";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import UserCard from "../components/UserCard";
-import useUser from "../hooks/useUser";
-import gradoService from "../services/grado";
-import type { Grado } from "../models/grado";
-import type { Asignatura } from "../models/asignatura";
-import { BookOpen, GraduationCap } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import './Home.css';
+import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
+import UserCard from '../components/UserCard';
+import useUser from '../hooks/useUser';
+import gradoService from '../services/grado';
+import type { Grado } from '../models/grado';
+import type { Asignatura } from '../models/asignatura';
+import { BookOpen, GraduationCap } from 'lucide-react';
 
-import Alert from "../components/Alert";
-import type { AlertState } from "../components/Alert";
+import Alert from '../components/Alert';
+import type { AlertState } from '../components/Alert';
 
 const Universidad: React.FC = () => {
   const { usuario } = useUser();
@@ -26,10 +26,7 @@ const Universidad: React.FC = () => {
     const fetchData = async () => {
       if (!usuario?._id) return;
 
-      const gradoId =
-        typeof usuario.grado === "string"
-          ? usuario.grado
-          : usuario.grado?._id;
+      const gradoId = typeof usuario.grado === 'string' ? usuario.grado : usuario.grado?._id;
 
       if (!gradoId) return;
 
@@ -45,20 +42,16 @@ const Universidad: React.FC = () => {
         const todas: Asignatura[] = resAsig.data;
 
         // 3. SOLO asignaturas donde está el usuario logeado
-        const filtradas = todas.filter((asig) =>
-          asig.usuarios.some((u) => u._id === usuario._id)
-        );
+        const filtradas = todas.filter((asig) => asig.usuarios.some((u) => u._id === usuario._id));
 
         setAsignaturas(filtradas);
       } catch (error: any) {
         const msg =
-          error.response?.data?.message ||
-          error.message ||
-          "Error al contactar con el servidor";
+          error.response?.data?.message || error.message || 'Error al contactar con el servidor';
 
         setAlert({
-          type: "error",
-          title: "Error",
+          type: 'error',
+          title: 'Error',
           message: msg,
         });
       } finally {
@@ -87,18 +80,17 @@ const Universidad: React.FC = () => {
 
         <div className="content-area">
           <main className="feed-container">
-
             {loading ? (
               <p>Cargando asignaturas...</p>
             ) : (
               <>
                 {/* HEADER */}
                 <header className="feed-header">
-                  <h1>{grado?.nombre || "Mi Grado"}</h1>
+                  <h1>{grado?.nombre || 'Mi Grado'}</h1>
 
                   <p>
                     <GraduationCap size={18} />
-                    {usuario?.universidad?.nombre ?? "Sin universidad"}
+                    {usuario?.universidad?.nombre ?? 'Sin universidad'}
                   </p>
                 </header>
 
@@ -110,29 +102,23 @@ const Universidad: React.FC = () => {
                     asignaturas.map((asig) => {
                       const isOpen = open === asig._id;
 
-                      const usuariosSinMi = asig.usuarios.filter(
-                        (u) => u._id !== usuario?._id
-                      );
+                      const usuariosSinMi = asig.usuarios.filter((u) => u._id !== usuario?._id);
 
                       return (
                         <div key={asig._id}>
                           {/* CARD ASIGNATURA */}
                           <section
                             className="subject-card"
-                            onClick={() =>
-                              setOpen(isOpen ? null : asig._id)
-                            }
-                            style={{ cursor: "pointer" }}
+                            onClick={() => setOpen(isOpen ? null : asig._id)}
+                            style={{ cursor: 'pointer' }}
                           >
                             <div className="subject-info">
-                              <div style={{ display: "flex", gap: 10 }}>
+                              <div style={{ display: 'flex', gap: 10 }}>
                                 <BookOpen size={22} />
                                 <h2>{asig.nombre}</h2>
                               </div>
 
-                              <span>
-                                {usuariosSinMi.length} compañeros
-                              </span>
+                              <span>{usuariosSinMi.length} compañeros</span>
                             </div>
                           </section>
 
@@ -142,9 +128,7 @@ const Universidad: React.FC = () => {
                               {usuariosSinMi.length === 0 ? (
                                 <p>No hay compañeros en esta asignatura.</p>
                               ) : (
-                                usuariosSinMi.map((u) => (
-                                  <UserCard key={u._id} user={u} />
-                                ))
+                                usuariosSinMi.map((u) => <UserCard key={u._id} user={u} />)
                               )}
                             </div>
                           )}
@@ -155,7 +139,6 @@ const Universidad: React.FC = () => {
                 </div>
               </>
             )}
-
           </main>
         </div>
       </div>

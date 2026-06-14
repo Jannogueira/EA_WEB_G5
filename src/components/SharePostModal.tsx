@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import "./SharePostModal.css";
-import { X, Search, Send, CheckCircle2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { getContacts } from "../services/chat.service";
-import type { ChatContact } from "../models/message";
-import { useSocket } from "../context/SocketContext";
+import React, { useState, useEffect } from 'react';
+import './SharePostModal.css';
+import { X, Search, Send, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { getContacts } from '../services/chat.service';
+import type { ChatContact } from '../models/message';
+import { useSocket } from '../context/SocketContext';
 
 interface SharePostModalProps {
   postId: string;
@@ -15,7 +15,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
   const [contacts, setContacts] = useState<ChatContact[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [sent, setSent] = useState(false);
@@ -28,12 +28,12 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   }, []);
 
   const filteredContacts = contacts.filter((c) =>
-    c.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    c.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const toggleContact = (id: string) => {
     setSelectedContacts((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -41,10 +41,10 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
     if (!socket || selectedContacts.length === 0) return;
 
     selectedContacts.forEach((destinatarioId) => {
-      socket.emit("send_message", {
+      socket.emit('send_message', {
         destinatarioId,
         postId,
-        contenido: "", // Opcional: podrías añadir un mensaje personalizado
+        contenido: '', // Opcional: podrías añadir un mensaje personalizado
       });
     });
 
@@ -58,7 +58,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
     <div className="share-modal-overlay" onClick={onClose}>
       <div className="share-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="share-modal-header">
-          <h2>{t("share.title") || "Enviar publicación"}</h2>
+          <h2>{t('share.title') || 'Enviar publicación'}</h2>
           <button className="close-x-btn" onClick={onClose}>
             <X size={20} />
           </button>
@@ -67,7 +67,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
         {sent ? (
           <div className="share-sent-success">
             <CheckCircle2 size={60} color="#10b981" />
-            <p>{t("share.success") || "¡Enviado con éxito!"}</p>
+            <p>{t('share.success') || '¡Enviado con éxito!'}</p>
           </div>
         ) : (
           <>
@@ -75,7 +75,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
               <Search size={18} className="search-icon" />
               <input
                 type="text"
-                placeholder={t("messages.search") || "Buscar..."}
+                placeholder={t('messages.search') || 'Buscar...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -83,13 +83,13 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
 
             <div className="share-contacts-list">
               {loading ? (
-                <div className="share-loading">{t("messages.loading")}</div>
+                <div className="share-loading">{t('messages.loading')}</div>
               ) : filteredContacts.length > 0 ? (
                 filteredContacts.map((contact) => (
                   <div
                     key={contact._id}
                     className={`share-contact-item ${
-                      selectedContacts.includes(contact._id) ? "selected" : ""
+                      selectedContacts.includes(contact._id) ? 'selected' : ''
                     }`}
                     onClick={() => toggleContact(contact._id)}
                   >
@@ -98,9 +98,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
                     </div>
                     <span className="contact-name">{contact.nombre}</span>
                     <div className="checkbox-indicator">
-                      {selectedContacts.includes(contact._id) && (
-                        <div className="check-dot" />
-                      )}
+                      {selectedContacts.includes(contact._id) && <div className="check-dot" />}
                     </div>
                   </div>
                 ))
@@ -115,7 +113,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
                 disabled={selectedContacts.length === 0}
                 onClick={handleShare}
               >
-                <span>{t("share.send") || "Enviar"}</span>
+                <span>{t('share.send') || 'Enviar'}</span>
                 <Send size={18} />
               </button>
             </footer>

@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Navbar.css";
-import type { Usuario } from "../models/usuario";
-import useAuth from "../hooks/useAuth";
-import useUser from "../hooks/useUser";
-import { useTranslation } from "react-i18next";
-import { useTheme } from "../context/ThemeContext";
-import ThemeToggle from "./ThemeToggle";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Navbar.css';
+import type { Usuario } from '../models/usuario';
+import useAuth from '../hooks/useAuth';
+import useUser from '../hooks/useUser';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import ThemeToggle from './ThemeToggle';
 
 interface NavbarProps {
   usuario?: Usuario;
@@ -19,27 +19,29 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
 
   const { logout } = useAuth();
   const { usuario: hookUsuario } = useUser();
-  
+
   const usuario = propUsuario || hookUsuario;
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation(); // Evita que se cierre el menú antes de tiempo
-  
-  // Esperamos a que la petición de logout termine
-  await logout();
-  
-  // Cerramos el menú y redirigimos
-  setMenuOpen(false);
-};
+
+    // Esperamos a que la petición de logout termine
+    await logout();
+
+    // Cerramos el menú y redirigimos
+    setMenuOpen(false);
+  };
 
   // Obtener la inicial del nombre en mayúscula
-  const userInitial = usuario?.nombre ? usuario.nombre.charAt(0).toUpperCase() : "?";
+  const userInitial = usuario?.nombre ? usuario.nombre.charAt(0).toUpperCase() : '?';
 
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <span className="brand-name" onClick={() => navigate("/home")}>Univy</span>
+        <span className="brand-name" onClick={() => navigate('/home')}>
+          Univy
+        </span>
       </div>
 
       <div className="navbar-right">
@@ -59,11 +61,8 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
               </>
             )}
           </div>
-          
-          <div 
-            className="profile-initial-trigger" 
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
+
+          <div className="profile-initial-trigger" onClick={() => setMenuOpen(!menuOpen)}>
             {usuario?.avatarUrl ? (
               <img src={usuario.avatarUrl} alt={usuario.nombre} className="nav-avatar-img" />
             ) : usuario ? (
@@ -80,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
                 <p className="user-email">{usuario?.email}</p>
               </div>
               <hr className="dropdown-divider" />
-              <button className="dropdown-item" onClick={() => navigate("/profile")}>
+              <button className="dropdown-item" onClick={() => navigate('/profile')}>
                 {t('navbar.profile')}
               </button>
               <button className="dropdown-item logout" onClick={handleLogout}>
@@ -90,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
           )}
         </div>
       </div>
-      
+
       {/*menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />*/}
     </nav>
   );

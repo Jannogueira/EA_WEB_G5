@@ -22,7 +22,7 @@ function App() {
         <Routes>
           {/* Entrar a la web te redirige automáticamente al Login */}
           <Route path="/" element={<Navigate to="/login" />} />
-          
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/select-university" element={<SelectUniversity />} />

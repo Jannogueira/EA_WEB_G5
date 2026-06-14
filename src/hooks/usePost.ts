@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import PostService from "../services/post";
-import CommentService from "../services/comment";
-import type { Post } from "../models/post";
+import { useState, useEffect } from 'react';
+import PostService from '../services/post';
+import CommentService from '../services/comment';
+import type { Post } from '../models/post';
 
 export default function usePost(initialPost: Post) {
   const [post, setPost] = useState<Post>({
@@ -16,9 +16,9 @@ export default function usePost(initialPost: Post) {
   useEffect(() => {
     setPost({
       ...initialPost,
-      comments: (initialPost.comments ?? []).map(c => ({
+      comments: (initialPost.comments ?? []).map((c) => ({
         ...c,
-        likes: c.likes ?? []
+        likes: c.likes ?? [],
       })),
       likes: initialPost.likes ?? [],
     });
@@ -28,12 +28,12 @@ export default function usePost(initialPost: Post) {
     try {
       const res = await PostService.darleLike(post._id);
 
-      setPost(prev => ({
+      setPost((prev) => ({
         ...prev,
         likes: res.data.likes,
       }));
     } catch (err) {
-      setError("Error al dar like");
+      setError('Error al dar like');
     }
   };
 
@@ -49,12 +49,12 @@ export default function usePost(initialPost: Post) {
         texto: text,
       });
 
-      setPost(prev => ({
+      setPost((prev) => ({
         ...prev,
         comments: [...prev.comments, { ...res.data, likes: [] }],
       }));
     } catch (err) {
-      setError("Error al crear comentario");
+      setError('Error al crear comentario');
     } finally {
       setLoadingComment(false);
     }
@@ -64,14 +64,14 @@ export default function usePost(initialPost: Post) {
     try {
       const res = await CommentService.like(commentId);
       // Backend returns the updated comment
-      setPost(prev => ({
+      setPost((prev) => ({
         ...prev,
-        comments: prev.comments.map(c => 
-          c._id === commentId ? { ...c, likes: res.data.likes } : c
+        comments: prev.comments.map((c) =>
+          c._id === commentId ? { ...c, likes: res.data.likes } : c,
         ),
       }));
     } catch (err) {
-      setError("Error al dar like al comentario");
+      setError('Error al dar like al comentario');
     }
   };
 

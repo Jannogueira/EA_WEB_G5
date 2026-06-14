@@ -13,7 +13,7 @@ const Register = () => {
     nombre: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const [alert, setAlert] = useState<AlertState | null>(null);
@@ -21,9 +21,9 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -34,7 +34,7 @@ const Register = () => {
       setAlert({
         type: 'error',
         title: 'Error de validación',
-        message: 'Las contraseñas no coinciden'
+        message: 'Las contraseñas no coinciden',
       });
       return;
     }
@@ -42,17 +42,14 @@ const Register = () => {
     try {
       const { confirmPassword, ...dataToSubmit } = formData;
       await register(dataToSubmit);
-            
     } catch (error: any) {
       const msg =
-        error.response?.data?.message ||
-        error.message ||
-        'Error al contactar con el servidor';
+        error.response?.data?.message || error.message || 'Error al contactar con el servidor';
 
       setAlert({
         type: 'error',
         title: 'Fallo de registro',
-        message: msg
+        message: msg,
       });
     }
   };
@@ -72,12 +69,9 @@ const Register = () => {
 
       <div className="register-container">
         <h2 className="register-title">Únete a Univy</h2>
-        <p className="register-subtitle">
-          Crea tu cuenta universitaria hoy mismo
-        </p>
+        <p className="register-subtitle">Crea tu cuenta universitaria hoy mismo</p>
 
         <form onSubmit={handleSubmit} className="register-form">
-
           <div className="form-group">
             <label>Nombre Completo</label>
             <input
@@ -128,12 +122,8 @@ const Register = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="register-btn"
-            disabled={loading}
-          >
-            {loading ? "Procesando..." : "Siguiente"}
+          <button type="submit" className="register-btn" disabled={loading}>
+            {loading ? 'Procesando...' : 'Siguiente'}
           </button>
         </form>
 

@@ -3,7 +3,7 @@ import apiClient from './api-client';
 const login = async (email: string, password: string) => {
   const response = await apiClient.post('/auth/login', {
     email,
-    password
+    password,
   });
 
   if (response.data.accessToken) {
@@ -29,7 +29,7 @@ const register = async (userData: any) => {
 
 const googleLogin = async (token: string) => {
   const response = await apiClient.post('/auth/google', {
-    token
+    token,
   });
 
   if (response.data.accessToken) {
@@ -59,5 +59,5 @@ export default {
   login,
   register,
   logout,
-  googleLogin
+  googleLogin,
 };

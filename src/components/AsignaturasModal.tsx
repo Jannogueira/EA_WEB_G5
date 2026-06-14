@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import useUser from "../hooks/useUser";
-import useAsignatura from "../hooks/useAsignatura";
-import usuarioService from "../services/usuario";
-import type { Usuario } from "../models/usuario";
-import SelectionStep from "./SelectionStep";
-import { BookOpen, X } from "lucide-react";
-import Alert from "./Alert";
-import type { AlertState } from "./Alert";
+import React, { useState } from 'react';
+import useUser from '../hooks/useUser';
+import useAsignatura from '../hooks/useAsignatura';
+import usuarioService from '../services/usuario';
+import type { Usuario } from '../models/usuario';
+import SelectionStep from './SelectionStep';
+import { BookOpen, X } from 'lucide-react';
+import Alert from './Alert';
+import type { AlertState } from './Alert';
 import './AcademicSelectorModal.css'; // Reutilizamos base de estilos
 
 interface Props {
@@ -16,20 +16,9 @@ interface Props {
   onUpdated: (u: Usuario) => void;
 }
 
-const AsignaturasModal: React.FC<Props> = ({
-  gradoId,
-  open,
-  onClose,
-  onUpdated
-}) => {
+const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }) => {
   const { usuario } = useUser();
-  const {
-    asignaturas,
-    selected,
-    toggle,
-    loading,
-    error
-  } = useAsignatura(gradoId, usuario);
+  const { asignaturas, selected, toggle, loading, error } = useAsignatura(gradoId, usuario);
 
   const [saving, setSaving] = useState(false);
   const [alert, setAlert] = useState<AlertState | null>(null);
@@ -42,14 +31,14 @@ const AsignaturasModal: React.FC<Props> = ({
       const res = await usuarioService.updateAsignaturas(usuario._id, selected);
       const updated = res.data;
 
-      localStorage.setItem("usuario", JSON.stringify(updated));
+      localStorage.setItem('usuario', JSON.stringify(updated));
       onUpdated(updated);
       onClose();
     } catch (error: any) {
       setAlert({
         type: 'error',
         title: 'Error al guardar',
-        message: error.response?.data?.message || 'No se pudieron guardar las asignaturas'
+        message: error.response?.data?.message || 'No se pudieron guardar las asignaturas',
       });
     } finally {
       setSaving(false);
@@ -60,14 +49,14 @@ const AsignaturasModal: React.FC<Props> = ({
     <div className="academic-modal-overlay">
       <div className="academic-modal-container">
         {alert && (
-            <Alert
-                type={alert.type}
-                title={alert.title}
-                message={alert.message}
-                onClose={() => setAlert(null)}
-            />
+          <Alert
+            type={alert.type}
+            title={alert.title}
+            message={alert.message}
+            onClose={() => setAlert(null)}
+          />
         )}
-        
+
         <button className="academic-modal-close" onClick={onClose}>
           <X size={20} />
         </button>
@@ -89,12 +78,8 @@ const AsignaturasModal: React.FC<Props> = ({
           <button className="academic-cancel-btn" onClick={onClose} disabled={saving}>
             Cancelar
           </button>
-          <button 
-            className="academic-save-btn" 
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? "Guardando..." : "Guardar Selección"}
+          <button className="academic-save-btn" onClick={handleSave} disabled={saving}>
+            {saving ? 'Guardando...' : 'Guardar Selección'}
           </button>
         </div>
       </div>

@@ -29,8 +29,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- FEED HEADER --- */
@@ -137,7 +143,7 @@
   border-top: none;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
-  margin-top: -10px !important; 
+  margin-top: -10px !important;
   box-sizing: border-box;
   animation: slideDown 0.4s ease-out;
 }
@@ -154,8 +160,14 @@
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- UTILS & STATES --- */
@@ -179,7 +191,7 @@
     align-items: flex-start;
     gap: 12px;
   }
-  
+
   .users-grid {
     grid-template-columns: 1fr;
   }

@@ -49,14 +49,26 @@
   animation-delay: -10s;
 }
 
-[data-theme='light'] .sphere-1 { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
-[data-theme='light'] .sphere-2 { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
-[data-theme='light'] .sphere-3 { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+[data-theme='light'] .sphere-1 {
+  background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+}
+[data-theme='light'] .sphere-2 {
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+}
+[data-theme='light'] .sphere-3 {
+  background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+}
 
 @keyframes float {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(5%, 5%) scale(1.1); }
-  100% { transform: translate(-2%, 8%) scale(1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(5%, 5%) scale(1.1);
+  }
+  100% {
+    transform: translate(-2%, 8%) scale(1);
+  }
 }
 
 .glass-overlay {

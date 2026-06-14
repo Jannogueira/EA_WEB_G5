@@ -2,7 +2,7 @@ import axios, { CanceledError } from 'axios';
 import { config as appConfig } from '../config';
 
 const apiClient = axios.create({
-  baseURL: appConfig.apiUrl
+  baseURL: appConfig.apiUrl,
 });
 
 // Interceptor para añadir el token a todas las peticiones
@@ -16,7 +16,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Interceptor para manejar respuestas, especialmente el error 401 para refrescar el token
@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
       if (refreshToken) {
         try {
           const response = await axios.post(`${appConfig.apiUrl}/auth/refresh`, {
-            refreshToken
+            refreshToken,
           });
 
           if (response.data.accessToken) {
@@ -47,7 +47,7 @@ apiClient.interceptors.response.use(
             if (response.data.refreshToken) {
               localStorage.setItem('refreshToken', response.data.refreshToken);
             }
-            
+
             // Reintentar la petición original con el nuevo token
             originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
             return apiClient(originalRequest);
@@ -61,15 +61,15 @@ apiClient.interceptors.response.use(
           return Promise.reject(refreshError);
         }
       } else {
-         // Si no hay refresh token, limpiamos todo
-         localStorage.removeItem('accessToken');
-         localStorage.removeItem('refreshToken');
-         localStorage.removeItem('usuario');
+        // Si no hay refresh token, limpiamos todo
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('usuario');
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

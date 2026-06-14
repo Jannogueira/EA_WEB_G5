@@ -1,10 +1,10 @@
-import apiClient from "./api-client";
-import create from "./http";
-import type { Post } from "../models/post";
-import type { PaginatedResponse } from "../models/pagination";
+import apiClient from './api-client';
+import create from './http';
+import type { Post } from '../models/post';
+import type { PaginatedResponse } from '../models/pagination';
 
 class PostService {
-  endpoint = "/posts";
+  endpoint = '/posts';
 
   getPostsByUserId(userId: string, page: number = 1, limit: number = 10) {
     const controller = new AbortController();
@@ -42,11 +42,8 @@ class PostService {
   }
 
   getDiscoveryFeed() {
-  return apiClient.get<{ docs: Post[]; hasNextPage: boolean }>(
-    `${this.endpoint}/discovery`
-  );
-}
-
+    return apiClient.get<{ docs: Post[]; hasNextPage: boolean }>(`${this.endpoint}/discovery`);
+  }
 }
 
 export default new PostService();

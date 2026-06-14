@@ -1,129 +1,133 @@
 .post-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 24px;
-    margin-bottom: 32px;
-    width: 100%;
-    max-width: 600px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: var(--shadow-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  margin-bottom: 32px;
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: var(--shadow-main);
 }
 
 .post-header {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .author-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--accent-border);
-    padding: 2px;
-    background: var(--bg-input);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-border);
+  padding: 2px;
+  background: var(--bg-input);
 }
 
 .author-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
 }
 
 .post-image-container {
-    width: 100%;
-    background: #000;
-    min-height: 300px;
-    display: flex;
-    align-items: center;
+  width: 100%;
+  background: #000;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
 }
 
 .post-image {
-    width: 100%;
-    height: auto;
-    display: block;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .post-content {
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .post-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 4px;
 }
 
 .main-actions {
-    display: flex;
-    gap: 16px;
-    align-items: center;
+  display: flex;
+  gap: 16px;
+  align-items: center;
 }
 
-.like-button, .comment-button, .share-btn-action {
-    background: none;
-    border: none;
-    color: var(--text-main);
-    cursor: pointer;
-    padding: 0;
-    transition: opacity 0.2s;
-    display: flex;
-    align-items: center;
+.like-button,
+.comment-button,
+.share-btn-action {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
 }
 
-.like-button:hover, .comment-button:hover, .share-btn-action:hover {
-    opacity: 0.6;
+.like-button:hover,
+.comment-button:hover,
+.share-btn-action:hover {
+  opacity: 0.6;
 }
 
 .like-button .liked {
-    color: #ed4956;
+  color: #ed4956;
 }
 
 .post-likes-count {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 .post-caption {
-    font-size: 0.9rem;
-    color: var(--text-main);
-    line-height: 1.4;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  line-height: 1.4;
 }
 
 .author-name-inline {
-    font-weight: 600;
-    margin-right: 4px;
+  font-weight: 600;
+  margin-right: 4px;
 }
 
 .view-comments-link {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 0.88rem;
-    cursor: pointer;
-    padding: 0;
-    text-align: left;
-    width: fit-content;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  width: fit-content;
 }
 
 .view-comments-link:hover {
-    color: var(--text-main);
+  color: var(--text-main);
 }
 
 .error-message {
-    color: #ef4444;
-    font-size: 0.8rem;
-    margin-top: 5px;
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 5px;
 }

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import "./PostDetailModal.css";
-import type { Post } from "../models/post";
-import { X, Heart, MessageCircle, Send, MoreHorizontal } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import './PostDetailModal.css';
+import type { Post } from '../models/post';
+import { X, Heart, MessageCircle, Send, MoreHorizontal } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface PostDetailModalProps {
   post: Post;
@@ -24,11 +24,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   onLikeComment,
   onAddComment,
   loadingComment,
-  onShare
+  onShare,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState('');
 
   const postLiked = currentUserId && post.likes?.some((u: any) => (u._id || u) === currentUserId);
 
@@ -42,7 +42,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   const submitComment = () => {
     if (!commentText.trim() || loadingComment) return;
     onAddComment(commentText);
-    setCommentText("");
+    setCommentText('');
   };
 
   return (
@@ -50,7 +50,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
       <button className="post-detail-close" onClick={onClose}>
         <X size={28} />
       </button>
-      
+
       <div className="post-detail-content" onClick={(e) => e.stopPropagation()}>
         {/* Lado Izquierdo: Imagen */}
         <div className="post-detail-image-side">
@@ -77,36 +77,40 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
             <div className="comment-item-row detail-caption">
               <img src={post.usuario?.avatarUrl} alt="" className="user-avatar-tiny" />
               <div className="comment-content">
-                <span className="user-name-bold">{post.usuario?.nombre}</span>{" "}
+                <span className="user-name-bold">{post.usuario?.nombre}</span>{' '}
                 <span className="comment-text">{post.caption}</span>
               </div>
             </div>
 
             {/* Lista de comentarios */}
             {post.comments?.map((c) => {
-              const isCommentLiked = currentUserId && c.likes?.some((id: any) => (id._id || id) === currentUserId);
-              const author = typeof c.usuario === "object" ? c.usuario : { nombre: "Usuario", avatarUrl: "" };
-              
+              const isCommentLiked =
+                currentUserId && c.likes?.some((id: any) => (id._id || id) === currentUserId);
+              const author =
+                typeof c.usuario === 'object' ? c.usuario : { nombre: 'Usuario', avatarUrl: '' };
+
               return (
                 <div key={c._id} className="comment-item-row">
                   <img src={author.avatarUrl} alt="" className="user-avatar-tiny" />
                   <div className="comment-content">
                     <div className="comment-main">
-                        <span className="user-name-bold">{author.nombre}</span>{" "}
-                        <span className="comment-text">{c.texto}</span>
+                      <span className="user-name-bold">{author.nombre}</span>{' '}
+                      <span className="comment-text">{c.texto}</span>
                     </div>
                     <div className="comment-footer">
-                        <span>{new Date().toLocaleDateString()}</span>
-                        {c.likes && c.likes.length > 0 && (
-                            <span className="comment-likes-count">{c.likes.length} {t('postcard.likes')}</span>
-                        )}
+                      <span>{new Date().toLocaleDateString()}</span>
+                      {c.likes && c.likes.length > 0 && (
+                        <span className="comment-likes-count">
+                          {c.likes.length} {t('postcard.likes')}
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <button 
+                  <button
                     className={`detail-comment-like ${isCommentLiked ? 'liked' : ''}`}
                     onClick={() => onLikeComment(c._id)}
                   >
-                    <Heart size={14} fill={isCommentLiked ? "currentColor" : "none"} />
+                    <Heart size={14} fill={isCommentLiked ? 'currentColor' : 'none'} />
                   </button>
                 </div>
               );
@@ -116,8 +120,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
           <footer className="post-detail-footer">
             <div className="post-detail-actions">
               <div className="detail-main-btns">
-                <button onClick={onLike} className={`detail-action-btn ${postLiked ? 'liked' : ''}`}>
-                  <Heart size={28} fill={postLiked ? "currentColor" : "none"} />
+                <button
+                  onClick={onLike}
+                  className={`detail-action-btn ${postLiked ? 'liked' : ''}`}
+                >
+                  <Heart size={28} fill={postLiked ? 'currentColor' : 'none'} />
                 </button>
                 <button onClick={onClose} className="detail-action-btn">
                   <MessageCircle size={28} />
@@ -132,14 +139,14 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
             </div>
 
             <div className="detail-comment-input-container">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder={t('postcard.comment_placeholder')}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && submitComment()}
               />
-              <button 
+              <button
                 onClick={submitComment}
                 disabled={!commentText.trim() || loadingComment}
                 className="detail-post-btn"
