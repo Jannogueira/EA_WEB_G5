@@ -7,9 +7,8 @@ import { useTheme } from "../context/ThemeContext";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MapEvents.css";
-import { MapPin, Calendar, Users, Plus, Trash2, X, Navigation, Award, PlusCircle } from "lucide-react";
+import { MapPin, Calendar, Users, Plus, Trash2, X, Navigation, PlusCircle, SlidersHorizontal } from "lucide-react";
 import type { Evento } from "../models/evento";
-import type { Usuario } from "../models/usuario";
 import eventoService from "../services/evento";
 
 // Helper para calcular la distancia en metros entre dos puntos
@@ -52,7 +51,11 @@ const MapEvents: React.FC = () => {
   const [formDesc, setFormDesc] = useState("");
   const [formFecha, setFormFecha] = useState("");
   const [formUbicacionNombre, setFormUbicacionNombre] = useState("");
-  const [formMaxAsistentes, setFormMaxAsistentes] = useState<number | "">("");
+  const [formMaxAsistentes, setFormMaxAsistentes] = useState<number | "">("")
+
+  // Filtro de distancia máxima (en metros)
+  const [maxDistance, setMaxDistance] = useState<number>(5000);
+  const [showDistanceFilter, setShowDistanceFilter] = useState(false);
 
   // Refs de Leaflet
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -61,6 +64,7 @@ const MapEvents: React.FC = () => {
   const userMarkerRef = useRef<L.Marker | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const tempMarkerRef = useRef<L.Marker | null>(null);
+  const distanceCircleRef = useRef<L.Circle | null>(null);
 
   // 1. Obtener ubicación del usuario al cargar
   useEffect(() => {
@@ -84,13 +88,11 @@ const MapEvents: React.FC = () => {
     }
   }, [t]);
 
-  // 2. Cargar eventos de la API real filtrando por proximidad
-  const fetchEventos = async (coords?: [number, number]) => {
+  // 2. Cargar todos los eventos de la API real (sin límite de distancia en la query para que salgan todos si el filtro está apagado)
+  const fetchEventos = React.useCallback(async () => {
     setLoading(true);
-    const center = coords || userLocation || [41.3892, 2.1130];
-    
     try {
-      const { request } = eventoService.getAll({ lat: center[0], lng: center[1] });
+      const { request } = eventoService.getAll();
       const response = await request;
       setEventos(response.data);
     } catch (err) {
@@ -100,13 +102,13 @@ const MapEvents: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (userLocation) {
-      fetchEventos(userLocation);
+      fetchEventos();
     }
-  }, [userLocation]);
+  }, [userLocation, fetchEventos]);
 
   // 3. Inicializar Mapa Leaflet
   useEffect(() => {
@@ -185,13 +187,28 @@ const MapEvents: React.FC = () => {
     }
   }, [userLocation, t]);
 
-  // 6. Renderizar Marcadores de Eventos
+  // 6. Renderizar Marcadores de Eventos (filtrado por rango si está encendido)
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Limpiar marcadores obsoletos
+    // Calcular qué IDs están en rango ahora mismo (depende de si el filtro está activo)
+    const currentInRangeIds = new Set(
+      eventos
+        .map((ev) => ({
+          ...ev,
+          distance: userLocation
+            ? getDistance(userLocation[0], userLocation[1], ev.location.coordinates[1], ev.location.coordinates[0])
+            : 999999,
+        }))
+        .filter((ev) => !showDistanceFilter || ev.distance <= maxDistance)
+        .map((ev) => ev._id)
+    );
+
+    // Limpiar marcadores obsoletos (o que ya no deben estar en el mapa por el filtro)
     Object.keys(markersRef.current).forEach((id) => {
-      if (!eventos.some((ev) => ev._id === id)) {
+      const exists = eventos.some((ev) => ev._id === id);
+      const isVisible = currentInRangeIds.has(id);
+      if (!exists || !isVisible) {
         mapRef.current?.removeLayer(markersRef.current[id]);
         delete markersRef.current[id];
       }
@@ -199,6 +216,9 @@ const MapEvents: React.FC = () => {
 
     // Añadir o actualizar marcadores
     eventos.forEach((ev) => {
+      // Si el filtro está activo y el evento está fuera de rango, no lo dibujamos
+      if (!currentInRangeIds.has(ev._id)) return;
+
       const lat = ev.location.coordinates[1];
       const lng = ev.location.coordinates[0];
       const isSelected = selectedEvento?._id === ev._id;
@@ -231,7 +251,28 @@ const MapEvents: React.FC = () => {
         markersRef.current[ev._id] = marker;
       }
     });
-  }, [eventos, selectedEvento]);
+  }, [eventos, selectedEvento, maxDistance, userLocation, showDistanceFilter]);
+
+  // 6b. Círculo de distancia en el mapa
+  useEffect(() => {
+    if (!mapRef.current || !userLocation) return;
+
+    if (distanceCircleRef.current) {
+      mapRef.current.removeLayer(distanceCircleRef.current);
+      distanceCircleRef.current = null;
+    }
+
+    if (showDistanceFilter) {
+      distanceCircleRef.current = L.circle(userLocation, {
+        radius: maxDistance,
+        color: "#8a2be2",
+        fillColor: "#8a2be2",
+        fillOpacity: 0.05,
+        weight: 2,
+        dashArray: "6, 6",
+      }).addTo(mapRef.current);
+    }
+  }, [maxDistance, userLocation, showDistanceFilter]);
 
   // 7. Renderizar Marcador Temporal de Creación
   useEffect(() => {
@@ -299,9 +340,10 @@ const MapEvents: React.FC = () => {
       setFormMaxAsistentes("");
       setIsCreating(false);
       setTempCoords(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error creating event:", err);
-      const errMsg = err.response?.data?.message || "Error al crear el evento en el servidor";
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      const errMsg = axiosError.response?.data?.message || "Error al crear el evento en el servidor";
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
@@ -316,9 +358,10 @@ const MapEvents: React.FC = () => {
         prev.map((ev) => (ev._id === evento._id ? response.data : ev))
       );
       setSelectedEvento(response.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error toggling attendance:", err);
-      const errMsg = err.response?.data?.message || "Error al actualizar la asistencia al evento";
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      const errMsg = axiosError.response?.data?.message || "Error al actualizar la asistencia al evento";
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
@@ -331,9 +374,10 @@ const MapEvents: React.FC = () => {
       await eventoService.deleteEvento(eventoId);
       setEventos((prev) => prev.filter((ev) => ev._id !== eventoId));
       setSelectedEvento(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting event:", err);
-      const errMsg = err.response?.data?.message || "Error al eliminar el evento";
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      const errMsg = axiosError.response?.data?.message || "Error al eliminar el evento";
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
@@ -348,26 +392,31 @@ const MapEvents: React.FC = () => {
     setIsCreating(false);
   };
 
-  const sortedEventos = [...eventos]
-    .map((ev) => {
-      const distance = userLocation
-        ? getDistance(
-            userLocation[0],
-            userLocation[1],
-            ev.location.coordinates[1],
-            ev.location.coordinates[0]
-          )
-        : 999999;
-      return { ...ev, distance };
-    })
-    .sort((a, b) => a.distance - b.distance);
+  const eventosWithDistance = [...eventos].map((ev) => {
+    const distance = userLocation
+      ? getDistance(
+          userLocation[0],
+          userLocation[1],
+          ev.location.coordinates[1],
+          ev.location.coordinates[0]
+        )
+      : 999999;
+    return { ...ev, distance };
+  });
 
-  const getCreatorName = (creador: any) => {
+  const sortedEventos = [...eventosWithDistance].sort((a, b) => a.distance - b.distance);
+
+  // Solo los eventos dentro del rango seleccionado (si el filtro está encendido)
+  const filteredEventos = showDistanceFilter
+    ? sortedEventos.filter((ev) => ev.distance <= maxDistance)
+    : sortedEventos;
+
+  const getCreatorName = (creador: { nombre?: string } | string | null | undefined) => {
     if (!creador) return "Anónimo";
     return typeof creador === "string" ? creador : creador.nombre || "Usuario";
   };
 
-  const getCreatorAvatar = (creador: any) => {
+  const getCreatorAvatar = (creador: { avatarUrl?: string } | string | null | undefined) => {
     if (!creador || typeof creador === "string") {
       return "https://api.dicebear.com/7.x/avataaars/png?seed=anonymous";
     }
@@ -609,37 +658,81 @@ const MapEvents: React.FC = () => {
                   <div className="card-header-with-action">
                     <div>
                       <h2>{t("map_events.list_title")}</h2>
-                      <span className="events-count-pill">{eventos.length}</span>
+                      <span className="events-count-pill">{filteredEventos.length}</span>
+                      {filteredEventos.length !== eventos.length && (
+                        <span className="events-filtered-pill">{eventos.length} total</span>
+                      )}
                     </div>
-                    <button className="inline-create-btn" onClick={handleMapClickPrompt}>
-                      <PlusCircle size={18} />
-                      <span>{t("map_events.create_btn")}</span>
-                    </button>
+                    <div className="list-header-actions">
+                      <button
+                        className={`filter-distance-btn ${showDistanceFilter ? "active" : ""}`}
+                        onClick={() => setShowDistanceFilter((prev) => !prev)}
+                        title="Filtrar por distancia"
+                      >
+                        <SlidersHorizontal size={16} />
+                      </button>
+                      <button className="inline-create-btn" onClick={handleMapClickPrompt}>
+                        <PlusCircle size={18} />
+                        <span>{t("map_events.create_btn")}</span>
+                      </button>
+                    </div>
                   </div>
 
+                  {/* FILTRO DE DISTANCIA */}
+                  {showDistanceFilter && (
+                    <div className="distance-filter-panel">
+                      <div className="distance-filter-header">
+                        <MapPin size={14} />
+                        <span>Radio máximo</span>
+                        <strong className="distance-value-label">
+                          {maxDistance >= 1000
+                            ? `${(maxDistance / 1000).toFixed(1)} km`
+                            : `${maxDistance} m`}
+                        </strong>
+                      </div>
+                      <input
+                        type="range"
+                        min={200}
+                        max={50000}
+                        step={200}
+                        value={maxDistance}
+                        onChange={(e) => setMaxDistance(Number(e.target.value))}
+                        className="distance-range-slider"
+                      />
+                      <div className="distance-range-labels">
+                        <span>200m</span>
+                        <span>50km</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="events-list-scrollable">
-                    {sortedEventos.length === 0 ? (
+                    {filteredEventos.length === 0 ? (
                       <div className="empty-list-display">
                         <MapPin size={40} className="empty-icon" />
-                        <p>{t("map_events.list_empty")}</p>
+                        <p>
+                          {sortedEventos.length > 0
+                            ? `No hay eventos en un radio de ${maxDistance >= 1000 ? `${(maxDistance / 1000).toFixed(1)}km` : `${maxDistance}m`}`
+                            : t("map_events.list_empty")}
+                        </p>
                       </div>
                     ) : (
-                      sortedEventos.map((ev) => {
+                      filteredEventos.map((ev) => {
                         const joined = isJoined(ev);
                         const isCreator = typeof ev.creador === "string"
                           ? ev.creador === currentUserId
                           : ev.creador?._id === currentUserId;
-                        
+
                         return (
-                          <div 
-                            key={ev._id} 
+                          <div
+                            key={ev._id}
                             className={`event-list-item ${selectedEvento?._id === ev._id ? "active" : ""}`}
                             onClick={() => centerOnEvent(ev)}
                           >
                             <div className="item-main-content">
                               <h3 className="item-title">{ev.titulo}</h3>
                               <p className="item-desc">{ev.descripcion}</p>
-                              
+
                               <div className="item-metadata">
                                 <span className="item-distance">
                                   <Navigation size={12} />
