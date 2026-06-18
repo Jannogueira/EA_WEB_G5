@@ -170,6 +170,12 @@
   font-size: 0.95rem;
 }
 
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 /* VENTANA DE CHAT */
 .chat-window {
   display: flex;
