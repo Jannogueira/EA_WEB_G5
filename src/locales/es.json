@@ -9,6 +9,7 @@
     "messages": "Mensajes",
     "notifications": "Notificaciones",
     "assistant": "Asistente"
+    "map": "Mapa"
   },
   "home": {
     "title": "Feed",
@@ -189,6 +190,7 @@
     "spanish": "Español",
     "catalan": "Catalán"
   },
+<<<<<<< HEAD
   "assistant": {
     "welcome_msg": "¡Hola! Soy **Toni**, asistente virtual e ingeniero académico de la EETAC. ¿En qué puedo ayudarte hoy sobre la oferta de grado o asignaturas?",
     "error_msg": "Lo siento, no he podido procesar tu solicitud en este momento. Por favor, vuelve a intentarlo más tarde.",
@@ -196,5 +198,33 @@
     "subtitle": "Ingeniero académico experto de la EETAC",
     "thinking": "Toni está pensando...",
     "placeholder": "Pregunta a Toni sobre grados o asignaturas..."
+=======
+  "map_events": {
+    "title": "Mapa de Eventos",
+    "subtitle": "Descubre y participa en eventos a tu alrededor",
+    "create_btn": "Crear Evento",
+    "loading": "Obteniendo ubicación y eventos...",
+    "form_title": "Crear Nuevo Evento",
+    "form_click_map": "Haz clic en el mapa para situar el evento",
+    "form_title_label": "Título del evento",
+    "form_desc_label": "Descripción",
+    "form_date_label": "Fecha y Hora",
+    "form_loc_label": "Nombre de la ubicación (ej: Aula 101, Campus Nord)",
+    "form_max_attendees": "Asistentes máximos (opcional)",
+    "form_deadline_label": "Fecha/Hora Límite (opcional)",
+    "form_submit": "Crear Evento",
+    "form_cancel": "Cancelar",
+    "details_title": "Detalles del Evento",
+    "details_created_by": "Creado por",
+    "details_attendees": "Asistentes",
+    "details_deadline": "Fecha Límite",
+    "details_join": "Asistir",
+    "details_leave": "Cancelar Asistencia",
+    "details_delete": "Eliminar Evento",
+    "list_title": "Eventos Cercanos",
+    "list_empty": "No hay eventos creados todavía. ¡Sé el primero!",
+    "list_distance": "a {{distance}}m de ti",
+    "error_location": "No se pudo acceder a tu geolocalización. Centrando en tu universidad."
+>>>>>>> MINIMO2-LAURA
   }
 }

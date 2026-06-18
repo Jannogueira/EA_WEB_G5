@@ -8,7 +8,11 @@
     "classes": "Classes",
     "messages": "Missatges",
     "notifications": "Notificacions",
+<<<<<<< HEAD
     "assistant": "Assistent"
+=======
+    "map": "Mapa"
+>>>>>>> MINIMO2-LAURA
   },
   "home": {
     "title": "Feed",
@@ -196,5 +200,31 @@
     "subtitle": "Enginyer acadèmic expert de la EETAC",
     "thinking": "En Toni està pensant...",
     "placeholder": "Pregunta al Toni sobre graus o assignatures..."
+  "map_events": {
+    "title": "Mapa d'Esdeveniments",
+    "subtitle": "Descobreix i participa en esdeveniments al teu voltant",
+    "create_btn": "Crear Esdeveniment",
+    "loading": "Obtenint ubicació i esdeveniments...",
+    "form_title": "Crear Nou Esdeveniment",
+    "form_click_map": "Fes clic al mapa per situar l'esdeveniment",
+    "form_title_label": "Títol de l'esdeveniment",
+    "form_desc_label": "Descripció",
+    "form_date_label": "Data i Hora",
+    "form_loc_label": "Nom de la ubicació (ex: Aula 101, Campus Nord)",
+    "form_max_attendees": "Assistents màxims (opcional)",
+    "form_deadline_label": "Data/Hora Límit (opcional)",
+    "form_submit": "Crear Esdeveniment",
+    "form_cancel": "Cancel·lar",
+    "details_title": "Detalls de l'Esdeveniment",
+    "details_created_by": "Creat per",
+    "details_attendees": "Assistents",
+    "details_deadline": "Data Límit",
+    "details_join": "Assistir",
+    "details_leave": "Cancel·lar Assistència",
+    "details_delete": "Eliminar Esdeveniment",
+    "list_title": "Esdeveniments A Prop",
+    "list_empty": "No hi ha esdeveniments creats encara. Sigues el primer!",
+    "list_distance": "a {{distance}}m de tu",
+    "error_location": "No s'ha pogut accedir a la teva geolocalització. Centrant a la teva universitat."
   }
 }
