@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import useUser from '../hooks/useUser';
 import { askAssistant } from '../services/assistant';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import './Assistant.css';
 
 interface Message {
@@ -15,17 +16,23 @@ interface Message {
 
 const Assistant: React.FC = () => {
     const { usuario } = useUser();
+    const { t } = useTranslation();
     const [pregunta, setPregunta] = useState('');
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: 'welcome',
-            sender: 'toni',
-            text: '¡Hola! Soy **Toni**, asistente virtual e ingeniero académico de la EETAC. ¿En qué puedo ayudarte hoy sobre la oferta de grado o asignaturas?',
-            timestamp: new Date()
-        }
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+    // Cargar mensaje de bienvenida inicial traducido
+    useEffect(() => {
+        setMessages([
+            {
+                id: 'welcome',
+                sender: 'toni',
+                text: t('assistant.welcome_msg'),
+                timestamp: new Date()
+            }
+        ]);
+    }, [t]);
 
     // Auto-scroll al final cuando llegan mensajes
     const scrollToBottom = () => {
@@ -33,7 +40,9 @@ const Assistant: React.FC = () => {
     };
 
     useEffect(() => {
-        scrollToBottom();
+        if (messages.length > 0) {
+            scrollToBottom();
+        }
     }, [messages, loading]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -66,7 +75,7 @@ const Assistant: React.FC = () => {
             const errorMessage: Message = {
                 id: (Date.now() + 1).toString(),
                 sender: 'toni',
-                text: 'Lo siento, no he podido procesar tu solicitud en este momento. Por favor, vuelve a intentarlo más tarde.',
+                text: t('assistant.error_msg'),
                 timestamp: new Date()
             };
             setMessages(prev => [...prev, errorMessage]);
@@ -123,8 +132,8 @@ const Assistant: React.FC = () => {
                                     <Bot size={28} className="bot-icon" />
                                 </div>
                                 <div>
-                                    <h1>Asistente Virtual "Toni"</h1>
-                                    <p>Ingeniero académico experto de la EETAC</p>
+                                    <h1>{t('assistant.title')}</h1>
+                                    <p>{t('assistant.subtitle')}</p>
                                 </div>
                             </div>
                         </header>
@@ -168,7 +177,7 @@ const Assistant: React.FC = () => {
                                         </div>
                                         <div className="message-content loading">
                                             <Loader2 className="spinner" size={20} />
-                                            <span>Toni está pensando...</span>
+                                            <span>{t('assistant.thinking')}</span>
                                         </div>
                                     </div>
                                 )}
@@ -178,7 +187,7 @@ const Assistant: React.FC = () => {
                             <form className="chat-input-form" onSubmit={handleSubmit}>
                                 <input
                                     type="text"
-                                    placeholder="Pregunta a Toni sobre grados o asignaturas..."
+                                    placeholder={t('assistant.placeholder')}
                                     value={pregunta}
                                     onChange={(e) => setPregunta(e.target.value)}
                                     disabled={loading}

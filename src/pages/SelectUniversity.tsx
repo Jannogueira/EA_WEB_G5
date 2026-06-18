@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, BookOpen, Library, ChevronRight, ChevronLeft, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import universidadService from '../services/universidad';
 import gradoService from '../services/grado';
@@ -19,6 +20,7 @@ import './Register.css';
 
 const SelectUniversity = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Paso actual (1: Uni, 2: Grado, 3: Asignaturas)
   const [step, setStep] = useState(1);
@@ -148,8 +150,8 @@ const SelectUniversity = () => {
 
       setAlert({
         type: 'success',
-        title: '¡Registro completado!',
-        message: 'Tu perfil académico se ha configurado correctamente.'
+        title: t('select_university.success_title'),
+        message: t('select_university.success_msg')
       });
 
       setTimeout(() => {
@@ -159,7 +161,7 @@ const SelectUniversity = () => {
     } catch (error: any) {
       setAlert({
         type: 'error',
-        title: 'Error al guardar',
+        title: t('select_university.save_error'),
         message: error.response?.data?.message || "Error al conectar con el servidor"
       });
     } finally {
@@ -198,40 +200,40 @@ const SelectUniversity = () => {
         <div className="selection-step-wrapper">
           {step === 1 && (
             <SelectionStep
-              title="¿Dónde estudias?"
-              subtitle="Selecciona tu universidad para encontrar a tus compañeros"
+              title={t('select_university.step1_title')}
+              subtitle={t('select_university.step1_subtitle')}
               items={universidades}
               selectedIds={[selectedUniId]}
               onSelect={handleSelectUni}
               loading={loadingData}
-              placeholder="Buscar universidad..."
+              placeholder={t('select_university.step1_placeholder')}
               icon={<Library className="step-icon-main" />}
             />
           )}
 
           {step === 2 && (
             <SelectionStep
-              title="¿Qué carrera cursas?"
-              subtitle="Filtra por tu grado académico"
+              title={t('select_university.step2_title')}
+              subtitle={t('select_university.step2_subtitle')}
               items={grados}
               selectedIds={[selectedGradoId]}
               onSelect={handleSelectGrado}
               loading={loadingData}
-              placeholder="Buscar grado..."
+              placeholder={t('select_university.step2_placeholder')}
               icon={<GraduationCap className="step-icon-main" />}
             />
           )}
 
           {step === 3 && (
             <SelectionStep
-              title="Tus asignaturas"
-              subtitle="Selecciona las materias que estás cursando este semestre"
+              title={t('select_university.step3_title')}
+              subtitle={t('select_university.step3_subtitle')}
               items={asignaturas}
               selectedIds={selectedAsigIds}
               onSelect={handleToggleAsignatura}
               multiple={true}
               loading={loadingData}
-              placeholder="Buscar asignatura..."
+              placeholder={t('select_university.step3_placeholder')}
               icon={<BookOpen className="step-icon-main" />}
             />
           )}
@@ -245,7 +247,7 @@ const SelectUniversity = () => {
               disabled={loading}
             >
               <ChevronLeft size={20} />
-              Atrás
+              {t('select_university.back')}
             </button>
           )}
           
@@ -257,7 +259,7 @@ const SelectUniversity = () => {
               onClick={handleNext}
               disabled={isNextDisabled() || loading}
             >
-              Siguiente
+              {t('select_university.next')}
               <ChevronRight size={20} />
             </button>
           ) : (
@@ -269,11 +271,11 @@ const SelectUniversity = () => {
               {loading ? (
                 <span className="btn-loading">
                   <div className="mini-spinner"></div>
-                  Guardando...
+                  {t('select_university.saving')}
                 </span>
               ) : (
                 <>
-                  Finalizar Registro
+                  {t('select_university.finish')}
                   <CheckCircle size={20} />
                 </>
               )}

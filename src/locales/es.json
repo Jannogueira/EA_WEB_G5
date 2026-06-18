@@ -51,6 +51,50 @@
   "saved_posts": {
     "title": "Posts Guardados"
   },
+  "login": {
+    "title": "Iniciar Sesión",
+    "password": "Contraseña",
+    "submit": "Entrar",
+    "loading": "Cargando...",
+    "divider": "o también",
+    "no_account": "¿No tienes cuenta? ",
+    "register_here": "Regístrate aquí",
+    "error_title": "Fallo de inicio de sesión",
+    "google_error_title": "Error de Google OAuth",
+    "google_error_msg": "No se recibieron credenciales de Google"
+  },
+  "register": {
+    "title": "Únete a Univy",
+    "subtitle": "Crea tu cuenta universitaria hoy mismo",
+    "full_name": "Nombre Completo",
+    "academic_email": "Email Académico",
+    "repeat_password": "Repetir Contraseña",
+    "next": "Siguiente",
+    "processing": "Procesando...",
+    "has_account": "¿Ya eres parte de nuestra comunidad?",
+    "access_campus": "Acceder al campus",
+    "validation_error": "Error de validación",
+    "password_mismatch": "Las contraseñas no coinciden",
+    "failed_title": "Fallo de registro"
+  },
+  "select_university": {
+    "success_title": "¡Registro completado!",
+    "success_msg": "Tu perfil académico se ha configurado correctamente.",
+    "save_error": "Error al guardar",
+    "step1_title": "¿Dónde estudias?",
+    "step1_subtitle": "Selecciona tu universidad para encontrar a tus compañeros",
+    "step1_placeholder": "Buscar universidad...",
+    "step2_title": "¿Qué carrera cursas?",
+    "step2_subtitle": "Filtra por tu grado académico",
+    "step2_placeholder": "Buscar grado...",
+    "step3_title": "Tus asignaturas",
+    "step3_subtitle": "Selecciona las materias que estás cursando este semestre",
+    "step3_placeholder": "Buscar asignatura...",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "saving": "Guardando...",
+    "finish": "Finalizar Registro"
+  },
   "edit_profile": {
     "title": "Editar Perfil",
     "success": "¡Perfil actualizado con éxito!",
@@ -144,5 +188,13 @@
     "language": "Idioma",
     "spanish": "Español",
     "catalan": "Catalán"
+  },
+  "assistant": {
+    "welcome_msg": "¡Hola! Soy **Toni**, asistente virtual e ingeniero académico de la EETAC. ¿En qué puedo ayudarte hoy sobre la oferta de grado o asignaturas?",
+    "error_msg": "Lo siento, no he podido procesar tu solicitud en este momento. Por favor, vuelve a intentarlo más tarde.",
+    "title": "Asistente Virtual \"Toni\"",
+    "subtitle": "Ingeniero académico experto de la EETAC",
+    "thinking": "Toni está pensando...",
+    "placeholder": "Pregunta a Toni sobre grados o asignaturas..."
   }
 }

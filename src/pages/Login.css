@@ -96,6 +96,60 @@
   filter: brightness(1.1);
 }
 
+.login-controls-absolute {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 1000;
+}
+
+/* Reutilización del layout de control segmentado de la barra lateral */
+.lang-segmented-control.mini {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  width: 100px; /* Ancho fijo compacto para la vista de login */
+}
+
+.lang-segmented-control.mini .lang-option {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.lang-segmented-control.mini .lang-option:hover:not(.active) {
+  color: var(--text-main);
+  background: var(--border-subtle);
+}
+
+.lang-segmented-control.mini .lang-option.active {
+  background: var(--accent-purple);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* Responsivo: oculta o reubica en móviles si interfiere con el layout */
+@media (max-width: 768px) {
+  .login-controls-absolute {
+    top: 15px;
+    right: 15px;
+    gap: 10px;
+  }
+}
+
 .register-link-section {
   margin-top: 2rem;
   font-size: 0.95rem;

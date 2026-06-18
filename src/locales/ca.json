@@ -8,7 +8,7 @@
     "classes": "Classes",
     "messages": "Missatges",
     "notifications": "Notificacions",
-    "assistant": "Asistent"
+    "assistant": "Assistent"
   },
   "home": {
     "title": "Feed",
@@ -50,6 +50,50 @@
   },
   "saved_posts": {
     "title": "Publicacions Guardades"
+  },
+  "login": {
+    "title": "Iniciar Sessió",
+    "password": "Contrasenya",
+    "submit": "Entrar",
+    "loading": "Carregant...",
+    "divider": "o també",
+    "no_account": "No tens compte? ",
+    "register_here": "Registra't aquí",
+    "error_title": "Fall en l'inici de sessió",
+    "google_error_title": "Error de Google OAuth",
+    "google_error_msg": "No es van rebre credencials de Google"
+  },
+  "register": {
+    "title": "Uneix-te a Univy",
+    "subtitle": "Crea el teu compte universitari avui mateix",
+    "full_name": "Nom Complet",
+    "academic_email": "Email Acadèmic",
+    "repeat_password": "Repetir Contrasenya",
+    "next": "Següent",
+    "processing": "Processant...",
+    "has_account": "Ja ets part de la nostra comunitat?",
+    "access_campus": "Accedir al campus",
+    "validation_error": "Error de validació",
+    "password_mismatch": "Les contrasenyes no coincideixen",
+    "failed_title": "Fallada de registre"
+  },
+  "select_university": {
+    "success_title": "¡Registre completat!",
+    "success_msg": "El teu perfil acadèmic s'ha configurat correctament.",
+    "save_error": "Error en guardar",
+    "step1_title": "On estudies?",
+    "step1_subtitle": "Selecciona la teva universitat per trobar els teus companys",
+    "step1_placeholder": "Buscar universitat...",
+    "step2_title": "Quina carrera curses?",
+    "step2_subtitle": "Filtra pel teu grau acadèmic",
+    "step2_placeholder": "Buscar grau...",
+    "step3_title": "Les teves assignatures",
+    "step3_subtitle": "Selecciona les matèries que estàs cursant aquest semestre",
+    "step3_placeholder": "Buscar assignatura...",
+    "back": "Enrere",
+    "next": "Següent",
+    "saving": "Guardant...",
+    "finish": "Finalitzar Registre"
   },
   "edit_profile": {
     "title": "Editar Perfil",
@@ -144,5 +188,13 @@
     "language": "Idioma",
     "spanish": "Espanyol",
     "catalan": "Català"
+  },
+  "assistant": {
+    "welcome_msg": "Hola! Sóc en **Toni**, assistent virtual i enginyer acadèmic de la EETAC. En què et puc ajudar avui sobre l'oferta de grau o assignatures?",
+    "error_msg": "Ho sento, no he pogut processar la teva sol·licitud en aquest moment. Si us plau, torna-ho a intentar més tard.",
+    "title": "Assistent Virtual \"Toni\"",
+    "subtitle": "Enginyer acadèmic expert de la EETAC",
+    "thinking": "En Toni està pensant...",
+    "placeholder": "Pregunta al Toni sobre graus o assignatures..."
   }
 }

@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
+import { useTranslation } from 'react-i18next';
 import './Register.css';
 import ThemeToggle from '../components/ThemeToggle';
 
 const Register = () => {
   const { register, loading } = useAuth();
+  const { t, i18n } = useTranslation();
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -33,8 +35,8 @@ const Register = () => {
     if (formData.password !== formData.confirmPassword) {
       setAlert({
         type: 'error',
-        title: 'Error de validación',
-        message: 'Las contraseñas no coinciden'
+        title: t('register.validation_error'),
+        message: t('register.password_mismatch')
       });
       return;
     }
@@ -51,7 +53,7 @@ const Register = () => {
 
       setAlert({
         type: 'error',
-        title: 'Fallo de registro',
+        title: t('register.failed_title'),
         message: msg
       });
     }
@@ -59,7 +61,24 @@ const Register = () => {
 
   return (
     <div className="register-page">
-      <ThemeToggle className="theme-toggle-absolute" />
+      {/* Controles de accesibilidad integrados arriba a la derecha */}
+      <div className="login-controls-absolute">
+        <div className="lang-segmented-control mini">
+          <button 
+            className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('es')}
+          >
+            ES
+          </button>
+          <button 
+            className={`lang-option ${i18n.language.startsWith('ca') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('ca')}
+          >
+            CA
+          </button>
+        </div>
+        <ThemeToggle className="theme-toggle-inline" />
+      </div>
 
       {alert && (
         <Alert
@@ -71,15 +90,15 @@ const Register = () => {
       )}
 
       <div className="register-container">
-        <h2 className="register-title">Únete a Univy</h2>
+        <h2 className="register-title">{t('register.title')}</h2>
         <p className="register-subtitle">
-          Crea tu cuenta universitaria hoy mismo
+          {t('register.subtitle')}
         </p>
 
         <form onSubmit={handleSubmit} className="register-form">
 
           <div className="form-group">
-            <label>Nombre Completo</label>
+            <label>{t('register.full_name')}</label>
             <input
               type="text"
               name="nombre"
@@ -91,7 +110,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label>Email Académico</label>
+            <label>{t('register.academic_email')}</label>
             <input
               type="email"
               name="email"
@@ -103,7 +122,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label>Contraseña</label>
+            <label>{t('login.password')}</label>
             <input
               type="password"
               name="password"
@@ -116,7 +135,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label>Repetir Contraseña</label>
+            <label>{t('register.repeat_password')}</label>
             <input
               type="password"
               name="confirmPassword"
@@ -133,14 +152,14 @@ const Register = () => {
             className="register-btn"
             disabled={loading}
           >
-            {loading ? "Procesando..." : "Siguiente"}
+            {loading ? t('register.processing') : t('register.next')}
           </button>
         </form>
 
         <div className="login-link-section">
-          <span>¿Ya eres parte de nuestra comunidad?</span>
+          <span>{t('register.has_account')}</span>
           <Link to="/login" className="login-link">
-            Acceder al campus
+            {t('register.access_campus')}
           </Link>
         </div>
       </div>
