@@ -44,7 +44,7 @@ const { posts, loading, error, hasNextPage, fetchNextPage } = useSavedPostsFeed(
         <div className="content-area">
           <main className="feed-container">
             <header className="feed-header">
-              <h1>Posts Guardados</h1>
+              <h1>{t('saved_posts.title')}</h1>
               <p>{t('home.subtitle')}</p>
             </header>
 

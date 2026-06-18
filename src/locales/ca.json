@@ -3,6 +3,7 @@
     "home": "Inici",
     "create": "Crear",
     "explore": "Explorar",
+    "saved": "Desats",
     "university": "Universitat",
     "classes": "Classes",
     "messages": "Missatges",
@@ -42,7 +43,12 @@
     "pending": "Sol·licitat",
     "following": "Seguint",
     "private_title": "Aquest compte és privat",
-    "private_subtitle": "Segueix aquest usuari per veure les seves publicacions."
+    "private_subtitle": "Segueix aquest usuari per veure les seves publicacions.",
+    "add_photo": "Afegir foto",
+    "empty_unimatch": "Sense fotos de UniMatch"
+  },
+  "saved_posts": {
+    "title": "Publicacions Guardades"
   },
   "edit_profile": {
     "title": "Editar Perfil",

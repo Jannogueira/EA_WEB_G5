@@ -5,7 +5,6 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import PostService from "../services/post";
 import { getFollowers, getFollowing, getUserById, toggleFollow} from "../services/usuario";
-import Postcard from "../components/Postcard";
 import PostDetailModal from "../components/PostDetailModal";
 import type { Post } from "../models/post";
 import usePost from "../hooks/usePost";
@@ -418,7 +417,7 @@ const Profile: React.FC = () => {
                     ) : (
                       <Plus size={32} />
                     )}
-                    <span>Añadir foto</span>
+                    <span>{t('profile.add_photo')}</span>
                   </div>
                 )}
                 {unimatchPhotos.length > 0 ? (
@@ -447,7 +446,7 @@ const Profile: React.FC = () => {
                 ) : !isOwnProfile ? (
                   <div className="empty-state">
                     <span className="empty-icon"><Flame size={48} /></span>
-                    <h3>Sin fotos de UniMatch</h3>
+                    <h3>{t('profile.no_unimatch_photos')}</h3>
                   </div>
                 ) : null}
               </div>

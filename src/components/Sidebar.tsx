@@ -72,7 +72,7 @@ const Sidebar: React.FC = () => {
             onClick={() => navigate("/saved")}
           >
             <Bookmark size={20} className="btn-icon" />
-            <span className="btn-text">Guardados</span>
+            <span className="btn-text">{t('sidebar.saved')}</span>
           </button>
 
           <button 

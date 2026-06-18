@@ -3,6 +3,7 @@
     "home": "Inicio",
     "create": "Crear",
     "explore": "Explorar",
+    "saved": "Guardados",
     "university": "Universidad",
     "classes": "Clases",
     "messages": "Mensajes",
@@ -12,7 +13,7 @@
     "title": "Feed",
     "subtitle": "Explora lo que está pasando en Univy",
     "loading": "Cargando más posts increíbles...",
-    "end": "Has llegado al final. ¡Vuelve más tarde!",
+    "end": "¡Has llegado al final. ¡Vuelve más tarde!",
     "empty": "No hay posts todavía"
   },
   "explore": {
@@ -42,7 +43,12 @@
     "pending": "Solicitado",
     "following": "Siguiendo",
     "private_title": "Esta cuenta es privada",
-    "private_subtitle": "Sigue a este usuario para ver sus publicaciones."
+    "private_subtitle": "Sigue a este usuario para ver sus publicaciones.",
+    "add_photo": "Añadir foto",
+    "empty_unimatch": "Sin fotos de UniMatch"
+  },
+  "saved_posts": {
+    "title": "Posts Guardados"
   },
   "edit_profile": {
     "title": "Editar Perfil",
