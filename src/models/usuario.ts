@@ -19,4 +19,5 @@ export interface Usuario {
     hasAcceptedUnimatchTerms?: boolean;
     followStatus?: 'PENDING' | 'ACCEPTED' | null;
     savedPosts?: string[];
+    fcmToken?: string | null;
 }

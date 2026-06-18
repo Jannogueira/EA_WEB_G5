@@ -6,12 +6,15 @@ import Postcard from "../components/Postcard";
 import useUser from "../hooks/useUser";
 import usePosts from "../hooks/usePosts";
 import { useTranslation } from "react-i18next";
+import useFcm from "../hooks/useFcm";
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const { usuario } = useUser();
   const { posts, loading, error, hasNextPage, fetchNextPage } = usePosts();
   
+  // Solicitar permisos y configurar las notificaciones push nativas
+  useFcm();
   
   // Referencia al elemento que detectará el final del scroll
   const observerTarget = useRef(null);
