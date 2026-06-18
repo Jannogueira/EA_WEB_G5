@@ -13,15 +13,34 @@ export default function usePost(initialPost: Post) {
   const [loadingComment, setLoadingComment] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [isSaved, setIsSaved] = useState<boolean>(
+    false
+  );
+
   useEffect(() => {
     setPost({
       ...initialPost,
       comments: (initialPost.comments ?? []).map(c => ({
         ...c,
-        likes: c.likes ?? []
+        likes: c.likes ?? [],
       })),
       likes: initialPost.likes ?? [],
     });
+
+    let savedVal = (initialPost as any).isSaved;
+    if (savedVal === undefined) {
+      try {
+        const uStr = localStorage.getItem("usuario");
+        if (uStr) {
+          const u = JSON.parse(uStr);
+          const savedIds = u.postsGuardados || u.savedPosts || [];
+          savedVal = savedIds.some((id: any) => (id._id || id) === initialPost._id);
+        }
+      } catch {
+        savedVal = false;
+      }
+    }
+    setIsSaved(savedVal ?? false);
   }, [initialPost]);
 
   const likePost = async () => {
@@ -32,7 +51,7 @@ export default function usePost(initialPost: Post) {
         ...prev,
         likes: res.data.likes,
       }));
-    } catch (err) {
+    } catch {
       setError("Error al dar like");
     }
   };
@@ -53,7 +72,7 @@ export default function usePost(initialPost: Post) {
         ...prev,
         comments: [...prev.comments, { ...res.data, likes: [] }],
       }));
-    } catch (err) {
+    } catch {
       setError("Error al crear comentario");
     } finally {
       setLoadingComment(false);
@@ -63,15 +82,46 @@ export default function usePost(initialPost: Post) {
   const likeComment = async (commentId: string) => {
     try {
       const res = await CommentService.like(commentId);
-      // Backend returns the updated comment
+
       setPost(prev => ({
         ...prev,
-        comments: prev.comments.map(c => 
+        comments: prev.comments.map(c =>
           c._id === commentId ? { ...c, likes: res.data.likes } : c
         ),
       }));
-    } catch (err) {
+    } catch {
       setError("Error al dar like al comentario");
+    }
+  };
+
+
+  const toggleSave = async () => {
+    try {
+      const res = await PostService.toggleSave(post._id);
+
+      setIsSaved(res.data.saved);
+
+      try {
+        const uStr = localStorage.getItem("usuario");
+        if (uStr) {
+          const u = JSON.parse(uStr);
+          if (!u.postsGuardados) u.postsGuardados = [];
+          if (res.data.saved) {
+            if (!u.postsGuardados.includes(post._id)) {
+              u.postsGuardados.push(post._id);
+            }
+          } else {
+            u.postsGuardados = u.postsGuardados.filter((id: any) => (id._id || id) !== post._id);
+          }
+          localStorage.setItem("usuario", JSON.stringify(u));
+        }
+      } catch (e) {
+        console.error("Error updating localStorage user:", e);
+      }
+
+      return res.data.saved;
+    } catch (err) {
+      return null;
     }
   };
 
@@ -82,5 +132,7 @@ export default function usePost(initialPost: Post) {
     addComment,
     loadingComment,
     error,
+    toggleSave,
+    isSaved,
   };
 }

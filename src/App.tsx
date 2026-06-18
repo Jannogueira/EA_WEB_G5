@@ -10,6 +10,7 @@ import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
 import UniMatch from './pages/UniMatch';
 import Universidad from './pages/Universidad';
+import Saved from './pages/SavedPosts';
 import Assistant from './pages/Assistant';
 import { SocketProvider } from './context/SocketContext';
 import ThemedBackground from './components/ThemedBackground';
@@ -31,6 +32,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/saved" element={<Saved />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/unimatch" element={<UniMatch />} />

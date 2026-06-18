@@ -4,15 +4,14 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Postcard from "../components/Postcard";
 import useUser from "../hooks/useUser";
-import usePosts from "../hooks/usePosts";
+import useSavedPostsFeed from "../hooks/useSavedPosts";
 import { useTranslation } from "react-i18next";
 
-const Home: React.FC = () => {
+const SavedPosts: React.FC = () => {
   const { t } = useTranslation();
   const { usuario } = useUser();
-  const { posts, loading, error, hasNextPage, fetchNextPage } = usePosts();
-  
-  
+
+const { posts, loading, error, hasNextPage, fetchNextPage } = useSavedPostsFeed();  
   // Referencia al elemento que detectará el final del scroll
   const observerTarget = useRef(null);
 
@@ -45,7 +44,7 @@ const Home: React.FC = () => {
         <div className="content-area">
           <main className="feed-container">
             <header className="feed-header">
-              <h1>{t('home.title')}</h1>
+              <h1>{t('saved_posts.title')}</h1>
               <p>{t('home.subtitle')}</p>
             </header>
 
@@ -73,4 +72,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default SavedPosts;
