@@ -7,10 +7,14 @@ export interface Message {
     nombre: string;
     avatarUrl?: string;
   };
-  destinatario: {
+  destinatario?: {
     _id: string;
     nombre: string;
     avatarUrl?: string;
+  };
+  grupo?: string | {
+    _id: string;
+    nombre: string;
   };
   contenido: string;
   post?: Post;
@@ -35,4 +39,10 @@ export interface ChatContact {
   _id: string;
   nombre: string;
   avatarUrl?: string;
+  isGroup?: boolean;
+  miembros?: any[];
+  creador?: string;
+  unreadCount?: number;
+  lastMessage?: string | null;
 }
+

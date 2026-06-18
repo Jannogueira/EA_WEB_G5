@@ -44,10 +44,18 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
       // Al recibir un mensaje
       newSocket.on('receive_message', (msg) => {
-        setUnreadCounts(prev => ({
-          ...prev,
-          [msg.remitente._id]: (prev[msg.remitente._id] || 0) + 1
-        }));
+        const msgGroupId = msg.grupo ? (typeof msg.grupo === 'string' ? msg.grupo : msg.grupo._id) : null;
+        const senderId = msg.remitente ? (typeof msg.remitente === 'string' ? msg.remitente : msg.remitente._id) : '';
+        const key = msgGroupId || senderId;
+        
+        if (senderId === usuario?._id) return;
+
+        if (key) {
+          setUnreadCounts(prev => ({
+            ...prev,
+            [key]: (prev[key] || 0) + 1
+          }));
+        }
       });
 
       newSocket.on('new_follow', (data) => {

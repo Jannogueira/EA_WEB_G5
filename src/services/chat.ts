@@ -6,3 +6,7 @@ export const getContacts = () =>
 
 export const getConversation = (userId: string, page = 1) =>
   apiClient.get<Message[]>(`/chat/conversation/${userId}`, { params: { page } });
+
+export const createGroupChat = (nombre: string, miembros: string[]) =>
+  apiClient.post<ChatContact>('/chat/groups', { nombre, miembros });
+
