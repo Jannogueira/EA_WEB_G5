@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./SharePostModal.css";
 import { X, Search, Send, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getContacts } from "../services/chat.service";
+import { getContacts } from "../services/chat";
 import type { ChatContact } from "../models/message";
 import { useSocket } from "../context/SocketContext";
 
@@ -88,9 +88,8 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
                 filteredContacts.map((contact) => (
                   <div
                     key={contact._id}
-                    className={`share-contact-item ${
-                      selectedContacts.includes(contact._id) ? "selected" : ""
-                    }`}
+                    className={`share-contact-item ${selectedContacts.includes(contact._id) ? "selected" : ""
+                      }`}
                     onClick={() => toggleContact(contact._id)}
                   >
                     <div className="contact-avatar-small">
