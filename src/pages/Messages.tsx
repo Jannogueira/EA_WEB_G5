@@ -136,7 +136,11 @@ const Messages: React.FC = () => {
 
     try {
       const res = await createGroupChat(groupName.trim(), selectedMembers);
-      const newGroup = res.data;
+      const newGroup = {
+        ...res.data,
+        isGroup: true,
+        unreadCount: 0
+      };
       setContacts(prev => [newGroup, ...prev]);
       openConversation(newGroup);
       setIsGroupModalOpen(false);
