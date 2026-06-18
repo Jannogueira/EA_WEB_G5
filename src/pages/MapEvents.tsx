@@ -50,6 +50,7 @@ const MapEvents: React.FC = () => {
   const [formTitulo, setFormTitulo] = useState("");
   const [formDesc, setFormDesc] = useState("");
   const [formFecha, setFormFecha] = useState("");
+  const [formFechaLimite, setFormFechaLimite] = useState("");
   const [formUbicacionNombre, setFormUbicacionNombre] = useState("");
   const [formMaxAsistentes, setFormMaxAsistentes] = useState<number | "">("")
 
@@ -191,9 +192,15 @@ const MapEvents: React.FC = () => {
   useEffect(() => {
     if (!mapRef.current) return;
 
+    const now = new Date();
+    const activeEvents = eventos.filter((ev) => {
+      const limit = ev.fechaLimite ? new Date(ev.fechaLimite) : new Date(ev.fecha);
+      return limit >= now;
+    });
+
     // Calcular qué IDs están en rango ahora mismo (depende de si el filtro está activo)
     const currentInRangeIds = new Set(
-      eventos
+      activeEvents
         .map((ev) => ({
           ...ev,
           distance: userLocation
@@ -206,7 +213,7 @@ const MapEvents: React.FC = () => {
 
     // Limpiar marcadores obsoletos (o que ya no deben estar en el mapa por el filtro)
     Object.keys(markersRef.current).forEach((id) => {
-      const exists = eventos.some((ev) => ev._id === id);
+      const exists = activeEvents.some((ev) => ev._id === id);
       const isVisible = currentInRangeIds.has(id);
       if (!exists || !isVisible) {
         mapRef.current?.removeLayer(markersRef.current[id]);
@@ -215,7 +222,7 @@ const MapEvents: React.FC = () => {
     });
 
     // Añadir o actualizar marcadores
-    eventos.forEach((ev) => {
+    activeEvents.forEach((ev) => {
       // Si el filtro está activo y el evento está fuera de rango, no lo dibujamos
       if (!currentInRangeIds.has(ev._id)) return;
 
@@ -321,6 +328,7 @@ const MapEvents: React.FC = () => {
       titulo: formTitulo,
       descripcion: formDesc,
       fecha: new Date(formFecha).toISOString(),
+      fechaLimite: formFechaLimite ? new Date(formFechaLimite).toISOString() : null,
       ubicacionNombre: formUbicacionNombre,
       lat,
       lng,
@@ -336,6 +344,7 @@ const MapEvents: React.FC = () => {
       setFormTitulo("");
       setFormDesc("");
       setFormFecha("");
+      setFormFechaLimite("");
       setFormUbicacionNombre("");
       setFormMaxAsistentes("");
       setIsCreating(false);
@@ -392,7 +401,12 @@ const MapEvents: React.FC = () => {
     setIsCreating(false);
   };
 
-  const eventosWithDistance = [...eventos].map((ev) => {
+  const activeEventosList = eventos.filter((ev) => {
+    const limit = ev.fechaLimite ? new Date(ev.fechaLimite) : new Date(ev.fecha);
+    return limit >= new Date();
+  });
+
+  const eventosWithDistance = [...activeEventosList].map((ev) => {
     const distance = userLocation
       ? getDistance(
           userLocation[0],
@@ -529,6 +543,15 @@ const MapEvents: React.FC = () => {
                     </div>
 
                     <div className="form-group-item">
+                      <label>{t("map_events.form_deadline_label")}</label>
+                      <input
+                        type="datetime-local"
+                        value={formFechaLimite}
+                        onChange={(e) => setFormFechaLimite(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="form-group-item">
                       <label>{t("map_events.form_loc_label")} *</label>
                       <input
                         type="text"
@@ -578,6 +601,13 @@ const MapEvents: React.FC = () => {
                       <Calendar size={18} className="meta-icon" />
                       <span>{new Date(selectedEvento.fecha).toLocaleString()}</span>
                     </div>
+
+                    {selectedEvento.fechaLimite && (
+                      <div className="detail-meta-item deadline-meta" style={{ color: "#ef4444", fontWeight: "600" }}>
+                        <Calendar size={18} className="meta-icon" />
+                        <span>{t("map_events.details_deadline")}: {new Date(selectedEvento.fechaLimite).toLocaleString()}</span>
+                      </div>
+                    )}
 
                     <div className="detail-meta-item">
                       <MapPin size={18} className="meta-icon" />
@@ -742,6 +772,12 @@ const MapEvents: React.FC = () => {
                                   <Calendar size={12} />
                                   {new Date(ev.fecha).toLocaleDateString()}
                                 </span>
+                                {ev.fechaLimite && (
+                                  <span className="item-date" style={{ color: "#ef4444", fontWeight: "600" }}>
+                                    <Calendar size={12} />
+                                    Límite: {new Date(ev.fechaLimite).toLocaleDateString()}
+                                  </span>
+                                )}
                                 <span className="item-attendees">
                                   <Users size={12} />
                                   {ev.asistentes.length}

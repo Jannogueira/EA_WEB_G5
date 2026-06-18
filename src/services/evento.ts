@@ -21,6 +21,7 @@ class EventoService {
     lat: number;
     lng: number;
     maxAsistentes?: number | null;
+    fechaLimite?: string | null;
   }) {
     return apiClient.post<Evento>(this.endpoint, data);
   }

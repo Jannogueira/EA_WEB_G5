@@ -14,6 +14,7 @@ export interface Evento {
   asistentes: (Usuario | string)[];
   maxAsistentes?: number | null;
   activo: boolean;
+  fechaLimite?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
