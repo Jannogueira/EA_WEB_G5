@@ -27,7 +27,20 @@ export default function usePost(initialPost: Post) {
       likes: initialPost.likes ?? [],
     });
 
-    setIsSaved((initialPost as any).isSaved ?? false);
+    let savedVal = (initialPost as any).isSaved;
+    if (savedVal === undefined) {
+      try {
+        const uStr = localStorage.getItem("usuario");
+        if (uStr) {
+          const u = JSON.parse(uStr);
+          const savedIds = u.postsGuardados || u.savedPosts || [];
+          savedVal = savedIds.some((id: any) => (id._id || id) === initialPost._id);
+        }
+      } catch {
+        savedVal = false;
+      }
+    }
+    setIsSaved(savedVal ?? false);
   }, [initialPost]);
 
   const likePost = async () => {
@@ -87,6 +100,24 @@ export default function usePost(initialPost: Post) {
       const res = await PostService.toggleSave(post._id);
 
       setIsSaved(res.data.saved);
+
+      try {
+        const uStr = localStorage.getItem("usuario");
+        if (uStr) {
+          const u = JSON.parse(uStr);
+          if (!u.postsGuardados) u.postsGuardados = [];
+          if (res.data.saved) {
+            if (!u.postsGuardados.includes(post._id)) {
+              u.postsGuardados.push(post._id);
+            }
+          } else {
+            u.postsGuardados = u.postsGuardados.filter((id: any) => (id._id || id) !== post._id);
+          }
+          localStorage.setItem("usuario", JSON.stringify(u));
+        }
+      } catch (e) {
+        console.error("Error updating localStorage user:", e);
+      }
 
       return res.data.saved;
     } catch (err) {

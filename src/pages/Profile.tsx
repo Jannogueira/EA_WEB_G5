@@ -19,7 +19,7 @@ import type { AlertState } from "../components/Alert";
 import SharePostModal from "../components/SharePostModal";
 
 const ProfilePostModal: React.FC<{ post: Post; onClose: () => void; currentUserId: string | null }> = ({ post, onClose, currentUserId }) => {
-  const { post: p, likePost, likeComment, addComment, loadingComment } = usePost(post);
+  const { post: p, likePost, likeComment, addComment, loadingComment, toggleSave, isSaved } = usePost(post);
   const [showShareModal, setShowShareModal] = useState(false);
   
   return (
@@ -33,6 +33,8 @@ const ProfilePostModal: React.FC<{ post: Post; onClose: () => void; currentUserI
         onAddComment={addComment}
         loadingComment={loadingComment}
         onShare={() => setShowShareModal(true)}
+        onToggleSave={toggleSave}
+        isSaved={isSaved}
       />
       {showShareModal && (
         <SharePostModal 
