@@ -8,7 +8,7 @@
     "classes": "Clases",
     "messages": "Mensajes",
     "notifications": "Notificaciones",
-    "assistant": "Asistente"
+    "assistant": "Asistente",
     "map": "Mapa"
   },
   "home": {
@@ -190,7 +190,6 @@
     "spanish": "Español",
     "catalan": "Catalán"
   },
-<<<<<<< HEAD
   "assistant": {
     "welcome_msg": "¡Hola! Soy **Toni**, asistente virtual e ingeniero académico de la EETAC. ¿En qué puedo ayudarte hoy sobre la oferta de grado o asignaturas?",
     "error_msg": "Lo siento, no he podido procesar tu solicitud en este momento. Por favor, vuelve a intentarlo más tarde.",
@@ -198,7 +197,7 @@
     "subtitle": "Ingeniero académico experto de la EETAC",
     "thinking": "Toni está pensando...",
     "placeholder": "Pregunta a Toni sobre grados o asignaturas..."
-=======
+  },
   "map_events": {
     "title": "Mapa de Eventos",
     "subtitle": "Descubre y participa en eventos a tu alrededor",
@@ -225,6 +224,5 @@
     "list_empty": "No hay eventos creados todavía. ¡Sé el primero!",
     "list_distance": "a {{distance}}m de ti",
     "error_location": "No se pudo acceder a tu geolocalización. Centrando en tu universidad."
->>>>>>> MINIMO2-LAURA
   }
 }

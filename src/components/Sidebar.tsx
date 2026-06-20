@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-<<<<<<< HEAD
-import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search, Bookmark, Bot } from "lucide-react";
-=======
-import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search, Map } from "lucide-react";
->>>>>>> MINIMO2-LAURA
+import { Home, Compass, GraduationCap, BookOpen, MessageSquare, PlusSquare, Bell, Heart, Search, Bookmark, Bot, Map } from "lucide-react";
 import CreatePostModal from "./CreatePostModal";
 import { useSocket } from "../context/SocketContext";
 import { useTranslation } from "react-i18next";
@@ -77,6 +73,9 @@ const Sidebar: React.FC = () => {
           >
             <Bookmark size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.saved')}</span>
+          </button>
+
+          <button 
             className={`sidebar-btn ${isActive("/map") ? "active" : ""}`} 
             onClick={() => navigate("/map")}
           >
