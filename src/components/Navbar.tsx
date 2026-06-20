@@ -45,6 +45,9 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
       <div className="navbar-right">
         {/* Language slider updated to supporting 3 languages */}
         <div className="lang-segmented-control">
+          <div className={`lang-indicator ${
+            i18n.language.startsWith('es') ? 'es' : i18n.language.startsWith('ca') ? 'ca' : 'en'
+          }`} />
           <button 
             className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
             onClick={() => i18n.changeLanguage('es')}

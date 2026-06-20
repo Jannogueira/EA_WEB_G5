@@ -44,11 +44,39 @@
 /* --- LANGUAGE SEGMENTED CONTROL (Updated for 3 options) --- */
 .lang-segmented-control {
   display: flex;
+  position: relative;
   background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 4px;
   gap: 4px;
   width: 130px;
+  overflow: hidden;
+}
+
+.lang-indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(33.333% - 5.333px);
+  background: var(--accent-purple);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.lang-indicator.es {
+  transform: translateX(0);
+}
+
+.lang-indicator.ca {
+  transform: translateX(calc(100% + 4px));
+}
+
+.lang-indicator.en {
+  transform: translateX(calc(200% + 8px));
 }
 
 .lang-option {
@@ -63,17 +91,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .lang-option:hover:not(.active) {
   color: var(--text-main);
-  background: var(--border-subtle);
 }
 
 .lang-option.active {
-  background: var(--accent-purple);
-  color: white;
-  box-shadow: 0 4px 12px var(--accent-glow);
+  color: white !important;
 }
 
 /* --- THEME TOGGLE SWITCH --- */
