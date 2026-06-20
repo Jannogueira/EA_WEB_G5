@@ -1,76 +1,112 @@
-import React, { useEffect, useState } from "react";
-import "./Home.css";
+import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Universidad.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import UserCard from "../components/UserCard";
 import useUser from "../hooks/useUser";
-import gradoService from "../services/grado";
-import type { Grado } from "../models/grado";
-import type { Asignatura } from "../models/asignatura";
-import { BookOpen, GraduationCap } from "lucide-react";
-
+import universidadService from "../services/universidad";
+import { getContacts } from "../services/chat";
+import { GraduationCap, MapPin, Users, Search, MessageSquare, Plus, LogOut, ArrowRight } from "lucide-react";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
 
 const Universidad: React.FC = () => {
   const { usuario } = useUser();
-
-  const [grado, setGrado] = useState<Grado | null>(null);
-  const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
-  const [open, setOpen] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [universidades, setUniversidades] = useState<any[]>([]);
+  const [joinedGroupIds, setJoinedGroupIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [expandedUniId, setExpandedUniId] = useState<string | null>(null);
   const [alert, setAlert] = useState<AlertState | null>(null);
 
+  // Fetch universities and user's joined chats
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [uniRes, contactsRes] = await Promise.all([
+        universidadService.getAll({ limit: 100 }).request,
+        getContacts(),
+      ]);
+      setUniversidades(uniRes.data.docs || []);
+
+      // Extract IDs of all group chats the user is currently in
+      const groupIds = (contactsRes.data || [])
+        .filter((c: any) => c.isGroup)
+        .map((c: any) => c._id);
+      setJoinedGroupIds(groupIds);
+    } catch (err: any) {
+      console.error(err);
+      setAlert({
+        type: "error",
+        title: "Error",
+        message: err.message || "Error al cargar los datos.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      if (!usuario?._id) return;
-
-      const gradoId =
-        typeof usuario.grado === "string"
-          ? usuario.grado
-          : usuario.grado?._id;
-
-      if (!gradoId) return;
-
-      try {
-        setLoading(true);
-
-        // 1. grado
-        const resGrado = await gradoService.getById(gradoId);
-        setGrado(resGrado.data);
-
-        // 2. asignaturas del grado
-        const resAsig = await gradoService.getAsignaturas(gradoId);
-        const todas: Asignatura[] = resAsig.data;
-
-        // 3. SOLO asignaturas donde está el usuario logeado
-        const filtradas = todas.filter((asig) =>
-          asig.usuarios.some((u) => u._id === usuario._id)
-        );
-
-        setAsignaturas(filtradas);
-      } catch (error: any) {
-        const msg =
-          error.response?.data?.message ||
-          error.message ||
-          "Error al contactar con el servidor";
-
-        setAlert({
-          type: "error",
-          title: "Error",
-          message: msg,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, [usuario]);
+  }, []);
+
+  // Filter universities based on search term
+  const filteredUnis = useMemo(() => {
+    return universidades.filter(
+      (uni) =>
+        uni.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        uni.ubicacion.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [universidades, searchTerm]);
+
+  // Join University General Chat
+  const handleJoinChat = async (e: React.MouseEvent, uniId: string) => {
+    e.stopPropagation();
+    try {
+      await universidadService.joinChat(uniId);
+      setAlert({
+        type: "success",
+        title: "¡Te has unido!",
+        message: "Te has unido al chat general. Ya puedes encontrarlo en tu sección de Mensajes.",
+      });
+      fetchData(); // reload
+    } catch (err: any) {
+      setAlert({
+        type: "error",
+        title: "Error",
+        message: err.response?.data?.message || err.message || "No se pudo unir al chat.",
+      });
+    }
+  };
+
+  // Leave University General Chat
+  const handleLeaveChat = async (e: React.MouseEvent, uniId: string) => {
+    e.stopPropagation();
+    try {
+      await universidadService.leaveChat(uniId);
+      setAlert({
+        type: "success",
+        title: "Has abandonado el chat",
+        message: "Has salido del chat general de esta universidad.",
+      });
+      fetchData();
+    } catch (err: any) {
+      setAlert({
+        type: "error",
+        title: "Error",
+        message: err.response?.data?.message || err.message || "No se pudo abandonar el chat.",
+      });
+    }
+  };
+
+  const handleGoToChat = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate("/messages");
+  };
 
   return (
-    <div className="home-wrapper">
+    <div className="uni-page-wrapper">
       {alert && (
         <Alert
           type={alert.type}
@@ -82,81 +118,113 @@ const Universidad: React.FC = () => {
 
       <Navbar usuario={usuario || undefined} />
 
-      <div className="main-layout">
+      <div className="uni-main-layout">
         <Sidebar />
 
-        <div className="content-area">
-          <main className="feed-container">
+        <div className="uni-content-area">
+          <div className="uni-feed-container">
+            <header className="uni-page-header">
+              <h1>Universidades</h1>
+              <p>Haz clic en una universidad para ver sus opciones y unirte a su chat general.</p>
+            </header>
+
+            <div className="uni-search-section">
+              <div className="uni-search-box">
+                <Search size={20} className="uni-search-icon" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre o ubicación..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
 
             {loading ? (
-              <p>Cargando asignaturas...</p>
+              <div className="uni-loading-state">
+                <div className="uni-spinner" />
+                <p>Cargando directorio de universidades...</p>
+              </div>
+            ) : filteredUnis.length === 0 ? (
+              <div className="uni-empty-state">
+                <GraduationCap size={64} className="uni-empty-icon" />
+                <p>No se encontraron universidades registradas.</p>
+              </div>
             ) : (
-              <>
-                {/* HEADER */}
-                <header className="feed-header">
-                  <h1>{grado?.nombre || "Mi Grado"}</h1>
+              <div className="uni-grid">
+                {filteredUnis.map((uni) => {
+                  const isJoined = uni.chatGeneral && joinedGroupIds.includes(uni.chatGeneral);
+                  const isExpanded = expandedUniId === uni._id;
 
-                  <p>
-                    <GraduationCap size={18} />
-                    {usuario?.universidad?.nombre ?? "Sin universidad"}
-                  </p>
-                </header>
+                  return (
+                    <div
+                      key={uni._id}
+                      className={`uni-card ${isExpanded ? "expanded" : ""} ${isJoined ? "joined-state" : ""}`}
+                      onClick={() => setExpandedUniId(isExpanded ? null : uni._id)}
+                    >
+                      <div className="uni-card-header-row">
+                        <div className="uni-card-icon-container">
+                          <GraduationCap size={28} />
+                        </div>
+                        {isJoined && (
+                          <span className="uni-joined-tag">Miembro</span>
+                        )}
+                      </div>
 
-                {/* LISTA */}
-                <div className="posts-list">
-                  {asignaturas.length === 0 ? (
-                    <p>No estás inscrito en ninguna asignatura.</p>
-                  ) : (
-                    asignaturas.map((asig) => {
-                      const isOpen = open === asig._id;
+                      <div className="uni-card-body">
+                        <h2>{uni.nombre}</h2>
+                        <div className="uni-card-meta">
+                          <span className="uni-meta-item">
+                            <MapPin size={14} />
+                            {uni.ubicacion}
+                          </span>
+                          <span className="uni-meta-item">
+                            <Users size={14} />
+                            {uni.numIntegrantes || 0} miembros
+                          </span>
+                        </div>
+                      </div>
 
-                      const usuariosSinMi = asig.usuarios.filter(
-                        (u) => u._id !== usuario?._id
-                      );
-
-                      return (
-                        <div key={asig._id}>
-                          {/* CARD ASIGNATURA */}
-                          <section
-                            className="subject-card"
-                            onClick={() =>
-                              setOpen(isOpen ? null : asig._id)
-                            }
-                            style={{ cursor: "pointer" }}
-                          >
-                            <div className="subject-info">
-                              <div style={{ display: "flex", gap: 10 }}>
-                                <BookOpen size={22} />
-                                <h2>{asig.nombre}</h2>
-                              </div>
-
-                              <span>
-                                {usuariosSinMi.length} compañeros
-                              </span>
+                      {/* Expandable actions area using modern CSS transition trick */}
+                      <div className="uni-card-expand-area">
+                        <div>
+                          {isJoined ? (
+                            <div className="uni-card-buttons">
+                              <button
+                                className="uni-btn-action primary"
+                                onClick={handleGoToChat}
+                              >
+                                <MessageSquare size={16} />
+                                <span>Ir al chat</span>
+                                <ArrowRight size={14} className="arrow-right-icon" />
+                              </button>
+                              <button
+                                className="uni-btn-action danger"
+                                onClick={(e) => handleLeaveChat(e, uni._id)}
+                              >
+                                <LogOut size={16} />
+                                <span>Abandonar chat</span>
+                              </button>
                             </div>
-                          </section>
-
-                          {/* USERS EXPANDIBLE */}
-                          {isOpen && (
-                            <div className="users-grid" style={{ marginTop: 10 }}>
-                              {usuariosSinMi.length === 0 ? (
-                                <p>No hay compañeros en esta asignatura.</p>
-                              ) : (
-                                usuariosSinMi.map((u) => (
-                                  <UserCard key={u._id} user={u} />
-                                ))
-                              )}
+                          ) : (
+                            <div className="uni-card-buttons">
+                              <button
+                                className="uni-btn-action success"
+                                onClick={(e) => handleJoinChat(e, uni._id)}
+                              >
+                                <Plus size={16} />
+                                <span>Unirme ahora</span>
+                              </button>
                             </div>
                           )}
                         </div>
-                      );
-                    })
-                  )}
-                </div>
-              </>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
-
-          </main>
+          </div>
         </div>
       </div>
     </div>
