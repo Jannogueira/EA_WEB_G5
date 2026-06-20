@@ -18,6 +18,11 @@ class UniversidadService {
     const response = await apiClient.get(`${this.endpoint}/${id}`);
     return response.data;
   }
+
+  async getOrCreateChat(id: string): Promise<any> {
+    const response = await apiClient.get(`${this.endpoint}/${id}/chat`);
+    return response.data;
+  }
 }
 
 export default new UniversidadService();
