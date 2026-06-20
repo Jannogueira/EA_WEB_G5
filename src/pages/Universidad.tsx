@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import "./Messages.css";
 import "./Universidad.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import useChat from "../hooks/useChat";
 import universidadService from "../services/universidad";
-import { GraduationCap, MapPin, Users, Send, MessageSquare, Search, X } from "lucide-react";
+import { GraduationCap, Send, MessageCircle, Search } from "lucide-react";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
 
@@ -119,7 +120,7 @@ const Universidad: React.FC = () => {
   };
 
   return (
-    <div className="universidad-page-wrapper">
+    <div className="messages-page-wrapper">
       {alert && (
         <Alert
           type={alert.type}
@@ -131,168 +132,170 @@ const Universidad: React.FC = () => {
 
       <Navbar usuario={usuario || undefined} />
 
-      <div className="uni-main-layout">
-        <Sidebar />
+      <div className="chat-layout">
+        {/* LEFT PANEL: Directory of Universities */}
+        <aside className="contacts-sidebar">
+          <header className="contacts-header-search">
+            <h2 style={{ fontSize: "1.25rem", fontWeight: 800, margin: "0 0 15px 0", color: "var(--text-main)" }}>
+              Universidades
+            </h2>
+            <div className="search-container-premium">
+              <Search size={18} className="search-icon-dim" style={{ color: "var(--text-muted)" }} />
+              <input
+                type="text"
+                placeholder="Buscar universidad..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </header>
 
-        <div className="uni-content-area">
-          <div className="uni-workspace">
-            {/* LEFT PANEL: Directory of Universities */}
-            <aside className="uni-directory-panel">
-              <header className="uni-directory-header">
-                <h2>Universidades</h2>
-                <div className="uni-search-container">
-                  <Search size={16} className="uni-search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Buscar universidad..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+          <div className="contacts-list">
+            {loadingUnis ? (
+              <div className="no-chat-selected" style={{ height: "auto", padding: "20px 0" }}>
+                <p>Cargando universidades...</p>
+              </div>
+            ) : filteredUniversidades.length === 0 ? (
+              <div className="no-chat-selected" style={{ height: "auto", padding: "20px 0" }}>
+                <p>No se encontraron universidades</p>
+              </div>
+            ) : (
+              filteredUniversidades.map((uni) => (
+                <div
+                  key={uni._id}
+                  className={`contact-item ${selectedUniId === uni._id ? "active" : ""}`}
+                  onClick={() => handleSelectUniversity(uni._id)}
+                >
+                  <div className="contact-avatar group-avatar-icon">
+                    <GraduationCap size={22} />
+                  </div>
+                  <div className="contact-info">
+                    <span className="contact-name">{uni.nombre}</span>
+                    <span className="group-subtitle-sidebar">{uni.ubicacion}</span>
+                  </div>
+                  <div
+                    className="unread-badge"
+                    style={{
+                      background: "rgba(167, 139, 250, 0.15)",
+                      color: "var(--accent-purple)",
+                      boxShadow: "none",
+                    }}
+                  >
+                    {uni.numIntegrantes || 0}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </aside>
+
+        {/* RIGHT PANEL: University Chat Workspace */}
+        <main className="chat-window">
+          {loadingChat ? (
+            <div className="no-chat-selected">
+              <div className="uni-spinner" />
+              <p style={{ marginTop: "15px" }}>Conectando con el chat general...</p>
+            </div>
+          ) : activeContact ? (
+            <>
+              <header className="chat-header">
+                <div className="active-contact-info">
+                  <div className="contact-avatar-small group-avatar-icon">
+                    <GraduationCap size={20} />
+                  </div>
+                  <div>
+                    <h3>{activeContact.nombre}</h3>
+                    <span className="group-badge">Chat General</span>
+                  </div>
                 </div>
               </header>
 
-              <div className="uni-list">
-                {loadingUnis ? (
-                  <div className="uni-loading">Cargando universidades...</div>
-                ) : filteredUniversidades.length === 0 ? (
-                  <div className="uni-empty">No se encontraron universidades</div>
+              <div className="messages-list">
+                {loadingHistory ? (
+                  <div className="no-chat-selected">
+                    <p>Cargando historial de mensajes...</p>
+                  </div>
+                ) : messages.length === 0 ? (
+                  <div className="no-chat-selected">
+                    <MessageCircle size={60} color="rgba(167, 139, 250, 0.1)" />
+                    <p>¡El chat está vacío! Sé el primero en escribir.</p>
+                  </div>
                 ) : (
-                  filteredUniversidades.map((uni) => (
-                    <div
-                      key={uni._id}
-                      className={`uni-item-card ${selectedUniId === uni._id ? "active" : ""}`}
-                      onClick={() => handleSelectUniversity(uni._id)}
-                    >
-                      <div className="uni-card-icon">
-                        <GraduationCap size={22} />
-                      </div>
-                      <div className="uni-card-info">
-                        <h3>{uni.nombre}</h3>
-                        <p>
-                          <MapPin size={12} />
-                          {uni.ubicacion}
-                        </p>
-                      </div>
-                      <div className="uni-card-badge">
-                        <Users size={12} />
-                        <span>{uni.numIntegrantes || 0}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </aside>
-
-            {/* RIGHT PANEL: University Chat Workspace */}
-            <main className="uni-chat-workspace">
-              {loadingChat ? (
-                <div className="uni-chat-state-container">
-                  <div className="uni-spinner" />
-                  <p>Conectando con el chat general...</p>
-                </div>
-              ) : activeContact ? (
-                <>
-                  <header className="uni-chat-header">
-                    <div className="uni-chat-header-info">
-                      <GraduationCap size={24} />
-                      <div>
-                        <h3>{activeContact.nombre}</h3>
-                        <span>Chat General Universitario</span>
-                      </div>
-                    </div>
-                  </header>
-
-                  <div className="uni-messages-list">
-                    {loadingHistory ? (
-                      <div className="uni-chat-state-container">
-                        <p>Cargando historial de mensajes...</p>
-                      </div>
-                    ) : messages.length === 0 ? (
-                      <div className="uni-chat-empty-state">
-                        <MessageSquare size={48} />
-                        <p>¡El chat está vacío! Sé el primero en escribir.</p>
-                      </div>
-                    ) : (
-                      messages.map((msg) => {
-                        const isOwn = getSenderId(msg) === usuario?._id;
-                        return (
-                          <div
-                            key={msg._id}
-                            className={`uni-message-row ${isOwn ? "own" : "received"}`}
-                          >
-                            {!isOwn && (
+                  messages.map((msg) => {
+                    const isOwn = getSenderId(msg) === usuario?._id;
+                    return (
+                      <div className="message-row" key={msg._id} id={msg._id}>
+                        <div className={`message-wrapper ${isOwn ? "own" : "received"}`}>
+                          {!isOwn && (
+                            <div className="msg-sender-avatar">
                               <img
                                 src={getSenderAvatar(msg) || "https://api.dicebear.com/7.x/adventurer/svg"}
-                                alt={getSenderName(msg)}
-                                className="uni-msg-avatar"
+                                alt=""
                               />
-                            )}
-                            <div className="uni-message-bubble-wrapper">
-                              {!isOwn && (
-                                <span className="uni-msg-author">{getSenderName(msg)}</span>
-                              )}
-                              <div className={`uni-message-bubble ${isOwn ? "own" : "received"}`}>
-                                <p>{msg.contenido}</p>
-                              </div>
-                              <span className="uni-message-time">
-                                {new Date(msg.createdAt).toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </span>
                             </div>
+                          )}
+                          <div className={`message-bubble ${isOwn ? "own" : "received"}`}>
+                            {!isOwn && <span className="group-member-name-chat">{getSenderName(msg)}</span>}
+                            <div>{msg.contenido}</div>
                           </div>
-                        );
-                      })
-                    )}
-                    <div ref={messagesEndRef} />
-                  </div>
-
-                  {/* Typing Indicator */}
-                  {typingUserId && typingUserId !== usuario?._id && (
-                    <div className="uni-typing-indicator">
-                      <div className="uni-typing-dots">
-                        <span />
-                        <span />
-                        <span />
+                          <span className="message-time">
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
                       </div>
-                      <span>{typingUserName || "Alguien"} está escribiendo...</span>
-                    </div>
-                  )}
+                    );
+                  })
+                )}
+                <div ref={messagesEndRef} />
+              </div>
 
-                  <form className="uni-chat-input-area" onSubmit={handleSendMessage}>
-                    <div className="uni-input-wrapper">
-                      <input
-                        type="text"
-                        placeholder="Escribe algo en el chat general..."
-                        value={inputMessage}
-                        onChange={(e) => {
-                          setInputMessage(e.target.value);
-                          emitTyping();
-                        }}
-                        autoComplete="off"
-                      />
-                      <button
-                        type="submit"
-                        className="uni-send-btn"
-                        disabled={!inputMessage.trim()}
-                      >
-                        <Send size={18} />
-                      </button>
-                    </div>
-                  </form>
-                </>
-              ) : (
-                <div className="uni-chat-empty-state select-prompt">
-                  <MessageSquare size={64} />
-                  <h2>Chat General de la Universidad</h2>
-                  <p>Selecciona una universidad de la lista de la izquierda para unirte a su comunidad y chatear en tiempo real con otros estudiantes.</p>
+              {/* Typing Indicator */}
+              {typingUserId && typingUserId !== usuario?._id && (
+                <div className="typing-indicator-chat">
+                  <div className="typing-dots">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <span>{typingUserName || "Alguien"} está escribiendo...</span>
                 </div>
               )}
-            </main>
-          </div>
-        </div>
+
+              <form className="chat-input-area" onSubmit={handleSendMessage}>
+                <div className="input-wrapper-premium">
+                  <input
+                    type="text"
+                    placeholder="Escribe algo en el chat general..."
+                    value={inputMessage}
+                    onChange={(e) => {
+                      setInputMessage(e.target.value);
+                      emitTyping();
+                    }}
+                    autoComplete="off"
+                  />
+                  <button type="submit" className="send-btn-premium" disabled={!inputMessage.trim()}>
+                    <Send size={20} />
+                  </button>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div className="no-chat-selected">
+              <MessageCircle size={100} color="rgba(167, 139, 250, 0.1)" />
+              <h2>Chat General de la Universidad</h2>
+              <p>
+                Selecciona una universidad de la lista de la izquierda para unirte a su comunidad y chatear en tiempo
+                real con otros estudiantes.
+              </p>
+            </div>
+          )}
+        </main>
       </div>
+
+      <Sidebar />
     </div>
   );
 };
