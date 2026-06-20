@@ -8,11 +8,8 @@
     "classes": "Classes",
     "messages": "Missatges",
     "notifications": "Notificacions",
-<<<<<<< HEAD
-    "assistant": "Assistent"
-=======
+    "assistant": "Assistent",
     "map": "Mapa"
->>>>>>> MINIMO2-LAURA
   },
   "home": {
     "title": "Feed",
@@ -200,6 +197,7 @@
     "subtitle": "Enginyer acadèmic expert de la EETAC",
     "thinking": "En Toni està pensant...",
     "placeholder": "Pregunta al Toni sobre graus o assignatures..."
+  },
   "map_events": {
     "title": "Mapa d'Esdeveniments",
     "subtitle": "Descobreix i participa en esdeveniments al teu voltant",

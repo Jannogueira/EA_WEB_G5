@@ -38,8 +38,9 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left">
-        <span className="brand-name" onClick={() => navigate("/home")}>Univy</span>
+      <div className="navbar-left" onClick={() => navigate("/home")}>
+        <img src="/logo.png" className="navbar-logo" alt="Univy Logo" />
+        <span className="brand-name">Univy</span>
       </div>
 
       <div className="navbar-right">

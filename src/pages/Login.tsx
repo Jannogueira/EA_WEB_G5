@@ -103,6 +103,9 @@ const Login = () => {
           />
         )}
         
+        <div className="login-logo-container">
+          <img src="/logo.png" className="login-logo" alt="Univy Logo" />
+        </div>
         <h2>{t('login.title')}</h2>
 
         <form onSubmit={handleLogin} className="login-form">

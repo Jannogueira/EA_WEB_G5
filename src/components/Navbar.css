@@ -13,13 +13,25 @@
   height: 70px;
 }
 
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.navbar-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
 .brand-name {
   font-size: 1.5rem;
   font-weight: 800;
   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  cursor: pointer;
   letter-spacing: -0.5px;
 }
 
