@@ -41,6 +41,41 @@
   gap: 1.5rem;
 }
 
+/* --- LANGUAGE SEGMENTED CONTROL (Updated for 3 options) --- */
+.lang-segmented-control {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  width: 130px;
+}
+
+.lang-option {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.lang-option:hover:not(.active) {
+  color: var(--text-main);
+  background: var(--border-subtle);
+}
+
+.lang-option.active {
+  background: var(--accent-purple);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
 /* --- THEME TOGGLE SWITCH --- */
 .theme-switch {
   position: relative;
@@ -120,7 +155,7 @@
   cursor: pointer;
   box-shadow: 0 0 10px var(--accent-glow);
   transition: transform 0.2s;
-  overflow: hidden; /* Important for the img inside */
+  overflow: hidden;
 }
 
 .nav-avatar-img {
@@ -274,5 +309,15 @@
 
   .brand-name {
     font-size: 1.25rem;
+  }
+  
+  .lang-segmented-control {
+    width: 105px; /* Increased from 75px in mobile view */
+    padding: 2px;
+  }
+  
+  .lang-option {
+    padding: 4px 0;
+    font-size: 0.75rem;
   }
 }

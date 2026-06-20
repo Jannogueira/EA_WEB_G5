@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, CheckCircle2 } from 'lucide-react';
 import './SelectionStep.css';
+import { useTranslation } from "react-i18next";
 
 interface SelectionItem {
   _id: string;
@@ -28,9 +29,10 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
   onSelect,
   multiple = false,
   loading = false,
-  placeholder = "Buscar...",
+  placeholder,
   icon
 }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Función para normalizar texto (quitar acentos)
@@ -80,7 +82,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
         <Search size={18} className="search-icon" />
         <input
           type="text"
-          placeholder={placeholder}
+          placeholder={placeholder || t('selection_step.default_placeholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="selection-input"
@@ -91,7 +93,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
         {loading ? (
           <div className="selection-loading">
             <div className="selection-spinner"></div>
-            <p>Cargando opciones...</p>
+            <p>{t('selection_step.loading')}</p>
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="selection-grid">
@@ -117,7 +119,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
           </div>
         ) : (
           <div className="no-results">
-            <p>No se encontraron coincidencias para "{searchQuery}"</p>
+            <p>{t('selection_step.no_matches', { query: searchQuery })}</p>
           </div>
         )}
       </div>

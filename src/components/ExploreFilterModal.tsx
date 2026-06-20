@@ -7,6 +7,7 @@ import "./ExploreFilterModal.css";
 import Alert from "./Alert";
 import type { AlertState } from "./Alert";
 import { BrushCleaning } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   selected: string[];
@@ -21,6 +22,7 @@ const ExploreFilter: React.FC<Props> = ({
   onApply,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] =
     useState<FilterTab>("universidades");
 
@@ -61,11 +63,11 @@ const ExploreFilter: React.FC<Props> = ({
         const msg =
           error.response?.data?.message ||
           error.message ||
-          "Error al contactar con el servidor";
+          t('explore_filter.server_error');
 
         setAlert({
           type: "error",
-          title: "Error al cargar filtros",
+          title: t('explore_filter.error_title'),
           message: msg,
         });
       } finally {
@@ -74,7 +76,7 @@ const ExploreFilter: React.FC<Props> = ({
     };
 
     fetchAllData();
-  }, []);
+  }, [t]);
 
   const toggleSelection = (id: string) => {
     setLocalSelected((prev) =>
@@ -138,8 +140,7 @@ const ExploreFilter: React.FC<Props> = ({
                 setSearchTerm("");
               }}
             >
-              {tab.charAt(0).toUpperCase() +
-                tab.slice(1)}
+              {t(`explore_filter.tabs.${tab}`)}
             </button>
           ))}
         </div>
@@ -148,7 +149,7 @@ const ExploreFilter: React.FC<Props> = ({
           <div className="filter-search">
             <input
               type="text"
-              placeholder={`Buscar ${activeTab}...`}
+              placeholder={t(`explore_filter.search_placeholder.${activeTab}`)}
               value={searchTerm}
               onChange={(e) =>
                 setSearchTerm(e.target.value)
@@ -168,7 +169,7 @@ const ExploreFilter: React.FC<Props> = ({
         <div className="filter-content">
           {(loadingUnis || loadingItems) && (
             <p className="loading-text">
-              Cargando...
+              {t('navbar.loading')}
             </p>
           )}
 
@@ -201,7 +202,7 @@ const ExploreFilter: React.FC<Props> = ({
             !loadingUnis &&
             currentFilteredList.length === 0 && (
               <p className="no-results">
-                No se encontraron resultados.
+                {t('explore_filter.no_results')}
               </p>
             )}
         </div>
@@ -211,7 +212,7 @@ const ExploreFilter: React.FC<Props> = ({
             className="cancel-btn"
             onClick={onClose}
           >
-            Cancelar
+            {t('edit_profile.cancel')}
           </button>
 
           <button
@@ -221,7 +222,7 @@ const ExploreFilter: React.FC<Props> = ({
               onClose();
             }}
           >
-            Aplicar ({localSelected.length})
+            {t('explore_filter.apply')} ({localSelected.length})
           </button>
         </div>
       </div>

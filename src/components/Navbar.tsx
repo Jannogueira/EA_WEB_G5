@@ -13,7 +13,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -26,12 +26,12 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
     e.preventDefault();
     e.stopPropagation(); // Evita que se cierre el menú antes de tiempo
   
-  // Esperamos a que la petición de logout termine
-  await logout();
-  
-  // Cerramos el menú y redirigimos
-  setMenuOpen(false);
-};
+    // Esperamos a que la petición de logout termine
+    await logout();
+    
+    // Cerramos el menú y redirigimos
+    setMenuOpen(false);
+  };
 
   // Obtener la inicial del nombre en mayúscula
   const userInitial = usuario?.nombre ? usuario.nombre.charAt(0).toUpperCase() : "?";
@@ -43,6 +43,28 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
       </div>
 
       <div className="navbar-right">
+        {/* Language slider updated to supporting 3 languages */}
+        <div className="lang-segmented-control">
+          <button 
+            className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('es')}
+          >
+            ES
+          </button>
+          <button 
+            className={`lang-option ${i18n.language.startsWith('ca') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('ca')}
+          >
+            CA
+          </button>
+          <button 
+            className={`lang-option ${i18n.language.startsWith('en') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            EN
+          </button>
+        </div>
+
         <ThemeToggle />
 
         <div className="profile-container">
@@ -90,8 +112,6 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
           )}
         </div>
       </div>
-      
-      {/*menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />*/}
     </nav>
   );
 };

@@ -11,9 +11,8 @@ import { MapPin, Calendar, Users, Plus, Trash2, X, Navigation, PlusCircle, Slide
 import type { Evento } from "../models/evento";
 import eventoService from "../services/evento";
 
-// Helper para calcular la distancia en metros entre dos puntos
 function getDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371000; // Radio de la Tierra en metros
+  const R = 6371000;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a =
@@ -31,34 +30,26 @@ const MapEvents: React.FC = () => {
   const { usuario } = useUser();
   const { theme } = useTheme();
 
-  // Estados
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
-  // Ubicación del usuario
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
-  
-  // Evento seleccionado para ver detalles
   const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
   
-  // Modo creación
   const [isCreating, setIsCreating] = useState(false);
   const [tempCoords, setTempCoords] = useState<[number, number] | null>(null);
   
-  // Formulario de creación
   const [formTitulo, setFormTitulo] = useState("");
   const [formDesc, setFormDesc] = useState("");
   const [formFecha, setFormFecha] = useState("");
   const [formFechaLimite, setFormFechaLimite] = useState("");
   const [formUbicacionNombre, setFormUbicacionNombre] = useState("");
-  const [formMaxAsistentes, setFormMaxAsistentes] = useState<number | "">("")
+  const [formMaxAsistentes, setFormMaxAsistentes] = useState<number | "">("");
 
-  // Filtro de distancia máxima (en metros)
   const [maxDistance, setMaxDistance] = useState<number>(5000);
   const [showDistanceFilter, setShowDistanceFilter] = useState(false);
 
-  // Refs de Leaflet
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -67,7 +58,6 @@ const MapEvents: React.FC = () => {
   const tempMarkerRef = useRef<L.Marker | null>(null);
   const distanceCircleRef = useRef<L.Circle | null>(null);
 
-  // 1. Obtener ubicación del usuario al cargar
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -75,9 +65,7 @@ const MapEvents: React.FC = () => {
           const coords: [number, number] = [position.coords.latitude, position.coords.longitude];
           setUserLocation(coords);
         },
-        (error) => {
-          console.warn("Error getting geolocation:", error);
-          // Fallback a Barcelona (UPC FIB)
+        () => {
           setUserLocation([41.3892, 2.1130]);
           setErrorMsg(t("map_events.error_location"));
           setTimeout(() => setErrorMsg(null), 5000);
@@ -89,7 +77,6 @@ const MapEvents: React.FC = () => {
     }
   }, [t]);
 
-  // 2. Cargar todos los eventos de la API real (sin límite de distancia en la query para que salgan todos si el filtro está apagado)
   const fetchEventos = React.useCallback(async () => {
     setLoading(true);
     try {
@@ -97,13 +84,12 @@ const MapEvents: React.FC = () => {
       const response = await request;
       setEventos(response.data);
     } catch (err) {
-      console.error("Error loading events from backend API:", err);
-      setErrorMsg("Error al conectar con el servidor para cargar los eventos");
+      setErrorMsg(t("explore_filter.server_error"));
       setTimeout(() => setErrorMsg(null), 5000);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (userLocation) {
@@ -111,23 +97,18 @@ const MapEvents: React.FC = () => {
     }
   }, [userLocation, fetchEventos]);
 
-  // 3. Inicializar Mapa Leaflet
   useEffect(() => {
     if (!mapContainerRef.current || !userLocation) return;
 
     if (!mapRef.current) {
-      // Inicializar mapa
       mapRef.current = L.map(mapContainerRef.current, {
-        zoomControl: false // Quitamos los botones por defecto para posicionar los nuestros
+        zoomControl: false
       }).setView(userLocation, 15);
 
-      // Añadir control de zoom premium abajo a la derecha
       L.control.zoom({ position: "bottomright" }).addTo(mapRef.current);
 
-      // Evento de clic en el mapa para marcar coordenadas
       mapRef.current.on("click", (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
-        // Solo si estamos en modo creación
         setIsCreating((prevIsCreating) => {
           if (prevIsCreating) {
             setTempCoords([lat, lng]);
@@ -136,16 +117,10 @@ const MapEvents: React.FC = () => {
         });
       });
     } else {
-      // Si la ubicación cambia, reposicionar mapa
       mapRef.current.setView(userLocation);
     }
-
-    return () => {
-      // Limpieza no requerida para el ciclo normal a menos que se desmonte completamente
-    };
   }, [userLocation]);
 
-  // 4. Actualizar capas de mapa (tiles) según el tema (Claro / Oscuro)
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -161,9 +136,8 @@ const MapEvents: React.FC = () => {
     tileLayerRef.current = L.tileLayer(tileUrl, {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(mapRef.current);
-  }, [theme, userLocation]);
+  }, [theme]);
 
-  // 5. Renderizar Marcador de Ubicación del Usuario
   useEffect(() => {
     if (!mapRef.current || !userLocation) return;
 
@@ -184,11 +158,10 @@ const MapEvents: React.FC = () => {
 
       userMarkerRef.current = L.marker(userLocation, { icon: userIcon })
         .addTo(mapRef.current)
-        .bindTooltip(t("sidebar.home") || "Tú estás aquí", { permanent: false, direction: "top" });
+        .bindTooltip(t("unimatch_modal.alt_me"), { permanent: false, direction: "top" });
     }
   }, [userLocation, t]);
 
-  // 6. Renderizar Marcadores de Eventos (filtrado por rango si está encendido)
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -198,7 +171,6 @@ const MapEvents: React.FC = () => {
       return limit >= now;
     });
 
-    // Calcular qué IDs están en rango ahora mismo (depende de si el filtro está activo)
     const currentInRangeIds = new Set(
       activeEvents
         .map((ev) => ({
@@ -211,7 +183,6 @@ const MapEvents: React.FC = () => {
         .map((ev) => ev._id)
     );
 
-    // Limpiar marcadores obsoletos (o que ya no deben estar en el mapa por el filtro)
     Object.keys(markersRef.current).forEach((id) => {
       const exists = activeEvents.some((ev) => ev._id === id);
       const isVisible = currentInRangeIds.has(id);
@@ -221,9 +192,7 @@ const MapEvents: React.FC = () => {
       }
     });
 
-    // Añadir o actualizar marcadores
     activeEvents.forEach((ev) => {
-      // Si el filtro está activo y el evento está fuera de rango, no lo dibujamos
       if (!currentInRangeIds.has(ev._id)) return;
 
       const lat = ev.location.coordinates[1];
@@ -260,7 +229,6 @@ const MapEvents: React.FC = () => {
     });
   }, [eventos, selectedEvento, maxDistance, userLocation, showDistanceFilter]);
 
-  // 6b. Círculo de distancia en el mapa
   useEffect(() => {
     if (!mapRef.current || !userLocation) return;
 
@@ -281,7 +249,6 @@ const MapEvents: React.FC = () => {
     }
   }, [maxDistance, userLocation, showDistanceFilter]);
 
-  // 7. Renderizar Marcador Temporal de Creación
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -309,7 +276,6 @@ const MapEvents: React.FC = () => {
     }
   }, [isCreating, tempCoords]);
 
-  // Funciones de acción del usuario
   const handleMapClickPrompt = () => {
     setIsCreating(true);
     setSelectedEvento(null);
@@ -340,7 +306,6 @@ const MapEvents: React.FC = () => {
       setEventos((prev) => [...prev, response.data]);
       setSelectedEvento(response.data);
       
-      // Resetear formulario
       setFormTitulo("");
       setFormDesc("");
       setFormFecha("");
@@ -350,9 +315,8 @@ const MapEvents: React.FC = () => {
       setIsCreating(false);
       setTempCoords(null);
     } catch (err: unknown) {
-      console.error("Error creating event:", err);
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errMsg = axiosError.response?.data?.message || "Error al crear el evento en el servidor";
+      const errMsg = axiosError.response?.data?.message || t("create_post.error");
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
@@ -361,38 +325,33 @@ const MapEvents: React.FC = () => {
   const handleAsistir = async (evento: Evento) => {
     try {
       const response = await eventoService.asistirEvento(evento._id);
-      
-      // Actualizar estado local
       setEventos((prev) =>
         prev.map((ev) => (ev._id === evento._id ? response.data : ev))
       );
       setSelectedEvento(response.data);
     } catch (err: unknown) {
-      console.error("Error toggling attendance:", err);
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errMsg = axiosError.response?.data?.message || "Error al actualizar la asistencia al evento";
+      const errMsg = axiosError.response?.data?.message || t("explore_filter.server_error");
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
   };
 
   const handleDeleteEvento = async (eventoId: string) => {
-    if (!window.confirm("¿Seguro que quieres eliminar este evento?")) return;
+    if (!window.confirm(t("messages.delete_title"))) return;
 
     try {
       await eventoService.deleteEvento(eventoId);
       setEventos((prev) => prev.filter((ev) => ev._id !== eventoId));
       setSelectedEvento(null);
     } catch (err: unknown) {
-      console.error("Error deleting event:", err);
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errMsg = axiosError.response?.data?.message || "Error al eliminar el evento";
+      const errMsg = axiosError.response?.data?.message || t("create_post.error");
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
   };
 
-  // Ayudantes de visualización
   const centerOnEvent = (ev: Evento) => {
     const lat = ev.location.coordinates[1];
     const lng = ev.location.coordinates[0];
@@ -420,13 +379,12 @@ const MapEvents: React.FC = () => {
 
   const sortedEventos = [...eventosWithDistance].sort((a, b) => a.distance - b.distance);
 
-  // Solo los eventos dentro del rango seleccionado (si el filtro está encendido)
   const filteredEventos = showDistanceFilter
     ? sortedEventos.filter((ev) => ev.distance <= maxDistance)
     : sortedEventos;
 
   const getCreatorName = (creador: { nombre?: string } | string | null | undefined) => {
-    if (!creador) return "Anónimo";
+    if (!creador) return t("messages.deleted");
     return typeof creador === "string" ? creador : creador.nombre || "Usuario";
   };
 
@@ -460,7 +418,6 @@ const MapEvents: React.FC = () => {
               </div>
             )}
 
-            {/* MAP SECTION (LEFT) */}
             <div className="map-view-section">
               <div ref={mapContainerRef} className="leaflet-map-element" />
               
@@ -473,16 +430,13 @@ const MapEvents: React.FC = () => {
               </button>
             </div>
 
-            {/* DETAILS & LIST SECTION (RIGHT) */}
             <div className="map-side-panel">
-              {/* Cargar datos */}
               {loading && eventos.length === 0 ? (
                 <div className="side-panel-loader">
                   <div className="spinner"></div>
                   <p>{t("map_events.loading")}</p>
                 </div>
               ) : isCreating ? (
-                /* FORMULARIO CREAR EVENTO */
                 <div className="side-panel-card creation-card-form">
                   <div className="card-header">
                     <h2>{t("map_events.form_title")}</h2>
@@ -563,13 +517,13 @@ const MapEvents: React.FC = () => {
                     </div>
 
                     <div className="form-group-item">
-                      <label>Coordenadas del evento</label>
+                      <label>{t("select_university.step3_placeholder")}</label>
                       <div className="coords-display">
                         <MapPin size={16} />
                         <span>
                           {tempCoords
                             ? `${tempCoords[0].toFixed(5)}, ${tempCoords[1].toFixed(5)}`
-                            : "Haz clic en el mapa para marcar"}
+                            : t("map_events.form_click_map")}
                         </span>
                       </div>
                     </div>
@@ -585,10 +539,9 @@ const MapEvents: React.FC = () => {
                   </form>
                 </div>
               ) : selectedEvento ? (
-                /* DETALLE EVENTO SELECCIONADO */
                 <div className="side-panel-card event-details-card">
                   <div className="card-header">
-                    <span className="event-badge">Evento</span>
+                    <span className="event-badge">{t("map_events.form_title_label")}</span>
                     <button className="close-btn" onClick={() => setSelectedEvento(null)}>
                       <X size={18} />
                     </button>
@@ -643,7 +596,7 @@ const MapEvents: React.FC = () => {
                     </div>
 
                     {selectedEvento.asistentes.length === 0 ? (
-                      <p className="no-attendees-text">Nadie se ha apuntado todavía. ¡Sé el primero!</p>
+                      <p className="no-attendees-text">{t("home.empty")}</p>
                     ) : (
                       <div className="attendees-avatars-grid">
                         {selectedEvento.asistentes.map((asist, idx) => {
@@ -683,7 +636,6 @@ const MapEvents: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                /* LISTA DE EVENTOS ORDENADOS POR CERCANÍA */
                 <div className="side-panel-card list-events-card">
                   <div className="card-header-with-action">
                     <div className="list-title-container">
@@ -697,19 +649,18 @@ const MapEvents: React.FC = () => {
                       <button
                         className={`filter-distance-btn ${showDistanceFilter ? "active" : ""}`}
                         onClick={() => setShowDistanceFilter((prev) => !prev)}
-                        title="Filtrar por distancia"
+                        title={t("explore.filter")}
                       >
                         <SlidersHorizontal size={20} />
                       </button>
                     </div>
                   </div>
 
-                  {/* FILTRO DE DISTANCIA */}
                   {showDistanceFilter && (
                     <div className="distance-filter-panel">
                       <div className="distance-filter-header">
                         <MapPin size={14} />
-                        <span>Radio máximo</span>
+                        <span>{t("select_university.step1_placeholder")}</span>
                         <strong className="distance-value-label">
                           {maxDistance >= 1000
                             ? `${(maxDistance / 1000).toFixed(1)} km`
@@ -736,11 +687,7 @@ const MapEvents: React.FC = () => {
                     {filteredEventos.length === 0 ? (
                       <div className="empty-list-display">
                         <MapPin size={40} className="empty-icon" />
-                        <p>
-                          {sortedEventos.length > 0
-                            ? `No hay eventos en un radio de ${maxDistance >= 1000 ? `${(maxDistance / 1000).toFixed(1)}km` : `${maxDistance}m`}`
-                            : t("map_events.list_empty")}
-                        </p>
+                        <p>{t("map_events.list_empty")}</p>
                       </div>
                     ) : (
                       filteredEventos.map((ev) => {
@@ -771,7 +718,7 @@ const MapEvents: React.FC = () => {
                                 {ev.fechaLimite && (
                                   <span className="item-date" style={{ color: "#ef4444", fontWeight: "600" }}>
                                     <Calendar size={12} />
-                                    Límite: {new Date(ev.fechaLimite).toLocaleDateString()}
+                                    {t("map_events.details_deadline")}: {new Date(ev.fechaLimite).toLocaleDateString()}
                                   </span>
                                 )}
                                 <span className="item-attendees">
@@ -782,8 +729,8 @@ const MapEvents: React.FC = () => {
                             </div>
 
                             <div className="item-indicators">
-                              {joined && <span className="joined-indicator" title="Asistirás">✓</span>}
-                              {isCreator && <span className="creator-indicator" title="Tú lo creaste">★</span>}
+                              {joined && <span className="joined-indicator" title="✓">✓</span>}
+                              {isCreator && <span className="creator-indicator" title="★">★</span>}
                             </div>
                           </div>
                         );

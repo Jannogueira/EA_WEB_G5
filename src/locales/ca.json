@@ -47,7 +47,8 @@
     "private_title": "Aquest compte és privat",
     "private_subtitle": "Segueix aquest usuari per veure les seves publicacions.",
     "add_photo": "Afegir foto",
-    "empty_unimatch": "Sense fotos de UniMatch"
+    "empty_unimatch": "Sense fotos de UniMatch",
+    "no_unimatch_photos": "Aquest usuari encara no ha pujat fotos a UniMatch."
   },
   "saved_posts": {
     "title": "Publicacions Guardades"
@@ -56,11 +57,12 @@
     "title": "Iniciar Sessió",
     "password": "Contrasenya",
     "submit": "Entrar",
+    "email_placeholder": "correu@exemple.com",
     "loading": "Carregant...",
     "divider": "o també",
     "no_account": "No tens compte? ",
     "register_here": "Registra't aquí",
-    "error_title": "Fall en l'inici de sessió",
+    "error_title": "Error en l'inici de sessió",
     "google_error_title": "Error de Google OAuth",
     "google_error_msg": "No es van rebre credencials de Google"
   },
@@ -76,7 +78,7 @@
     "access_campus": "Accedir al campus",
     "validation_error": "Error de validació",
     "password_mismatch": "Les contrasenyes no coincideixen",
-    "failed_title": "Fallada de registre"
+    "failed_title": "Acció fallida"
   },
   "select_university": {
     "success_title": "¡Registre completat!",
@@ -94,7 +96,7 @@
     "back": "Enrere",
     "next": "Següent",
     "saving": "Guardant...",
-    "finish": "Finalitzar Registre"
+    "finish": "Finalitzar registre"
   },
   "edit_profile": {
     "title": "Editar Perfil",
@@ -117,9 +119,21 @@
     "save_success_msg": "El teu perfil s'ha actualitzat correctament.",
     "label_academic": "Informació Acadèmica",
     "label_university": "Universitat",
+    "no_university": "Sense universitat",
     "label_degree": "Grau",
     "change_academic_btn": "Canviar Universitat o Grau",
-    "academic_change_warning": "Has canviat la teva universitat o grau. No oblidis guardar els canvis i actualitzar les teves assignatures si cal."
+    "academic_change_warning": "Has canviat la teva universitat o grau. No oblidis desar els canvis i actualitzar les teves assignatures si cal."
+  },
+  "academic_modal": {
+    "step_uni": "Universitat",
+    "step_degree": "Grau",
+    "select_uni_title": "Selecciona Universitat",
+    "select_uni_subtitle": "Busca el teu centre d'estudis",
+    "change_uni": "Canviar Universitat",
+    "select_degree_title": "Selecciona el teu Grau",
+    "select_degree_subtitle": "Tria la teva carrera actual",
+    "cancel": "Cancel·lar",
+    "confirm": "Confirmar Selecció"
   },
   "notifications": {
     "title": "Notificacions",
@@ -132,7 +146,8 @@
       "comment": "ha comentat: ",
       "follow": "ha començat a seguir-te.",
       "follow_request": "vol seguir-te.",
-      "follow_accepted": "ha acceptat la teva sol·licitud de seguiment."
+      "follow_accepted": "ha acceptat la teva sol·licitud de seguiment.",
+      "match": "És un Match! Ja podeu fer xats."
     },
     "follow_back": "Tornar follow",
     "confirm": "Confirmar",
@@ -145,7 +160,9 @@
     "label_caption": "Peu de foto",
     "sharing": "Compartint...",
     "publish": "Publicar",
-    "error": "Error en crear la publicació."
+    "error": "Error en crear la publicació.",
+    "uploading": "Pujant la imatge...",
+    "image_required": "Per favor, selecciona una imatge primer"
   },
   "postcard": {
     "comment_placeholder": "Escriu un comentari...",
@@ -158,8 +175,7 @@
   "messages": {
     "search": "Cercar xat...",
     "available": "Xat disponible",
-    "loading": "Carregant...",
-    "typing": "està escrivint...",
+    "loading": "Carregant historial...",
     "placeholder": "Escriu un missatge...",
     "title": "Els teus Missatges",
     "empty": "Selecciona una conversa per començar.",
@@ -168,7 +184,26 @@
     "delete_everyone": "Eliminar per a tothom",
     "cancel": "Cancel·lar",
     "deleted": "El missatge ha estat eliminat",
-    "private_post": "Aquesta publicació és privada i no la pots veure."
+    "private_post": "Aquesta publicació és privada i no la pots veure.",
+    "shared_post_fallback": "Publicació",
+    "new_group": "Nou Grup",
+    "members": "membres",
+    "group_badge": "Grup",
+    "someone": "Algú",
+    "typing_direct": "{{name}} està escrivint...",
+    "typing_group": "{{name}} està escrivint...",
+    "group": {
+      "create_title": "Crear grup",
+      "name_placeholder": "Nom del grup...",
+      "loading_followed": "Carregant seguits...",
+      "no_followed": "Encara no segueixes cap usuari.",
+      "btn_cancel": "Cancel·lar",
+      "btn_create": "Crear",
+      "error_loading_followed": "Error en carregar la llista de seguits",
+      "error_name_required": "El nom del grup és obligatori",
+      "error_members_limit": "El grup ha de tenir entre 3 i 8 membres en total. Selecciona entre 2 i 7 seguits.",
+      "error_create": "Error en crear el grup de xat"
+    }
   },
   "share": {
     "title": "Enviar publicació",
@@ -198,13 +233,21 @@
     "thinking": "En Toni està pensant...",
     "placeholder": "Pregunta al Toni sobre graus o assignatures..."
   },
+  "unimatch": {
+    "welcome_title": "Benvingut a UniMatch",
+    "welcome_description": "Connecta amb estudiants de la teva universitat i descobreix persones amb interessos similars.",
+    "privacy_notice": "Les teves fotos d'aquest mode seran visibles per a altres usuaris de UniMatch. Ningú sabrà si els hi has donat ❌ o ❤️ a menys que sigui un Match mutu.",
+    "upload_instruction": "Puja almenys 1 foto per començar",
+    "uploading_photos": "Pujant fotos...",
+    "start_discovering": "Començar a descobrir"
+  },
   "map_events": {
     "title": "Mapa d'Esdeveniments",
     "subtitle": "Descobreix i participa en esdeveniments al teu voltant",
     "create_btn": "Crear Esdeveniment",
     "loading": "Obtenint ubicació i esdeveniments...",
     "form_title": "Crear Nou Esdeveniment",
-    "form_click_map": "Fes clic al mapa per situar l'esdeveniment",
+    "form_click_map": "Fes clic al mapa per situar l'esdeveniment o utilitza les teves coordenades.",
     "form_title_label": "Títol de l'esdeveniment",
     "form_desc_label": "Descripció",
     "form_date_label": "Data i Hora",
@@ -224,5 +267,62 @@
     "list_empty": "No hi ha esdeveniments creats encara. Sigues el primer!",
     "list_distance": "a {{distance}}m de tu",
     "error_location": "No s'ha pogut accedir a la teva geolocalització. Centrant a la teva universitat."
+  },
+  "explore_filter": {
+    "error_title": "Error en carregar els filtres",
+    "server_error": "Error al contactar amb el servidor",
+    "no_results": "No s'han trobat resultats.",
+    "apply": "Aplicar",
+    "tabs": {
+      "universidades": "Universitats",
+      "grados": "Graus",
+      "asignaturas": "Assignatures"
+    },
+    "search_placeholder": {
+      "universidades": "Buscar universitat...",
+      "grados": "Buscar grau...",
+      "asignaturas": "Buscar assignatura..."
+    }
+  },
+  "unimatch_modal": {
+    "title": "És un Match!",
+    "alt_me": "Tu",
+    "alt_them": "Foto de {{name}}",
+    "subtitle": "Ara us seguiu mútuament i podeu xatejar!",
+    "send_message": "Enviar missatge",
+    "continue": "Seguir descobrint"
+  },
+  "selection_step": {
+    "default_placeholder": "Buscar...",
+    "loading": "Carregant opcions...",
+    "no_matches": "No s'han trobat coincidències per a \"{{query}}\""
+  },
+  "unimatch_page": {
+    "loading": "Cercant perfils...",
+    "empty_title": "Has arribat al final del campus",
+    "empty_subtitle": "No hi ha més perfils per ara.",
+    "empty_sub_notice": "Torna més tard per descobrir noves persones!",
+    "hint_pass": "Passar",
+    "hint_like": "Like"
+  },
+  "universities_page": {
+    "error_loading": "Error en carregar les dades.",
+    "join_success_title": "T'has unit!",
+    "join_success_msg": "T'has unit al xat general. Ja el pots trobar a la teva secció de Missatges.",
+    "join_error": "No s'ha pogut unir al xat.",
+    "leave_success_title": "Has abandonat el xat",
+    "leave_success_msg": "Has sortit del xat general d'aquesta universitat.",
+    "leave_error": "No s'ha pogut abandonar el xat.",
+    "title": "Universitats",
+    "subtitle": "Fes clic en una universitat per veure les seves opcions i unir-te al seu xat general.",
+    "search_placeholder": "Buscar per nom o ubicació...",
+    "loading_state": "Carregant directori d'universitats...",
+    "empty_state": "No s'han trobat universitats registrades.",
+    "member_tag": "Membre",
+    "members_count_one": "{{count}} membre",
+    "members_count_other": "{{count}} membres",
+    "btn_go_to_chat": "Anar al xat",
+    "btn_leave_chat": "Abandonar xat",
+    "btn_join_chat": "Unir-me ara"
   }
 }
