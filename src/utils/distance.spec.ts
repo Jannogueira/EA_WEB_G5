@@ -10,7 +10,7 @@ describe('Distance Helper', () => {
     const lon2 = 2.113;
 
     const distance = getDistance(lat1, lon1, lat2, lon2);
-    // Should be around 4.7km (4700 meters)
+    // Should be around 4.7km (4700 meters) :)
     expect(distance).toBeGreaterThan(4500);
     expect(distance).toBeLessThan(5000);
   });
