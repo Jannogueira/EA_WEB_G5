@@ -5,7 +5,7 @@ describe('Distance Helper', () => {
   it('should calculate distance correctly between two close points', () => {
     // Barcelona center to UPC Campus Nord
     const lat1 = 41.38879; // Pl. Catalunya
-    const lon1 =     2.17006;
+    const lon1 = 2.17006;
     const lat2 = 41.3892; // UPC Campus Nord
     const lon2 = 2.113;
 
