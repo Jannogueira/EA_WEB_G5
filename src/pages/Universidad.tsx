@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import useUser from "../hooks/useUser";
 import universidadService from "../services/universidad";
 import { getContacts } from "../services/chat";
-import { GraduationCap, MapPin, Users, Search, MessageSquare, Plus, Check, ChevronDown, LogOut, ArrowRight } from "lucide-react";
+import { GraduationCap, MapPin, Users, Search, MessageSquare, Plus, LogOut, ArrowRight } from "lucide-react";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
 
@@ -17,7 +17,7 @@ const Universidad: React.FC = () => {
   const [joinedGroupIds, setJoinedGroupIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeDropdownUniId, setActiveDropdownUniId] = useState<string | null>(null);
+  const [expandedUniId, setExpandedUniId] = useState<string | null>(null);
   const [alert, setAlert] = useState<AlertState | null>(null);
 
   // Fetch universities and user's joined chats
@@ -61,7 +61,8 @@ const Universidad: React.FC = () => {
   }, [universidades, searchTerm]);
 
   // Join University General Chat
-  const handleJoinChat = async (uniId: string) => {
+  const handleJoinChat = async (e: React.MouseEvent, uniId: string) => {
+    e.stopPropagation();
     try {
       await universidadService.joinChat(uniId);
       setAlert({
@@ -69,7 +70,6 @@ const Universidad: React.FC = () => {
         title: "¡Te has unido!",
         message: "Te has unido al chat general. Ya puedes encontrarlo en tu sección de Mensajes.",
       });
-      setActiveDropdownUniId(null);
       fetchData(); // reload
     } catch (err: any) {
       setAlert({
@@ -81,7 +81,8 @@ const Universidad: React.FC = () => {
   };
 
   // Leave University General Chat
-  const handleLeaveChat = async (uniId: string) => {
+  const handleLeaveChat = async (e: React.MouseEvent, uniId: string) => {
+    e.stopPropagation();
     try {
       await universidadService.leaveChat(uniId);
       setAlert({
@@ -89,7 +90,6 @@ const Universidad: React.FC = () => {
         title: "Has abandonado el chat",
         message: "Has salido del chat general de esta universidad.",
       });
-      setActiveDropdownUniId(null);
       fetchData();
     } catch (err: any) {
       setAlert({
@@ -100,16 +100,9 @@ const Universidad: React.FC = () => {
     }
   };
 
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleOutsideClick = () => setActiveDropdownUniId(null);
-    window.addEventListener("click", handleOutsideClick);
-    return () => window.removeEventListener("click", handleOutsideClick);
-  }, []);
-
-  const toggleDropdown = (e: React.MouseEvent, uniId: string) => {
+  const handleGoToChat = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveDropdownUniId(activeDropdownUniId === uniId ? null : uniId);
+    navigate("/messages");
   };
 
   return (
@@ -132,7 +125,7 @@ const Universidad: React.FC = () => {
           <div className="uni-feed-container">
             <header className="uni-page-header">
               <h1>Universidades</h1>
-              <p>Explora el directorio de campus y únete a sus chats generales para conectar con la comunidad.</p>
+              <p>Haz clic en una universidad para ver sus opciones y unirte a su chat general.</p>
             </header>
 
             <div className="uni-search-section">
@@ -161,12 +154,21 @@ const Universidad: React.FC = () => {
               <div className="uni-grid">
                 {filteredUnis.map((uni) => {
                   const isJoined = uni.chatGeneral && joinedGroupIds.includes(uni.chatGeneral);
-                  const isDropdownOpen = activeDropdownUniId === uni._id;
+                  const isExpanded = expandedUniId === uni._id;
 
                   return (
-                    <div key={uni._id} className="uni-card">
-                      <div className="uni-card-icon-container">
-                        <GraduationCap size={28} />
+                    <div
+                      key={uni._id}
+                      className={`uni-card ${isExpanded ? "expanded" : ""} ${isJoined ? "joined-state" : ""}`}
+                      onClick={() => setExpandedUniId(isExpanded ? null : uni._id)}
+                    >
+                      <div className="uni-card-header-row">
+                        <div className="uni-card-icon-container">
+                          <GraduationCap size={28} />
+                        </div>
+                        {isJoined && (
+                          <span className="uni-joined-tag">Miembro</span>
+                        )}
                       </div>
 
                       <div className="uni-card-body">
@@ -183,56 +185,39 @@ const Universidad: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="uni-card-actions">
-                        <button
-                          className={`uni-action-trigger-btn ${isJoined ? "joined" : ""}`}
-                          onClick={(e) => toggleDropdown(e, uni._id)}
-                        >
+                      {/* Expandable actions area using modern CSS transition trick */}
+                      <div className="uni-card-expand-area">
+                        <div>
                           {isJoined ? (
-                            <>
-                              <Check size={16} />
-                              <span>Miembro</span>
-                            </>
-                          ) : (
-                            <>
-                              <Plus size={16} />
-                              <span>Opciones</span>
-                            </>
-                          )}
-                          <ChevronDown size={14} className={`arrow-icon ${isDropdownOpen ? "open" : ""}`} />
-                        </button>
-
-                        {isDropdownOpen && (
-                          <div className="uni-dropdown-menu" onClick={(e) => e.stopPropagation()}>
-                            {isJoined ? (
-                              <>
-                                <button
-                                  className="uni-dropdown-item primary"
-                                  onClick={() => navigate("/messages")}
-                                >
-                                  <MessageSquare size={15} />
-                                  <span>Ir al chat</span>
-                                  <ArrowRight size={13} className="arrow-right-icon" />
-                                </button>
-                                <button
-                                  className="uni-dropdown-item danger"
-                                  onClick={() => handleLeaveChat(uni._id)}
-                                >
-                                  <LogOut size={15} />
-                                  <span>Abandonar chat</span>
-                                </button>
-                              </>
-                            ) : (
+                            <div className="uni-card-buttons">
                               <button
-                                className="uni-dropdown-item success"
-                                onClick={() => handleJoinChat(uni._id)}
+                                className="uni-btn-action primary"
+                                onClick={handleGoToChat}
                               >
-                                <Plus size={15} />
-                                <span>Unirse al chat</span>
+                                <MessageSquare size={16} />
+                                <span>Ir al chat</span>
+                                <ArrowRight size={14} className="arrow-right-icon" />
                               </button>
-                            )}
-                          </div>
-                        )}
+                              <button
+                                className="uni-btn-action danger"
+                                onClick={(e) => handleLeaveChat(e, uni._id)}
+                              >
+                                <LogOut size={16} />
+                                <span>Abandonar chat</span>
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="uni-card-buttons">
+                              <button
+                                className="uni-btn-action success"
+                                onClick={(e) => handleJoinChat(e, uni._id)}
+                              >
+                                <Plus size={16} />
+                                <span>Unirme ahora</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
