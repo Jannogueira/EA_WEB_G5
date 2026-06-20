@@ -23,6 +23,16 @@ class UniversidadService {
     const response = await apiClient.get(`${this.endpoint}/${id}/chat`);
     return response.data;
   }
+
+  async joinChat(id: string): Promise<any> {
+    const response = await apiClient.post(`${this.endpoint}/${id}/join`);
+    return response.data;
+  }
+
+  async leaveChat(id: string): Promise<any> {
+    const response = await apiClient.post(`${this.endpoint}/${id}/leave`);
+    return response.data;
+  }
 }
 
 export default new UniversidadService();
