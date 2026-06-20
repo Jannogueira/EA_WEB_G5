@@ -38,11 +38,8 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/unimatch" element={<UniMatch />} />
           <Route path="/university" element={<Universidad />} />
-<<<<<<< HEAD
           <Route path="/assistant" element={<Assistant />} />
-=======
           <Route path="/map" element={<MapEvents />} />
->>>>>>> MINIMO2-LAURA
           <Route path="/profile/:id" element={<Profile />} />
         </Routes>
       </SocketProvider>
