@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
       </div>
 
       <div className="navbar-right">
-        {/* Language slider added next to theme toggle */}
+        {/* Language slider updated to supporting 3 languages */}
         <div className="lang-segmented-control">
           <button 
             className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
@@ -56,6 +56,12 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
             onClick={() => i18n.changeLanguage('ca')}
           >
             CA
+          </button>
+          <button 
+            className={`lang-option ${i18n.language.startsWith('en') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            EN
           </button>
         </div>
 
@@ -106,8 +112,6 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
           )}
         </div>
       </div>
-      
-      {/*menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />*/}
     </nav>
   );
 };

@@ -57,6 +57,7 @@
     "title": "Iniciar Sesión",
     "password": "Contraseña",
     "submit": "Entrar",
+    "email_placeholder": "correo@ejemplo.com",
     "loading": "Cargando...",
     "divider": "o también",
     "no_account": "¿No tienes cuenta? ",

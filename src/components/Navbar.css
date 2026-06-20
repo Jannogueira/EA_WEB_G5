@@ -29,14 +29,14 @@
   gap: 1.5rem;
 }
 
-/* --- LANGUAGE SEGMENTED CONTROL (Moved from Sidebar) --- */
+/* --- LANGUAGE SEGMENTED CONTROL (Updated for 3 options) --- */
 .lang-segmented-control {
   display: flex;
   background: var(--bg-input);
   border-radius: 12px;
   padding: 4px;
   gap: 4px;
-  width: 90px; /* Fixed width gives it a clean slider feel in the navbar */
+  width: 130px;
 }
 
 .lang-option {
@@ -300,7 +300,7 @@
   }
   
   .lang-segmented-control {
-    width: 75px;
+    width: 105px; /* Increased from 75px in mobile view */
     padding: 2px;
   }
   

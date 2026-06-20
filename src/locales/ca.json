@@ -57,6 +57,7 @@
     "title": "Iniciar Sessió",
     "password": "Contrasenya",
     "submit": "Entrar",
+    "email_placeholder": "correu@exemple.com",
     "loading": "Carregant...",
     "divider": "o també",
     "no_account": "No tens compte? ",

@@ -1,12 +1,9 @@
-/* src/pages/Login.css */
-
 .login-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  /* background removed to use global ThemedBackground */
   width: 100%;
 }
 
@@ -106,14 +103,14 @@
   z-index: 1000;
 }
 
-/* Reutilización del layout de control segmentado de la barra lateral */
+/* --- CONTROL SEGMENTADO MINI ACTUALIZADO --- */
 .lang-segmented-control.mini {
   display: flex;
   background: var(--bg-input);
   border-radius: 12px;
   padding: 4px;
   gap: 4px;
-  width: 100px; /* Ancho fijo compacto para la vista de login */
+  width: 130px;
 }
 
 .lang-segmented-control.mini .lang-option {
@@ -141,7 +138,6 @@
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-/* Responsivo: oculta o reubica en móviles si interfiere con el layout */
 @media (max-width: 768px) {
   .login-controls-absolute {
     top: 15px;
@@ -169,7 +165,6 @@
   text-decoration: underline;
 }
 
-/* Google Login Styles */
 .oauth-divider {
   display: flex;
   align-items: center;
