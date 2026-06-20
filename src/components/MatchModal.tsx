@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MatchModal.css';
+import { useTranslation } from "react-i18next";
 
 interface MatchUser {
     _id: string;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -108,21 +110,21 @@ const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
             <canvas ref={canvasRef} className="match-canvas" />
             <div className="match-overlay" onClick={onClose}>
                 <div className="match-content" onClick={e => e.stopPropagation()}>
-                    <h1 className="match-title">¡Es un Match! 🎉</h1>
+                    <h1 className="match-title">{t('unimatch_modal.title')} 🎉</h1>
 
                     <div className="match-photos">
                         <div className="match-photo-container">
-                            <img src={myPhoto} alt="Tú" className="match-photo my-photo" />
+                            <img src={myPhoto} alt={t('unimatch_modal.alt_me')} className="match-photo my-photo" />
                         </div>
                         <span className="match-heart">❤️</span>
                         <div className="match-photo-container">
-                            <img src={theirPhoto} alt={matchedUser.nombre} className="match-photo their-photo" />
+                            <img src={theirPhoto} alt={t('unimatch_modal.alt_them', { name: matchedUser.nombre })} className="match-photo their-photo" />
                             <div className="match-name">{matchedUser.nombre}</div>
                         </div>
                     </div>
 
                     <p className="match-subtitle">
-                        ¡Ahora os seguís mutuamente y podéis chatear!
+                        {t('unimatch_modal.subtitle')}
                     </p>
 
                     <div className="match-actions">
@@ -133,10 +135,10 @@ const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
                                 navigate('/messages');
                             }}
                         >
-                            💬 Enviar mensaje
+                            💬 {t('unimatch_modal.send_message')}
                         </button>
                         <button className="match-btn secondary" onClick={onClose}>
-                            Seguir descubriendo
+                            {t('unimatch_modal.continue')}
                         </button>
                     </div>
                 </div>

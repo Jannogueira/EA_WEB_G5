@@ -17,6 +17,7 @@
   min-height: calc(100vh - 60px);
   padding: 2rem;
   overflow-y: auto;
+  margin-left: 300px;
 }
 
 .uni-feed-container {

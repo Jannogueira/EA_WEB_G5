@@ -95,7 +95,7 @@ const Messages: React.FC = () => {
           setFollowedUsers(res.data.seguidos || []);
         })
         .catch(() => {
-          setGroupError("Error al cargar la lista de seguidos");
+          setGroupError(t('messages.group.error_loading_followed'));
         })
         .finally(() => {
           setLoadingFollowed(false);
@@ -106,7 +106,7 @@ const Messages: React.FC = () => {
       setGroupName("");
       setGroupError("");
     }
-  }, [isGroupModalOpen, usuario?._id]);
+  }, [isGroupModalOpen, usuario?._id, t]);
 
   const handleToggleMember = (userId: string) => {
     setSelectedMembers(prev => {
@@ -125,12 +125,12 @@ const Messages: React.FC = () => {
     e.preventDefault();
     setGroupError("");
     if (!groupName.trim()) {
-      setGroupError("El nombre del grupo es obligatorio");
+      setGroupError(t('messages.group.error_name_required'));
       return;
     }
     const totalMiembros = selectedMembers.length + 1;
     if (totalMiembros < 3 || totalMiembros > 8) {
-      setGroupError("El grupo debe tener entre 3 y 8 miembros en total. Selecciona entre 2 y 7 seguidos.");
+      setGroupError(t('messages.group.error_members_limit'));
       return;
     }
 
@@ -145,7 +145,7 @@ const Messages: React.FC = () => {
       openConversation(newGroup);
       setIsGroupModalOpen(false);
     } catch (err: any) {
-      setGroupError(err.response?.data?.message || "Error al crear el grupo de chat");
+      setGroupError(err.response?.data?.message || t('messages.group.error_create'));
     }
   };
 
@@ -197,7 +197,7 @@ const Messages: React.FC = () => {
               onClick={() => setIsGroupModalOpen(true)}
             >
               <Users size={16} />
-              Nuevo Grupo
+              {t('messages.new_group')}
             </button>
           </div>
 
@@ -222,7 +222,7 @@ const Messages: React.FC = () => {
                   <span className="contact-name">{contact.nombre}</span>
                   {contact.isGroup && (
                     <span className="group-subtitle-sidebar">
-                      {contact.miembros?.length} miembros
+                      {contact.miembros?.length} {t('messages.members')}
                     </span>
                   )}
                 </div>
@@ -261,7 +261,7 @@ const Messages: React.FC = () => {
                   <div>
                     <h3>{activeContact.nombre}</h3>
                     {activeContact.isGroup && (
-                      <span className="group-badge">Grupo</span>
+                      <span className="group-badge">{t('messages.group_badge')}</span>
                     )}
                   </div>
                 </div>
@@ -303,7 +303,7 @@ const Messages: React.FC = () => {
                                 {msg.parentMessage.eliminadoParaTodos
                                   ? t('messages.deleted')
                                   : msg.parentMessage.post
-                                    ? "📷 " + (msg.parentMessage.post.caption || "Publicación")
+                                    ? "📷 " + (msg.parentMessage.post.caption || t('messages.shared_post_fallback'))
                                     : msg.parentMessage.contenido}
                               </p>
                             </div>
@@ -411,8 +411,8 @@ const Messages: React.FC = () => {
                   </div>
                   <span>
                     {activeContact.isGroup
-                      ? `${typingUserName || "Alguien"} está escribiendo...`
-                      : `${activeContact.nombre} está escribiendo...`
+                      ? t('messages.typing_group', { name: typingUserName || t('messages.someone') })
+                      : t('messages.typing_direct', { name: activeContact.nombre })
                     }
                   </span>
                 </div>
@@ -488,7 +488,7 @@ const Messages: React.FC = () => {
         <div className="group-modal-overlay" onClick={() => setIsGroupModalOpen(false)}>
           <div className="group-modal-content" onClick={e => e.stopPropagation()}>
             <div className="group-modal-header">
-              <h3>Crear grupo</h3>
+              <h3>{t('messages.group.create_title')}</h3>
               <span className="group-members-count">
                 {selectedMembers.length + 1}/8
               </span>
@@ -500,7 +500,7 @@ const Messages: React.FC = () => {
                   type="text"
                   id="group-name"
                   className="group-input"
-                  placeholder="Nombre del grupo..."
+                  placeholder={t('messages.group.name_placeholder')}
                   value={groupName}
                   onChange={e => setGroupName(e.target.value)}
                   required
@@ -510,10 +510,10 @@ const Messages: React.FC = () => {
 
               <div className="group-form-group" style={{ marginTop: '8px' }}>
                 {loadingFollowed ? (
-                  <div className="group-loading">Cargando seguidos...</div>
+                  <div className="group-loading">{t('messages.group.loading_followed')}</div>
                 ) : followedUsers.length === 0 ? (
                   <div className="group-empty-state">
-                    No sigues a ningún usuario aún.
+                    {t('messages.group.no_followed')}
                   </div>
                 ) : (
                   <div className="member-selection-list">
@@ -545,14 +545,14 @@ const Messages: React.FC = () => {
 
               <div className="modal-footer">
                 <button type="button" className="group-btn cancel" onClick={() => setIsGroupModalOpen(false)}>
-                  Cancelar
+                  {t('messages.group.btn_cancel')}
                 </button>
                 <button
                   type="submit"
                   className="group-btn create"
                   disabled={!groupName.trim() || selectedMembers.length < 2 || selectedMembers.length > 7}
                 >
-                  Crear
+                  {t('messages.group.btn_create')}
                 </button>
               </div>
             </form>

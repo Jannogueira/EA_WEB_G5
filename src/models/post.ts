@@ -8,4 +8,5 @@ export interface Post {
     caption: string;
     likes: Usuario[]; // Lista de usuarios que han dado like al post
     comments: Comment[];
+    isSaved?: boolean;
   };

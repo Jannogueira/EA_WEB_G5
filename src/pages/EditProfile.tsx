@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import AsignaturasModal from "../components/AsignaturasModal";
 import AcademicSelectorModal from "../components/AcademicSelectorModal";
 import { uploadImage } from "../services/upload";
-import { Loader2, Camera, GraduationCap, Library, AlertTriangle } from "lucide-react";
+import { Loader2, Camera, GraduationCap, Library } from "lucide-react";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
 import type { Universidad } from "../models/universidad";
@@ -48,13 +48,12 @@ const EditProfile: React.FC = () => {
         privado: usuario.privado || false
       }));
       
-      // Solo actualizamos si no hay una selección local activa o si es la primera carga
       if (!selectedUni || (typeof usuario.universidad === 'object' && usuario.universidad?._id !== selectedUni._id)) {
           if (usuario.universidad) {
             if (typeof usuario.universidad === 'object') {
               setSelectedUni(usuario.universidad as Universidad);
             } else {
-              setSelectedUni({ _id: usuario.universidad, nombre: 'Universidad' } as any);
+              setSelectedUni({ _id: usuario.universidad, nombre: t('edit_profile.label_university') } as any);
             }
           }
       }
@@ -64,7 +63,7 @@ const EditProfile: React.FC = () => {
             if (typeof usuario.grado === 'object') {
               setSelectedGrado(usuario.grado as Grado);
             } else {
-              setSelectedGrado({ _id: usuario.grado, nombre: 'Grado' } as any);
+              setSelectedGrado({ _id: usuario.grado, nombre: t('edit_profile.label_degree') } as any);
             }
           }
       }
@@ -73,7 +72,7 @@ const EditProfile: React.FC = () => {
         setUserAsignaturas(usuario.asignaturas);
       }
     }
-  }, [usuario]);
+  }, [usuario, t]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,11 +86,11 @@ const EditProfile: React.FC = () => {
           const msg =
           error.response?.data?.message ||
           error.message ||
-          'Error al contactar con el servidor';
+          t('explore_filter.server_error');
 
           setAlert({
               type: 'error',
-              title: 'Error al subir imagen',
+              title: t('edit_profile.upload_error'),
               message: msg
           });
     } finally {
@@ -109,13 +108,11 @@ const EditProfile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validación: Solo bloqueamos si hay una universidad nueva seleccionada sin grado
-    // Pero si el usuario ya tenía datos parciales o no quiere poner nada, dejamos pasar.
     if (selectedUni && !selectedGrado && selectedUni.nombre !== 'Universidad guardada') {
         setAlert({
             type: 'error',
-            title: 'Información incompleta',
-            message: 'Si seleccionas una nueva universidad, por favor selecciona también su grado correspondiente.'
+            title: t('register.validation_error'),
+            message: t('edit_profile.academic_change_warning')
         });
         return;
     }
@@ -130,21 +127,20 @@ const EditProfile: React.FC = () => {
       
       const updatedUser = await updateProfile(dataToSave);
       
-      // Sincronización forzada tras guardado exitoso
       if (updatedUser) {
         if (updatedUser.universidad) {
-          setSelectedUni(typeof updatedUser.universidad === 'object' ? updatedUser.universidad : { _id: updatedUser.universidad, nombre: selectedUni?.nombre || 'Universidad' } as any);
+          setSelectedUni(typeof updatedUser.universidad === 'object' ? updatedUser.universidad : { _id: updatedUser.universidad, nombre: selectedUni?.nombre || t('edit_profile.label_university') } as any);
         }
         if (updatedUser.grado) {
-          setSelectedGrado(typeof updatedUser.grado === 'object' ? updatedUser.grado : { _id: updatedUser.grado, nombre: selectedGrado?.nombre || 'Grado' } as any);
+          setSelectedGrado(typeof updatedUser.grado === 'object' ? updatedUser.grado : { _id: updatedUser.grado, nombre: selectedGrado?.nombre || t('edit_profile.label_degree') } as any);
         }
         setUserAsignaturas(updatedUser.asignaturas || []);
       }
 
       setAlert({
         type: 'success',
-        title: t('edit_profile.save_success_title') || '¡Éxito!',
-        message: t('edit_profile.save_success_msg') || 'Tu perfil se ha actualizado correctamente.'
+        title: t('edit_profile.save_success_title'),
+        message: t('edit_profile.save_success_msg')
       });
 
       setTimeout(() => {
@@ -155,11 +151,11 @@ const EditProfile: React.FC = () => {
           const msg =
           error.response?.data?.message ||
           error.message ||
-          'Error al contactar con el servidor';
+          t('explore_filter.server_error');
 
           setAlert({
               type: 'error',
-              title: 'Error al guardar cambios',
+              title: t('select_university.save_error'),
               message: msg
           });
     } finally {
@@ -173,13 +169,12 @@ const EditProfile: React.FC = () => {
     
     setAlert({
         type: 'info',
-        title: 'Cambio Académico detectado',
-        message: `Has seleccionado: ${uni.nombre} - ${grado.nombre}. Recuerda guardar los cambios para aplicarlos.`
+        title: t('academic_modal.confirm'),
+        message: `${uni.nombre} - ${grado.nombre}.`
     });
   };
 
   const handleUserUpdated = (updatedUser: any) => {
-    // sincroniza UI tras editar asignaturas
     setUserAsignaturas(updatedUser.asignaturas || []);
     localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
@@ -210,7 +205,7 @@ const EditProfile: React.FC = () => {
                   {uploading ? (
                     <Loader2 size={32} className="animate-spin" />
                   ) : formData.avatarUrl ? (
-                    <img src={formData.avatarUrl} alt="Avatar" className="avatar-img-full" />
+                    <img src={formData.avatarUrl} alt={t('unimatch_modal.alt_me')} className="avatar-img-full" />
                   ) : (
                     formData.nombre?.charAt(0).toUpperCase() || "?"
                   )}
@@ -262,24 +257,24 @@ const EditProfile: React.FC = () => {
 
               {/* SECCIÓN ACADÉMICA UNIFICADA */}
               <div className="academic-edit-section">
-                <h2 className="section-title-modern">Información Académica</h2>
+                <h2 className="section-title-modern">{t('edit_profile.label_academic')}</h2>
                 
                 <div className="academic-unified-card">
                     <div className="academic-details-grid">
                         <div className="academic-detail-item">
                             <div className="detail-icon"><Library size={20} /></div>
                             <div className="detail-info">
-                                <label>Universidad</label>
-                                <p>{selectedUni?.nombre || 'No seleccionada'}</p>
+                                <label>{t('edit_profile.label_university')}</label>
+                                <p>{selectedUni?.nombre || t('edit_profile.no_university')}</p>
                             </div>
                         </div>
 
                         <div className="academic-detail-item">
                             <div className="detail-icon"><GraduationCap size={20} /></div>
                             <div className="detail-info">
-                                <label>Grado</label>
-                                <p className={!selectedGrado?.nombre || selectedGrado?.nombre === 'No seleccionado' ? 'text-error-highlight' : ''}>
-                                    {selectedGrado?.nombre || 'No seleccionado'}
+                                <label>{t('edit_profile.label_degree')}</label>
+                                <p className={!selectedGrado?.nombre ? 'text-error-highlight' : ''}>
+                                    {selectedGrado?.nombre || t('edit_profile.label_degree')}
                                 </p>
                             </div>
                         </div>
@@ -290,20 +285,20 @@ const EditProfile: React.FC = () => {
                         className="change-academic-btn-centered"
                         onClick={() => setAcademicModalOpen(true)}
                     >
-                        Cambiar Universidad o Grado
+                        {t('edit_profile.change_academic_btn')}
                     </button>
 
                     <div className="academic-divider"></div>
 
                     <div className="subjects-section-inside">
                         <div className="subjects-header">
-                            <label>Mis Asignaturas</label>
+                            <label>{t('edit_profile.label_subjects')}</label>
                             <button
                                 type="button"
                                 className="small-edit-link"
                                 onClick={() => setModalOpen(true)}
                             >
-                                Gestionar
+                                {t('edit_profile.edit_btn')}
                             </button>
                         </div>
                         
@@ -311,17 +306,16 @@ const EditProfile: React.FC = () => {
                             {userAsignaturas.length > 0 ? (
                                 userAsignaturas.map((asig: any) => (
                                     <span key={asig._id || asig} className="subject-chip">
-                                        {typeof asig === 'object' ? asig.nombre : 'Cargando...'}
+                                        {typeof asig === 'object' ? asig.nombre : t('selection_step.loading')}
                                     </span>
                                 ))
                             ) : (
-                                <p className="no-subjects-text">No has seleccionado ninguna asignatura aún.</p>
+                                <p className="no-subjects-text">{t('profile.empty_posts')}</p>
                             )}
                         </div>
                     </div>
                 </div>
               </div>
-              {/* BOTONES */}
               {/* Privacidad */}
               <div className="form-group-modern switch-group">
                 <label className="switch-label">
@@ -338,7 +332,7 @@ const EditProfile: React.FC = () => {
                 </label>
                 <p className="field-help">{t('edit_profile.privacy_help')}</p>
               </div>
-              {/* Buttons */}
+              {/* Acciones */}
               <div className="form-actions-modern">
                 <button
                   type="button"

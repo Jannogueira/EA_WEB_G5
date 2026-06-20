@@ -29,6 +29,41 @@
   gap: 1.5rem;
 }
 
+/* --- LANGUAGE SEGMENTED CONTROL (Moved from Sidebar) --- */
+.lang-segmented-control {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  width: 90px; /* Fixed width gives it a clean slider feel in the navbar */
+}
+
+.lang-option {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.lang-option:hover:not(.active) {
+  color: var(--text-main);
+  background: var(--border-subtle);
+}
+
+.lang-option.active {
+  background: var(--accent-purple);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
 /* --- THEME TOGGLE SWITCH --- */
 .theme-switch {
   position: relative;
@@ -108,7 +143,7 @@
   cursor: pointer;
   box-shadow: 0 0 10px var(--accent-glow);
   transition: transform 0.2s;
-  overflow: hidden; /* Important for the img inside */
+  overflow: hidden;
 }
 
 .nav-avatar-img {
@@ -262,5 +297,15 @@
 
   .brand-name {
     font-size: 1.25rem;
+  }
+  
+  .lang-segmented-control {
+    width: 75px;
+    padding: 2px;
+  }
+  
+  .lang-option {
+    padding: 4px 0;
+    font-size: 0.75rem;
   }
 }

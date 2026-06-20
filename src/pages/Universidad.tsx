@@ -9,8 +9,10 @@ import { getContacts } from "../services/chat";
 import { GraduationCap, MapPin, Users, Search, MessageSquare, Plus, LogOut, ArrowRight } from "lucide-react";
 import Alert from "../components/Alert";
 import type { AlertState } from "../components/Alert";
+import { useTranslation } from "react-i18next";
 
 const Universidad: React.FC = () => {
+  const { t } = useTranslation();
   const { usuario } = useUser();
   const navigate = useNavigate();
   const [universidades, setUniversidades] = useState<any[]>([]);
@@ -40,7 +42,7 @@ const Universidad: React.FC = () => {
       setAlert({
         type: "error",
         title: "Error",
-        message: err.message || "Error al cargar los datos.",
+        message: err.message || t("universities_page.error_loading"),
       });
     } finally {
       setLoading(false);
@@ -67,15 +69,15 @@ const Universidad: React.FC = () => {
       await universidadService.joinChat(uniId);
       setAlert({
         type: "success",
-        title: "¡Te has unido!",
-        message: "Te has unido al chat general. Ya puedes encontrarlo en tu sección de Mensajes.",
+        title: t("universities_page.join_success_title"),
+        message: t("universities_page.join_success_msg"),
       });
       fetchData(); // reload
     } catch (err: any) {
       setAlert({
         type: "error",
         title: "Error",
-        message: err.response?.data?.message || err.message || "No se pudo unir al chat.",
+        message: err.response?.data?.message || err.message || t("universities_page.join_error"),
       });
     }
   };
@@ -87,15 +89,15 @@ const Universidad: React.FC = () => {
       await universidadService.leaveChat(uniId);
       setAlert({
         type: "success",
-        title: "Has abandonado el chat",
-        message: "Has salido del chat general de esta universidad.",
+        title: t("universities_page.leave_success_title"),
+        message: t("universities_page.leave_success_msg"),
       });
       fetchData();
     } catch (err: any) {
       setAlert({
         type: "error",
         title: "Error",
-        message: err.response?.data?.message || err.message || "No se pudo abandonar el chat.",
+        message: err.response?.data?.message || err.message || t("universities_page.leave_error"),
       });
     }
   };
@@ -124,8 +126,8 @@ const Universidad: React.FC = () => {
         <div className="uni-content-area">
           <div className="uni-feed-container">
             <header className="uni-page-header">
-              <h1>Universidades</h1>
-              <p>Haz clic en una universidad para ver sus opciones y unirte a su chat general.</p>
+              <h1>{t("universities_page.title")}</h1>
+              <p>{t("universities_page.subtitle")}</p>
             </header>
 
             <div className="uni-search-section">
@@ -133,7 +135,7 @@ const Universidad: React.FC = () => {
                 <Search size={20} className="uni-search-icon" />
                 <input
                   type="text"
-                  placeholder="Buscar por nombre o ubicación..."
+                  placeholder={t("universities_page.search_placeholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -143,12 +145,12 @@ const Universidad: React.FC = () => {
             {loading ? (
               <div className="uni-loading-state">
                 <div className="uni-spinner" />
-                <p>Cargando directorio de universidades...</p>
+                <p>{t("universities_page.loading_state")}</p>
               </div>
             ) : filteredUnis.length === 0 ? (
               <div className="uni-empty-state">
                 <GraduationCap size={64} className="uni-empty-icon" />
-                <p>No se encontraron universidades registradas.</p>
+                <p>{t("universities_page.empty_state")}</p>
               </div>
             ) : (
               <div className="uni-grid">
@@ -167,7 +169,7 @@ const Universidad: React.FC = () => {
                           <GraduationCap size={28} />
                         </div>
                         {isJoined && (
-                          <span className="uni-joined-tag">Miembro</span>
+                          <span className="uni-joined-tag">{t("universities_page.member_tag")}</span>
                         )}
                       </div>
 
@@ -180,7 +182,7 @@ const Universidad: React.FC = () => {
                           </span>
                           <span className="uni-meta-item">
                             <Users size={14} />
-                            {uni.numIntegrantes || 0} miembros
+                            {t("universities_page.members_count", { count: uni.numIntegrantes || 0 })}
                           </span>
                         </div>
                       </div>
@@ -195,7 +197,7 @@ const Universidad: React.FC = () => {
                                 onClick={handleGoToChat}
                               >
                                 <MessageSquare size={16} />
-                                <span>Ir al chat</span>
+                                <span>{t("universities_page.btn_go_to_chat")}</span>
                                 <ArrowRight size={14} className="arrow-right-icon" />
                               </button>
                               <button
@@ -203,7 +205,7 @@ const Universidad: React.FC = () => {
                                 onClick={(e) => handleLeaveChat(e, uni._id)}
                               >
                                 <LogOut size={16} />
-                                <span>Abandonar chat</span>
+                                <span>{t("universities_page.btn_leave_chat")}</span>
                               </button>
                             </div>
                           ) : (
@@ -213,7 +215,7 @@ const Universidad: React.FC = () => {
                                 onClick={(e) => handleJoinChat(e, uni._id)}
                               >
                                 <Plus size={16} />
-                                <span>Unirme ahora</span>
+                                <span>{t("universities_page.btn_join_chat")}</span>
                               </button>
                             </div>
                           )}

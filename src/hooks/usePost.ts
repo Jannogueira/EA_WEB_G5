@@ -27,7 +27,7 @@ export default function usePost(initialPost: Post) {
       likes: initialPost.likes ?? [],
     });
 
-    let savedVal = (initialPost as any).isSaved;
+    let savedVal = initialPost.isSaved;
     if (savedVal === undefined) {
       try {
         const uStr = localStorage.getItem("usuario");

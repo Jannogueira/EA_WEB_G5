@@ -60,7 +60,13 @@ const Notifications: React.FC = () => {
             setNotificationCount(0); // Reset count when viewing
             await notificationService.markAllAsRead();
         } catch (error: any) {
-            console.error("Error fetching notifications", error);
+            // Cambiado console.error por el componente Alert personalizado
+            const errorMsg = error.response?.data?.message || t('explore_filter.server_error');
+            setAlert({
+                type: 'error',
+                title: t('explore_filter.error_title'),
+                message: errorMsg
+            });
         } finally {
             setLoading(false);
         }
@@ -98,15 +104,15 @@ const Notifications: React.FC = () => {
             // Refrescar perfil para actualizar seguidos/seguidores
             await refreshUser();
         } catch (error: any) {
-                const errorMsg = 
-                error.response?.data?.message ||
-                "Error al conectar con el servidor";
-                
-                setAlert({
-                    type: 'error',
-                    title: 'Acción fallida',
-                    message: errorMsg
-                });
+            const errorMsg = 
+            error.response?.data?.message ||
+            t('explore_filter.server_error');
+            
+            setAlert({
+                type: 'error',
+                title: t('register.failed_title'),
+                message: errorMsg
+            });
 
         } finally {
             setProcessingId(null);
@@ -122,15 +128,15 @@ const Notifications: React.FC = () => {
             // Sincronización tras 200 OK
             setNotifications(prev => prev.filter(n => n._id !== notificationId));
         } catch (error: any) {
-                const errorMsg = 
-                error.response?.data?.message ||
-                "Error al conectar con el servidor";
-                
-                setAlert({
-                    type: 'error',
-                    title: 'Acción fallida',
-                    message: errorMsg
-                });
+            const errorMsg = 
+            error.response?.data?.message ||
+            t('explore_filter.server_error');
+            
+            setAlert({
+                type: 'error',
+                title: t('register.failed_title'),
+                message: errorMsg
+            });
         } finally {
             setProcessingId(null);
         }
@@ -154,10 +160,10 @@ const Notifications: React.FC = () => {
             await refreshUser();
 
         } catch (error: any) {
-            const errorMsg = error.response?.data?.message || "Error al conectar con el servidor";
+            const errorMsg = error.response?.data?.message || t('explore_filter.server_error');
             setAlert({
                 type: 'error',
-                title: 'Acción fallida',
+                title: t('register.failed_title'),
                 message: errorMsg
             });
         } finally {
@@ -186,7 +192,7 @@ const Notifications: React.FC = () => {
             case "follow": return t('notifications.type.follow');
             case "follow_request": return t('notifications.type.follow_request');
             case "follow_accepted": return t('notifications.type.follow_accepted');
-            case "match": return "¡Es un Match! Ya podéis chatear.";
+            case "match": return t('notifications.type.match');
             default: return "";
         }
     };
