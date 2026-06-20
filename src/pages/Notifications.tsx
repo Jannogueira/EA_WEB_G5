@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { formatDistanceToNow } from "date-fns";
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
-import { es, ca } from "date-fns/locale";
+import { es, ca, enUS } from "date-fns/locale";
 
 const Notifications: React.FC = () => {
     const navigate = useNavigate();
@@ -26,17 +26,21 @@ const Notifications: React.FC = () => {
     const [alert, setAlert] = useState<AlertState | null>(null);
     const [followStatuses, setFollowStatuses] = useState<Record<string, string>>({});
 
+    const getDateLocale = () => {
+        if (i18n.language.startsWith('ca')) return ca;
+        if (i18n.language.startsWith('en')) return enUS;
+        return es;
+    };
+
     const handleNotificationClick = (n: Notification) => {
         if (n.type.startsWith('follow')) {
             navigate(`/profile/${n.sender._id}`);
         } else if (n.post) {
-            // Ir al perfil del dueño del post con el parámetro del post para abrirlo
             const ownerId = n.post.usuario;
             navigate(`/profile/${ownerId}?post=${n.post._id}`);
         }
     };
 
-    // Inicializar estados de seguimiento basados en el usuario actual
     useEffect(() => {
         if (usuario?.seguidos) {
             const initial: Record<string, string> = {};
@@ -51,20 +55,18 @@ const Notifications: React.FC = () => {
     const fetchNotifications = async () => {
         try {
             const res = await notificationService.getNotifications(1, 50);
-            // Prevenir duplicados (validación requerida)
             const uniqueNotifications = res.data.docs.filter(
                 (notif: Notification, index: number, self: Notification[]) =>
                     index === self.findIndex((n) => n._id === notif._id)
             );
             setNotifications(uniqueNotifications);
-            setNotificationCount(0); // Reset count when viewing
+            setNotificationCount(0);
             await notificationService.markAllAsRead();
         } catch (error: any) {
-            // Cambiado console.error por el componente Alert personalizado
-            const errorMsg = error.response?.data?.message || t('explore_filter.server_error');
+            const errorMsg = error.response?.data?.message || t('notifications.server_error');
             setAlert({
                 type: 'error',
-                title: t('explore_filter.error_title'),
+                title: t('notifications.error_title'),
                 message: errorMsg
             });
         } finally {
@@ -74,10 +76,9 @@ const Notifications: React.FC = () => {
 
     useEffect(() => {
         fetchNotifications();
-        refreshUser(); // Refrescar perfil para tener seguidos actualizados
-    }, []); // Ejecutar solo al montar el componente
+        refreshUser();
+    }, []);
 
-    // Escuchar nuevas notificaciones en tiempo real
     const { socket } = useSocket();
     useEffect(() => {
         if (!socket) return;
@@ -97,23 +98,18 @@ const Notifications: React.FC = () => {
         
         try {
             await acceptFollowRequest(followerId);
-            // En lugar de borrarla, la marcamos como aceptada para que salga el botón de follow back
             setNotifications(prev => prev.map(n => 
                 n._id === notificationId ? { ...n, type: 'follow' as any } : n
             ));
-            // Refrescar perfil para actualizar seguidos/seguidores
             await refreshUser();
         } catch (error: any) {
-            const errorMsg = 
-            error.response?.data?.message ||
-            t('explore_filter.server_error');
+            const errorMsg = error.response?.data?.message || t('notifications.server_error');
             
             setAlert({
                 type: 'error',
-                title: t('register.failed_title'),
+                title: t('notifications.error_title'),
                 message: errorMsg
             });
-
         } finally {
             setProcessingId(null);
         }
@@ -125,16 +121,13 @@ const Notifications: React.FC = () => {
 
         try {
             await rejectFollowRequest(followerId);
-            // Sincronización tras 200 OK
             setNotifications(prev => prev.filter(n => n._id !== notificationId));
         } catch (error: any) {
-            const errorMsg = 
-            error.response?.data?.message ||
-            t('explore_filter.server_error');
+            const errorMsg = error.response?.data?.message || t('notifications.server_error');
             
             setAlert({
                 type: 'error',
-                title: t('register.failed_title'),
+                title: t('notifications.error_title'),
                 message: errorMsg
             });
         } finally {
@@ -150,20 +143,17 @@ const Notifications: React.FC = () => {
             const res = await toggleFollow(targetId);
             const newStatus = res.data.status;
             
-            // Actualizar estado local para el botón
             setFollowStatuses(prev => ({
                 ...prev,
                 [targetId]: newStatus || 'NONE'
             }));
             
-            // Actualizar el perfil global
             await refreshUser();
-
         } catch (error: any) {
-            const errorMsg = error.response?.data?.message || t('explore_filter.server_error');
+            const errorMsg = error.response?.data?.message || t('notifications.server_error');
             setAlert({
                 type: 'error',
-                title: t('register.failed_title'),
+                title: t('notifications.error_title'),
                 message: errorMsg
             });
         } finally {
@@ -199,13 +189,12 @@ const Notifications: React.FC = () => {
 
     return (
         <div className="notifications-wrapper">
-
             {alert && (
                 <Alert
-                type={alert.type}
-                title={alert.title}
-                message={alert.message}
-                onClose={() => setAlert(null)}
+                    type={alert.type}
+                    title={alert.title}
+                    message={alert.message}
+                    onClose={() => setAlert(null)}
                 />
             )}
 
@@ -253,7 +242,7 @@ const Notifications: React.FC = () => {
                                                 <Clock size={12} />
                                                 {formatDistanceToNow(new Date(n.createdAt), { 
                                                     addSuffix: true, 
-                                                    locale: i18n.language.startsWith('ca') ? ca : es 
+                                                    locale: getDateLocale() // Utiliza el helper corregido aquí
                                                 })}
                                             </span>
                                         </div>
