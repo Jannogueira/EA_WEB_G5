@@ -451,7 +451,7 @@ const MapEvents: React.FC = () => {
       <div className="main-layout">
         <Sidebar />
 
-        <div className="content-area">
+        <div className="content-area map-content-area">
           <div className="map-dashboard-container">
             {errorMsg && (
               <div className="map-toast-error">
@@ -686,7 +686,7 @@ const MapEvents: React.FC = () => {
                 /* LISTA DE EVENTOS ORDENADOS POR CERCANÍA */
                 <div className="side-panel-card list-events-card">
                   <div className="card-header-with-action">
-                    <div>
+                    <div className="list-title-container">
                       <h2>{t("map_events.list_title")}</h2>
                       <span className="events-count-pill">{filteredEventos.length}</span>
                       {filteredEventos.length !== eventos.length && (
@@ -699,11 +699,7 @@ const MapEvents: React.FC = () => {
                         onClick={() => setShowDistanceFilter((prev) => !prev)}
                         title="Filtrar por distancia"
                       >
-                        <SlidersHorizontal size={16} />
-                      </button>
-                      <button className="inline-create-btn" onClick={handleMapClickPrompt}>
-                        <PlusCircle size={18} />
-                        <span>{t("map_events.create_btn")}</span>
+                        <SlidersHorizontal size={20} />
                       </button>
                     </div>
                   </div>
