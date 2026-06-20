@@ -176,10 +176,17 @@ const Universidad: React.FC = () => {
                   <div
                     className="unread-badge"
                     style={{
-                      background: "rgba(167, 139, 250, 0.15)",
+                      background: "rgba(167, 139, 250, 0.12)",
                       color: "var(--accent-purple)",
                       boxShadow: "none",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      padding: "2px 8px",
+                      borderRadius: "8px",
+                      height: "auto",
+                      minWidth: "unset",
                     }}
+                    title="Miembros registrados"
                   >
                     {uni.numIntegrantes || 0}
                   </div>

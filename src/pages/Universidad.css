@@ -11,3 +11,15 @@
 @keyframes uni-spin {
   to { transform: rotate(360deg); }
 }
+
+/* Fix sidebar alignment and text wrapping */
+.contact-item .contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-item .contact-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
