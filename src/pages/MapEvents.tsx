@@ -107,6 +107,15 @@ const MapEvents: React.FC = () => {
 
       L.control.zoom({ position: "bottomright" }).addTo(mapRef.current);
 
+      const tileUrl =
+        theme === "dark"
+          ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+
+      tileLayerRef.current = L.tileLayer(tileUrl, {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+      }).addTo(mapRef.current);
+
       mapRef.current.on("click", (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
         setIsCreating((prevIsCreating) => {
@@ -116,10 +125,21 @@ const MapEvents: React.FC = () => {
           return prevIsCreating;
         });
       });
+
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      }, 300);
     } else {
       mapRef.current.setView(userLocation);
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+        }
+      }, 100);
     }
-  }, [userLocation]);
+  }, [userLocation, theme]);
 
   useEffect(() => {
     if (!mapRef.current) return;
