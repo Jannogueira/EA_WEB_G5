@@ -6,8 +6,7 @@ import usuarioService from '../services/usuario';
 import type { Usuario } from '../models/usuario';
 import SelectionStep from './SelectionStep';
 import { BookOpen, X } from 'lucide-react';
-import Alert from './Alert';
-import type { AlertState } from './Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import './AcademicSelectorModal.css'; // Reutilizamos base de estilos
 
 interface Props {
@@ -22,7 +21,7 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
   const { asignaturas, selected, toggle, loading, error } = useAsignatura(gradoId, usuario);
 
   const [saving, setSaving] = useState(false);
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
   const { t } = useTranslation();
 
   if (!open || !usuario) return null;
@@ -37,11 +36,11 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
       onUpdated(updated);
       onClose();
     } catch (error: any) {
-      setAlert({
-        type: 'error',
-        title: t('select_university.save_error'),
-        message: error.response?.data?.message || 'No se pudieron guardar las asignaturas',
-      });
+      showAlert(
+        t('select_university.save_error'),
+        error.response?.data?.message || 'No se pudieron guardar las asignaturas',
+        'error',
+      );
     } finally {
       setSaving(false);
     }
@@ -50,15 +49,6 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
   return (
     <div className="academic-modal-overlay">
       <div className="academic-modal-container">
-        {alert && (
-          <Alert
-            type={alert.type}
-            title={alert.title}
-            message={alert.message}
-            onClose={() => setAlert(null)}
-          />
-        )}
-
         <button className="academic-modal-close" onClick={onClose}>
           <X size={20} />
         </button>

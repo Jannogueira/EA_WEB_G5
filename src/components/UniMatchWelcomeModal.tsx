@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { uploadUnimatchPhoto, acceptUnimatchTerms } from '../services/unimatch';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import './UniMatchWelcomeModal.css';
 
 interface Props {
@@ -19,6 +20,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -34,7 +36,6 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
     }
 
     setPhotos((prev) => [...prev, ...newPhotos]);
-    // Reset input
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -69,8 +70,11 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
       }
 
       onComplete();
-    } catch (err) {
-      console.error('Error setting up UniMatch:', err);
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.message ||
+        t('unimatch.setup_error', 'No se pudo configurar UniMatch. Inténtalo de nuevo.');
+      showAlert(t('unimatch.error_title', 'Error'), errorMsg, 'error');
     } finally {
       setUploading(false);
     }

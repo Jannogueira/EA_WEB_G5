@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getContacts } from '../services/chat';
 import type { ChatContact } from '../models/message';
 import { useSocket } from '../context/SocketContext';
+import { useGlobalAlert } from '../context/AlertContext';
 
 interface SharePostModalProps {
   postId: string;
@@ -14,6 +15,7 @@ interface SharePostModalProps {
 const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
+  const { showAlert } = useGlobalAlert();
   const [contacts, setContacts] = useState<ChatContact[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
@@ -21,10 +23,18 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    getContacts().then((res) => {
-      setContacts(res.data);
-      setLoading(false);
-    });
+    getContacts()
+      .then((res) => {
+        setContacts(res.data);
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        setLoading(false);
+        const errorMsg =
+          err.response?.data?.message ||
+          t('share.load_error', 'No se pudieron cargar los contactos');
+        showAlert(t('share.error_title'), errorMsg, 'error');
+      });
   }, []);
 
   const filteredContacts = contacts.filter((c) =>
@@ -40,18 +50,23 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   const handleShare = () => {
     if (!socket || selectedContacts.length === 0) return;
 
-    selectedContacts.forEach((destinatarioId) => {
-      socket.emit('send_message', {
-        destinatarioId,
-        postId,
-        contenido: '', // Opcional: podrías añadir un mensaje personalizado
+    try {
+      selectedContacts.forEach((destinatarioId) => {
+        socket.emit('send_message', {
+          destinatarioId,
+          postId,
+          contenido: '',
+        });
       });
-    });
 
-    setSent(true);
-    setTimeout(() => {
-      onClose();
-    }, 1500);
+      setSent(true);
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    } catch (err: any) {
+      const errorMsg = err.message || t('share.send_error', 'No se pudo compartir la publicación');
+      showAlert(t('share.error_title'), errorMsg, 'error');
+    }
   };
 
   return (

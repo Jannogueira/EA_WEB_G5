@@ -4,8 +4,7 @@ import gradoService from '../services/grado';
 import type { Grado } from '../models/grado';
 import type { Asignatura } from '../models/asignatura';
 import './ExploreFilterModal.css';
-import Alert from './Alert';
-import type { AlertState } from './Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import { BrushCleaning } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,10 +29,8 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
 
   const [loadingItems, setLoadingItems] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState('');
-
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -50,12 +47,7 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
       } catch (error: any) {
         const msg =
           error.response?.data?.message || error.message || t('explore_filter.server_error');
-
-        setAlert({
-          type: 'error',
-          title: t('explore_filter.error_title'),
-          message: msg,
-        });
+        showAlert(t('explore_filter.error_title'), msg, 'error');
       } finally {
         setLoadingItems(false);
       }
@@ -92,15 +84,6 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
 
   return (
     <div className="filter-overlay">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
-
       <div className="filter-modal">
         <div className="filter-tabs">
           {(['universidades', 'grados', 'asignaturas'] as FilterTab[]).map((tab) => (

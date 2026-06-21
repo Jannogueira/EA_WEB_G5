@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Messages.css';
 import Sidebar from '../components/Sidebar';
@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import useUser from '../hooks/useUser';
 import useChat from '../hooks/useChat';
 import { useSocket } from '../context/SocketContext';
+import { useGlobalAlert } from '../context/AlertContext'; // <--- Importing your context hook
 import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChatContact } from '../models/message';
@@ -16,29 +17,30 @@ const Messages: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { usuario } = useUser();
+  const { showAlert } = useGlobalAlert(); // <--- Initializing your custom global alert context hook
 
-  // Helpers safe for remitente checks
-  const getSenderId = (msg: any) => {
+  // Optimized Helper Functions
+  const getSenderId = useCallback((msg: any) => {
     if (!msg || !msg.remitente) return '';
     return typeof msg.remitente === 'string' ? msg.remitente : msg.remitente._id || '';
-  };
+  }, []);
 
-  const getSenderName = (msg: any) => {
+  const getSenderName = useCallback((msg: any) => {
     if (!msg || !msg.remitente) return '';
     return typeof msg.remitente === 'string' ? '' : msg.remitente.nombre || '';
-  };
+  }, []);
 
-  const getSenderAvatar = (msg: any) => {
+  const getSenderAvatar = useCallback((msg: any) => {
     if (!msg || !msg.remitente) return '';
     return typeof msg.remitente === 'string' ? '' : msg.remitente.avatarUrl || '';
-  };
+  }, []);
 
-  const getParentSenderName = (msg: any) => {
+  const getParentSenderName = useCallback((msg: any) => {
     if (!msg || !msg.parentMessage || !msg.parentMessage.remitente) return '';
     return typeof msg.parentMessage.remitente === 'string'
       ? ''
       : msg.parentMessage.remitente.nombre || '';
-  };
+  }, []);
 
   const { unreadCounts, markAsRead } = useSocket();
   const {
@@ -54,7 +56,11 @@ const Messages: React.FC = () => {
     emitTyping,
     deleteMessage,
     reactToMessage,
-  } = useChat(usuario?._id || '');
+  } = useChat(usuario?._id || '', {
+    onError: (title, message) => {
+      showAlert(title, message, 'error');
+    },
+  });
 
   const [inputMessage, setInputMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,7 +82,6 @@ const Messages: React.FC = () => {
   const [followedUsers, setFollowedUsers] = useState<any[]>([]);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [loadingFollowed, setLoadingFollowed] = useState(false);
-  const [groupError, setGroupError] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -95,13 +100,16 @@ const Messages: React.FC = () => {
   useEffect(() => {
     if (isGroupModalOpen && usuario?._id) {
       setLoadingFollowed(true);
-      setGroupError('');
       getFollowing(usuario._id)
         .then((res) => {
           setFollowedUsers(res.data.seguidos || []);
         })
         .catch(() => {
-          setGroupError(t('messages.group.error_loading_followed'));
+          showAlert(
+            t('messages.error_title', 'Error'),
+            t('messages.group.error_loading_followed'),
+            'error',
+          );
         })
         .finally(() => {
           setLoadingFollowed(false);
@@ -110,7 +118,6 @@ const Messages: React.FC = () => {
       setFollowedUsers([]);
       setSelectedMembers([]);
       setGroupName('');
-      setGroupError('');
     }
   }, [isGroupModalOpen, usuario?._id, t]);
 
@@ -120,6 +127,11 @@ const Messages: React.FC = () => {
         return prev.filter((id) => id !== userId);
       } else {
         if (prev.length >= 7) {
+          showAlert(
+            t('messages.group.limit_title', 'Group Limit'),
+            t('messages.group.error_members_limit'),
+            'warning',
+          );
           return prev;
         }
         return [...prev, userId];
@@ -129,14 +141,23 @@ const Messages: React.FC = () => {
 
   const handleCreateGroupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setGroupError('');
+
     if (!groupName.trim()) {
-      setGroupError(t('messages.group.error_name_required'));
+      showAlert(
+        t('messages.validation_title', 'Validation Error'),
+        t('messages.group.error_name_required'),
+        'warning',
+      );
       return;
     }
+
     const totalMiembros = selectedMembers.length + 1;
     if (totalMiembros < 3 || totalMiembros > 8) {
-      setGroupError(t('messages.group.error_members_limit'));
+      showAlert(
+        t('messages.validation_title', 'Validation Error'),
+        t('messages.group.error_members_limit'),
+        'warning',
+      );
       return;
     }
 
@@ -150,8 +171,16 @@ const Messages: React.FC = () => {
       setContacts((prev) => [newGroup, ...prev]);
       openConversation(newGroup);
       setIsGroupModalOpen(false);
+
+      showAlert(
+        t('messages.group.success_title', 'Success'),
+        t('messages.group.success_created', 'Group chat created successfully!'),
+        'success',
+        3000,
+      );
     } catch (err: any) {
-      setGroupError(err.response?.data?.message || t('messages.group.error_create'));
+      const errorMessage = err.response?.data?.message || t('messages.group.error_create');
+      showAlert(t('messages.error_title', 'Error'), errorMessage, 'error');
     }
   };
 
@@ -354,7 +383,7 @@ const Messages: React.FC = () => {
                           ) : (
                             <div
                               className={
-                                msg.contenido.includes('privada') ? 'private-msg-text' : ''
+                                msg.contenido?.includes('privada') ? 'private-msg-text' : ''
                               }
                             >
                               {msg.contenido}
@@ -502,7 +531,6 @@ const Messages: React.FC = () => {
         </main>
       </div>
 
-      {/* Sidebar al final para asegurar que sus eventos de clic siempre tengan prioridad */}
       <Sidebar />
 
       {/* MODAL DE ELIMINACIÓN */}
@@ -584,12 +612,6 @@ const Messages: React.FC = () => {
                   </div>
                 )}
               </div>
-
-              {groupError && (
-                <div className="group-rules-hint" style={{ marginTop: '8px' }}>
-                  {groupError}
-                </div>
-              )}
 
               <div className="modal-footer">
                 <button

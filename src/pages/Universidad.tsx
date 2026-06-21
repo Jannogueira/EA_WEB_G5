@@ -16,9 +16,8 @@ import {
   LogOut,
   ArrowRight,
 } from 'lucide-react';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 const Universidad: React.FC = () => {
   const { t } = useTranslation();
@@ -29,7 +28,7 @@ const Universidad: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedUniId, setExpandedUniId] = useState<string | null>(null);
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
 
   // Fetch universities and user's joined chats
   const fetchData = async () => {
@@ -47,12 +46,7 @@ const Universidad: React.FC = () => {
         .map((c: any) => c._id);
       setJoinedGroupIds(groupIds);
     } catch (err: any) {
-      console.error(err);
-      setAlert({
-        type: 'error',
-        title: 'Error',
-        message: err.message || t('universities_page.error_loading'),
-      });
+      showAlert('Error', err.message || t('universities_page.error_loading'), 'error');
     } finally {
       setLoading(false);
     }
@@ -76,18 +70,18 @@ const Universidad: React.FC = () => {
     e.stopPropagation();
     try {
       await universidadService.joinChat(uniId);
-      setAlert({
-        type: 'success',
-        title: t('universities_page.join_success_title'),
-        message: t('universities_page.join_success_msg'),
-      });
+      showAlert(
+        t('universities_page.join_success_title'),
+        t('universities_page.join_success_msg'),
+        'success',
+      );
       fetchData(); // reload
     } catch (err: any) {
-      setAlert({
-        type: 'error',
-        title: 'Error',
-        message: err.response?.data?.message || err.message || t('universities_page.join_error'),
-      });
+      showAlert(
+        'Error',
+        err.response?.data?.message || err.message || t('universities_page.join_error'),
+        'error',
+      );
     }
   };
 
@@ -96,18 +90,18 @@ const Universidad: React.FC = () => {
     e.stopPropagation();
     try {
       await universidadService.leaveChat(uniId);
-      setAlert({
-        type: 'success',
-        title: t('universities_page.leave_success_title'),
-        message: t('universities_page.leave_success_msg'),
-      });
+      showAlert(
+        t('universities_page.leave_success_title'),
+        t('universities_page.leave_success_msg'),
+        'success',
+      );
       fetchData();
     } catch (err: any) {
-      setAlert({
-        type: 'error',
-        title: 'Error',
-        message: err.response?.data?.message || err.message || t('universities_page.leave_error'),
-      });
+      showAlert(
+        'Error',
+        err.response?.data?.message || err.message || t('universities_page.leave_error'),
+        'error',
+      );
     }
   };
 
@@ -118,15 +112,6 @@ const Universidad: React.FC = () => {
 
   return (
     <div className="uni-page-wrapper">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
-
       <Navbar usuario={usuario || undefined} />
 
       <div className="uni-main-layout">

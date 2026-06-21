@@ -12,8 +12,7 @@ import { searchUsers } from '../services/usuario';
 import { Search, SlidersHorizontal, Heart, MessageCircle } from 'lucide-react';
 import ExploreFilter from '../components/ExploreFilterModal';
 import { useTranslation } from 'react-i18next';
-import type { AlertState } from '../components/Alert';
-import Alert from '../components/Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import type { Usuario } from '../models/usuario';
 import type { Grado } from '../models/grado';
 import type { Asignatura } from '../models/asignatura';
@@ -98,7 +97,7 @@ const Explore: React.FC = () => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [grados, setGrados] = useState<Grado[]>([]);
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
 
   // Refs
   const observerTarget = useRef<HTMLDivElement | null>(null);
@@ -130,7 +129,7 @@ const Explore: React.FC = () => {
         setDiscoveryPosts(Array.isArray(rawData) ? rawData : (rawData?.docs ?? []));
       } catch (error: any) {
         const errorMsg = error.data || 'Error connecting with server';
-        setAlert({ type: 'error', title: 'Error', message: errorMsg });
+        showAlert('Error', errorMsg, 'error');
       } finally {
         if (mounted.current) setLoadingDiscovery(false);
       }
@@ -165,7 +164,7 @@ const Explore: React.FC = () => {
           didInitialSearch.current = true;
         }
       } catch (error) {
-        if (mounted.current) setAlert({ type: 'error', title: 'Error', message: 'Search failed' });
+        if (mounted.current) showAlert('Error', 'Search failed', 'error');
       } finally {
         if (mounted.current) setLoading(false);
       }
@@ -215,7 +214,6 @@ const Explore: React.FC = () => {
 
   return (
     <div className="home-wrapper">
-      {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
       <Navbar usuario={usuario || undefined} />
       <div className="main-layout">
         <Sidebar />

@@ -3,9 +3,9 @@ import './Postcard.css';
 import type { Post } from '../models/post';
 import usePost from '../hooks/usePost';
 import { useNavigate } from 'react-router-dom';
-// Added Bookmark here
 import { Heart, MessageCircle, Send, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 import SharePostModal from './SharePostModal';
 import PostDetailModal from './PostDetailModal';
@@ -13,6 +13,7 @@ import PostDetailModal from './PostDetailModal';
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
   const { post, likePost, likeComment, addComment, loadingComment, error, toggleSave, isSaved } =
     usePost(postProp);
 
@@ -38,9 +39,24 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
     }
   };
 
+  const handleLikeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await likePost();
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('postcard.like_error');
+      showAlert(t('postcard.error_title'), errorMsg, 'error');
+    }
+  };
+
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    await toggleSave();
+    try {
+      await toggleSave();
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('postcard.save_error');
+      showAlert(t('postcard.error_title'), errorMsg, 'error');
+    }
   };
 
   const postLiked = currentUserId && post.likes?.some((u: any) => (u._id || u) === currentUserId);
@@ -72,10 +88,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         >
           <div className="main-actions">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                likePost();
-              }}
+              onClick={handleLikeClick}
               className="like-button"
               title={t('postcard.like_post')}
             >
@@ -108,7 +121,6 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             </button>
           </div>
 
-          {/* New Bookmark Button Added Here */}
           <div className="secondary-actions">
             <button onClick={handleBookmarkClick} className="share-btn-action">
               <Bookmark

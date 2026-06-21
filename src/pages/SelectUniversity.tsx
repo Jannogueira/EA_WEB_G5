@@ -15,8 +15,7 @@ import gradoService from '../services/grado';
 import usuarioService from '../services/usuario';
 
 import SelectionStep from '../components/SelectionStep';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 
 import type { Universidad } from '../models/universidad';
 import type { Grado } from '../models/grado';
@@ -28,6 +27,7 @@ import './Register.css';
 const SelectUniversity = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
 
   // Paso actual (1: Uni, 2: Grado, 3: Asignaturas)
   const [step, setStep] = useState(1);
@@ -42,12 +42,10 @@ const SelectUniversity = () => {
   const [selectedGradoId, setSelectedGradoId] = useState('');
   const [selectedAsigIds, setSelectedAsigIds] = useState<string[]>([]);
 
-  // Estados de carga
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
 
   const [user, setUser] = useState<Usuario | null>(null);
-  const [alert, setAlert] = useState<AlertState | null>(null);
 
   useEffect(() => {
     const userJson = localStorage.getItem('usuario');
@@ -81,8 +79,9 @@ const SelectUniversity = () => {
       const { request } = universidadService.getAll({ limit: 1000 });
       const res = await request;
       setUniversidades(res.data.docs || []);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || 'Error al cargar las universidades';
+      showAlert('Error', errorMsg, 'error');
     } finally {
       setLoadingData(false);
     }
@@ -93,8 +92,9 @@ const SelectUniversity = () => {
     try {
       const res = await gradoService.getByUniversidad(selectedUniId);
       setGrados(res.data || []);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || 'Error al cargar los grados académicos';
+      showAlert('Error', errorMsg, 'error');
     } finally {
       setLoadingData(false);
     }
@@ -105,8 +105,9 @@ const SelectUniversity = () => {
     try {
       const res = await gradoService.getAsignaturas(selectedGradoId);
       setAsignaturas(res.data || []);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || 'Error al cargar las asignaturas';
+      showAlert('Error', errorMsg, 'error');
     } finally {
       setLoadingData(false);
     }
@@ -144,7 +145,7 @@ const SelectUniversity = () => {
     try {
       // 1. Actualizar Uni y Grado
       await usuarioService.updateSelf({
-        universidad: selectedUniId,
+        university: selectedUniId,
         grado: selectedGradoId,
       });
 
@@ -155,21 +156,21 @@ const SelectUniversity = () => {
       localStorage.setItem('usuario', JSON.stringify(updatedUser));
       setUser(updatedUser);
 
-      setAlert({
-        type: 'success',
-        title: t('select_university.success_title'),
-        message: t('select_university.success_msg'),
-      });
+      showAlert(
+        t('select_university.success_title'),
+        t('select_university.success_msg'),
+        'success',
+      );
 
       setTimeout(() => {
         navigate('/home');
       }, 1500);
     } catch (error: any) {
-      setAlert({
-        type: 'error',
-        title: t('select_university.save_error'),
-        message: error.response?.data?.message || 'Error al conectar con el servidor',
-      });
+      showAlert(
+        t('select_university.save_error'),
+        error.response?.data?.message || 'Error al conectar con el servidor',
+        'error',
+      );
     } finally {
       setLoading(false);
     }
@@ -184,15 +185,6 @@ const SelectUniversity = () => {
 
   return (
     <div className="register-page">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
-
       <div className="register-container selection-flow">
         {/* Progress Bar */}
         <div className="step-progress">

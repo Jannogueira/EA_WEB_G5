@@ -11,7 +11,6 @@ import usePost from '../hooks/usePost';
 import useUser from '../hooks/useUser';
 import type { Usuario } from '../models/usuario';
 import {
-  X,
   Heart,
   MessageCircle,
   FolderOpen,
@@ -33,8 +32,7 @@ import {
   type UnimatchPhoto,
 } from '../services/unimatch';
 import { useTranslation } from 'react-i18next';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import SharePostModal from '../components/SharePostModal';
 
 const ProfilePostModal: React.FC<{
@@ -88,7 +86,8 @@ const Profile: React.FC = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
+
   const [activeTab, setActiveTab] = useState<'posts' | 'unimatch'>('posts');
   const [unimatchPhotos, setUnimatchPhotos] = useState<UnimatchPhoto[]>([]);
   const [uploadingUnimatch, setUploadingUnimatch] = useState(false);
@@ -134,12 +133,7 @@ const Profile: React.FC = () => {
         }
       } catch (error: any) {
         const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
-
-        setAlert({
-          type: 'error',
-          title: 'Error',
-          message: errorMsg,
-        });
+        showAlert('Error', errorMsg, 'error');
       } finally {
         setLoading(false);
       }
@@ -158,10 +152,12 @@ const Profile: React.FC = () => {
       if (postInList) {
         setSelectedPost(postInList);
       } else if (!loading) {
-        // Carga el post individualmente si no está en la lista de perfil
         PostService.getPostById(postId)
           .then((res) => setSelectedPost(res.data))
-          .catch((err) => console.error('Error al cargar post enlazado:', err));
+          .catch((error: any) => {
+            const errorMsg = error.response?.data?.message || 'Error al cargar el post enlazado';
+            showAlert('Error', errorMsg, 'error');
+          });
       }
     }
   }, [posts, loading]);
@@ -180,12 +176,7 @@ const Profile: React.FC = () => {
       else if (!newStatus) setFollowersCount((prev) => (isFollowing ? prev - 1 : prev));
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
-
-      setAlert({
-        type: 'error',
-        title: 'Acción no completada',
-        message: errorMsg,
-      });
+      showAlert('Acción no completada', errorMsg, 'error');
     }
   };
 
@@ -203,14 +194,6 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-wrapper">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
       <Navbar usuario={currentUser || undefined} />
 
       <div className="main-layout">
@@ -358,8 +341,10 @@ const Profile: React.FC = () => {
                         ? await getMyPhotos()
                         : await getUserPhotos(targetId);
                       setUnimatchPhotos(res.data);
-                    } catch (err) {
-                      console.error('Error loading unimatch photos:', err);
+                    } catch (error: any) {
+                      const errorMsg =
+                        error.response?.data?.message || 'Error al cargar las fotos de UniMatch';
+                      showAlert('Error', errorMsg, 'error');
                     }
                   }}
                 >
@@ -389,7 +374,7 @@ const Profile: React.FC = () => {
                         className="univy-grid-item"
                         onClick={() => handlePostClick(post)}
                       >
-                        <img src={post.imageUrl} className="univy-grid-img" />
+                        <img src={post.imageUrl} className="univy-grid-img" alt="" />
                         <div className="univy-grid-hover">
                           <div className="hover-stats">
                             <span>
@@ -429,8 +414,10 @@ const Profile: React.FC = () => {
                         try {
                           const res = await uploadUnimatchPhoto(file);
                           setUnimatchPhotos((prev) => [...prev, res.data]);
-                        } catch (err) {
-                          console.error('Error uploading unimatch photo:', err);
+                        } catch (error: any) {
+                          const errorMsg =
+                            error.response?.data?.message || 'Error al subir la foto';
+                          showAlert('Error de carga', errorMsg, 'error');
                         } finally {
                           setUploadingUnimatch(false);
                         }
@@ -460,8 +447,10 @@ const Profile: React.FC = () => {
                                 setUnimatchPhotos((prev) =>
                                   prev.filter((p) => p._id !== photo._id),
                                 );
-                              } catch (err) {
-                                console.error('Error deleting photo:', err);
+                              } catch (error: any) {
+                                const errorMsg =
+                                  error.response?.data?.message || 'Error al eliminar la foto';
+                                showAlert('Error', errorMsg, 'error');
                               }
                             }}
                           >

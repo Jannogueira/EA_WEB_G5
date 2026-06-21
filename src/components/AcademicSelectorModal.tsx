@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Library, GraduationCap, X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import SelectionStep from './SelectionStep';
 import universidadService from '../services/universidad';
 import gradoService from '../services/grado';
@@ -30,7 +31,9 @@ const AcademicSelectorModal: React.FC<Props> = ({
   const [selectedUni, setSelectedUni] = useState<Universidad | null>(initialUni || null);
   const [selectedGrado, setSelectedGrado] = useState<Grado | null>(initialGrado || null);
   const [loading, setLoading] = useState(false);
+
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
 
   useEffect(() => {
     if (open) {
@@ -54,8 +57,9 @@ const AcademicSelectorModal: React.FC<Props> = ({
       const { request } = universidadService.getAll({ limit: 1000 });
       const res = await request;
       setUniversidades(res.data.docs || []);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || 'Error al cargar las universidades';
+      showAlert(t('academic_modal.error_title'), errorMsg, 'error');
     } finally {
       setLoading(false);
     }
@@ -67,8 +71,9 @@ const AcademicSelectorModal: React.FC<Props> = ({
     try {
       const res = await gradoService.getByUniversidad(selectedUni._id);
       setGrados(res.data || []);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || 'Error al cargar los grados académicos';
+      showAlert(t('academic_modal.error_title'), errorMsg, 'error');
     } finally {
       setLoading(false);
     }

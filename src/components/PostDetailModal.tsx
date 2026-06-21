@@ -4,6 +4,7 @@ import type { Post } from '../models/post';
 import { X, Heart, MessageCircle, Send, MoreHorizontal, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalAlert } from '../context/AlertContext';
 
 interface PostDetailModalProps {
   post: Post;
@@ -32,6 +33,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { showAlert } = useGlobalAlert();
 
   const [commentText, setCommentText] = useState('');
   const [saved, setSaved] = useState(isSaved);
@@ -49,20 +51,55 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     }
   };
 
-  const submitComment = () => {
+  const handleLikePost = async () => {
+    try {
+      await onLike();
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.message ||
+        t('postcard.like_error', 'No se pudo dar me gusta a la publicación');
+      showAlert(t('postcard.error_title'), errorMsg, 'error');
+    }
+  };
+
+  const handleLikeComment = async (commentId: string) => {
+    try {
+      await onLikeComment(commentId);
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.message ||
+        t('postcard.comment_like_error', 'No se pudo reaccionar al comentario');
+      showAlert(t('postcard.error_title'), errorMsg, 'error');
+    }
+  };
+
+  const submitComment = async () => {
     if (!commentText.trim() || loadingComment) return;
 
-    onAddComment(commentText);
-    setCommentText('');
+    try {
+      await onAddComment(commentText);
+      setCommentText('');
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.message ||
+        t('postcard.comment_error', 'No se pudo publicar el comentario');
+      showAlert(t('postcard.error_title'), errorMsg, 'error');
+    }
   };
 
   const handleToggleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    const result = await onToggleSave();
-
-    if (result !== null) {
-      setSaved(result);
+    try {
+      const result = await onToggleSave();
+      if (result !== null) {
+        setSaved(result);
+      }
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.message ||
+        t('postcard.save_error', 'No se pudo guardar la publicación');
+      showAlert(t('postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -84,7 +121,6 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 
               <div className="user-name-wrapper">
                 <span className="user-name-bold">{post.usuario?.nombre}</span>
-
                 <span className="user-status-online">En Univy</span>
               </div>
             </div>
@@ -139,7 +175,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 
                   <button
                     className={`detail-comment-like ${isCommentLiked ? 'liked' : ''}`}
-                    onClick={() => onLikeComment(c._id)}
+                    onClick={() => handleLikeComment(c._id)}
                   >
                     <Heart size={14} fill={isCommentLiked ? 'currentColor' : 'none'} />
                   </button>
@@ -160,7 +196,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
               >
                 <div className="detail-main-btns">
                   <button
-                    onClick={onLike}
+                    onClick={handleLikePost}
                     className={`detail-action-btn ${postLiked ? 'liked' : ''}`}
                   >
                     <Heart size={28} fill={postLiked ? 'currentColor' : 'none'} />

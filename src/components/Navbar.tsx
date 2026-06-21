@@ -5,7 +5,7 @@ import type { Usuario } from '../models/usuario';
 import useAuth from '../hooks/useAuth';
 import useUser from '../hooks/useUser';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../context/ThemeContext';
+import { useGlobalAlert } from '../context/AlertContext';
 import ThemeToggle from './ThemeToggle';
 
 interface NavbarProps {
@@ -19,21 +19,23 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
 
   const { logout } = useAuth();
   const { usuario: hookUsuario } = useUser();
+  const { showAlert } = useGlobalAlert();
 
   const usuario = propUsuario || hookUsuario;
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Evita que se cierre el menú antes de tiempo
+    e.stopPropagation();
 
-    // Esperamos a que la petición de logout termine
-    await logout();
-
-    // Cerramos el menú y redirigimos
-    setMenuOpen(false);
+    try {
+      await logout();
+      setMenuOpen(false);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('navbar.logout_error');
+      showAlert(t('navbar.error_title'), errorMsg, 'error');
+    }
   };
 
-  // Obtener la inicial del nombre en mayúscula
   const userInitial = usuario?.nombre ? usuario.nombre.charAt(0).toUpperCase() : '?';
 
   return (
@@ -43,7 +45,6 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
       </div>
 
       <div className="navbar-right">
-        {/* Language slider updated to supporting 3 languages */}
         <div className="lang-segmented-control">
           <div
             className={`lang-indicator ${

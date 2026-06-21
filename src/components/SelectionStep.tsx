@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, CheckCircle2 } from 'lucide-react';
 import './SelectionStep.css';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 interface SelectionItem {
   _id: string;
@@ -33,6 +34,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
   icon,
 }) => {
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Función para normalizar texto (quitar acentos)
@@ -71,6 +73,17 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
     );
   };
 
+  const handleItemSelect = (id: string) => {
+    try {
+      onSelect(id);
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.message ||
+        t('selection_step.select_error', 'No se pudo procesar la selección');
+      showAlert(t('selection_step.error_title'), errorMsg, 'error');
+    }
+  };
+
   return (
     <div className="selection-step-container">
       <div className="selection-step-header">
@@ -106,7 +119,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
                 <div
                   key={item._id}
                   className={`selection-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => onSelect(item._id)}
+                  onClick={() => handleItemSelect(item._id)}
                 >
                   <div className="card-content">
                     <span className="card-name">{highlightMatch(item.nombre, searchQuery)}</span>

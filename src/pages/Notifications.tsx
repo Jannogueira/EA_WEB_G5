@@ -11,8 +11,7 @@ import { useSocket } from '../context/SocketContext';
 import { Heart, MessageCircle, UserPlus, Clock, Check, X, Bell, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import { es, ca, enUS } from 'date-fns/locale';
 
 const Notifications: React.FC = () => {
@@ -23,7 +22,7 @@ const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
   const [followStatuses, setFollowStatuses] = useState<Record<string, string>>({});
 
   const getDateLocale = () => {
@@ -64,11 +63,7 @@ const Notifications: React.FC = () => {
       await notificationService.markAllAsRead();
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || t('notifications.server_error');
-      setAlert({
-        type: 'error',
-        title: t('notifications.error_title'),
-        message: errorMsg,
-      });
+      showAlert(t('notifications.error_title'), errorMsg, 'error');
     } finally {
       setLoading(false);
     }
@@ -104,12 +99,7 @@ const Notifications: React.FC = () => {
       await refreshUser();
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || t('notifications.server_error');
-
-      setAlert({
-        type: 'error',
-        title: t('notifications.error_title'),
-        message: errorMsg,
-      });
+      showAlert(t('notifications.error_title'), errorMsg, 'error');
     } finally {
       setProcessingId(null);
     }
@@ -124,12 +114,7 @@ const Notifications: React.FC = () => {
       setNotifications((prev) => prev.filter((n) => n._id !== notificationId));
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || t('notifications.server_error');
-
-      setAlert({
-        type: 'error',
-        title: t('notifications.error_title'),
-        message: errorMsg,
-      });
+      showAlert(t('notifications.error_title'), errorMsg, 'error');
     } finally {
       setProcessingId(null);
     }
@@ -151,11 +136,7 @@ const Notifications: React.FC = () => {
       await refreshUser();
     } catch (error: any) {
       const errorMsg = error.response?.data?.message || t('notifications.server_error');
-      setAlert({
-        type: 'error',
-        title: t('notifications.error_title'),
-        message: errorMsg,
-      });
+      showAlert(t('notifications.error_title'), errorMsg, 'error');
     } finally {
       setProcessingId(null);
     }
@@ -203,15 +184,6 @@ const Notifications: React.FC = () => {
 
   return (
     <div className="notifications-wrapper">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
-
       <Navbar usuario={usuario || undefined} />
 
       <div className="main-layout">
