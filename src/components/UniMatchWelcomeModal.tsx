@@ -53,15 +53,11 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
 
     setUploading(true);
     try {
-      // Subir todas las fotos
       for (const photo of photos) {
         await uploadUnimatchPhoto(photo.file);
       }
-
-      // Aceptar términos
       await acceptUnimatchTerms();
 
-      // Actualizar localStorage
       const userJson = localStorage.getItem('usuario');
       if (userJson) {
         const user = JSON.parse(userJson);
@@ -71,10 +67,8 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
 
       onComplete();
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        t('unimatch.setup_error', 'No se pudo configurar UniMatch. Inténtalo de nuevo.');
-      showAlert(t('unimatch.error_title', 'Error'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.unimatch.setup_error');
+      showAlert(t('alerts.unimatch.error_title'), errorMsg, 'error');
     } finally {
       setUploading(false);
     }
@@ -103,7 +97,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
           <div className="photo-upload-grid">
             {photos.map((photo, index) => (
               <div key={index} className="photo-upload-slot has-photo">
-                <img src={photo.preview} alt={`Foto ${index + 1}`} />
+                <img src={photo.preview} alt={t('unimatch.photo_alt', { index: index + 1 })} />
                 <button className="remove-photo-btn" onClick={() => removePhoto(index)}>
                   <X size={12} />
                 </button>

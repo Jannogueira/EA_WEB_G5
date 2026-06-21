@@ -31,8 +31,8 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
       await logout();
       setMenuOpen(false);
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || t('navbar.logout_error');
-      showAlert(t('navbar.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.navbar.logout_error');
+      showAlert(t('alerts.navbar.error_title'), errorMsg, 'error');
     }
   };
 

@@ -93,7 +93,7 @@ const Sidebar: React.FC = () => {
             onClick={() => navigate('/unimatch')}
           >
             <Heart size={20} className="btn-icon" />
-            <span className="btn-text">UniMatch</span>
+            <span className="btn-text">{t('sidebar.unimatch')}</span>
           </button>
           <button
             className={`sidebar-btn ${isActive('/university') ? 'active' : ''}`}

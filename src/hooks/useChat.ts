@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSocket } from '../context/SocketContext';
 import { getContacts, getConversation } from '../services/chat';
 import type { Message, ChatContact } from '../models/message';
@@ -9,6 +10,7 @@ interface UseChatOptions {
 }
 
 export default function useChat(currentUserId: string, options?: UseChatOptions) {
+  const { t } = useTranslation();
   const { socket } = useSocket();
   const [contacts, setContacts] = useState<ChatContact[]>([]);
   const [activeContact, setActiveContact] = useState<ChatContact | null>(null);
@@ -144,7 +146,7 @@ export default function useChat(currentUserId: string, options?: UseChatOptions)
               if (type === 'everyone') {
                 return {
                   ...msg,
-                  contenido: 'El mensaje ha sido eliminado',
+                  contenido: t('messages.deleted'),
                   eliminadoParaTodos: true,
                 };
               }
@@ -163,20 +165,29 @@ export default function useChat(currentUserId: string, options?: UseChatOptions)
     // Listener for socket level errors thrown by the pipeline
     const handleSocketError = (err: { message: string }) => {
       if (options?.onError) {
-        options.onError('Delivery Error', err.message || 'Failed to dispatch event.');
+        options.onError(
+          t('alerts.messages.error_delivery_title'),
+          err.message || t('alerts.messages.error_delivery_msg'),
+        );
       }
     };
 
     const handleConnectError = (error: any) => {
       if (options?.onError) {
-        options.onError('Connection Error', 'Error connecting to server.');
+        options.onError(
+          t('alerts.messages.error_connection_title'),
+          t('alerts.messages.error_connection_msg'),
+        );
       }
     };
 
     const handleDisconnect = (reason: string) => {
       if (reason === 'io server disconnect' || reason === 'transport close') {
         if (options?.onError) {
-          options.onError('Disconnected', 'Lost connection to the chat server.');
+          options.onError(
+            t('alerts.messages.error_disconnected_title'),
+            t('alerts.messages.error_disconnected_msg'),
+          );
         }
       }
     };
@@ -221,8 +232,8 @@ export default function useChat(currentUserId: string, options?: UseChatOptions)
       } catch (err: any) {
         if (options?.onError) {
           options.onError(
-            'Error Loading History',
-            err.response?.data?.message || 'Could not retrieve conversation history.',
+            t('alerts.messages.error_history_title'),
+            err.response?.data?.message || t('alerts.messages.error_history_msg'),
           );
         }
       } finally {

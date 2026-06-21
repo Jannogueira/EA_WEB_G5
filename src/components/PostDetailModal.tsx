@@ -55,10 +55,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     try {
       await onLike();
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        t('postcard.like_error', 'No se pudo dar me gusta a la publicación');
-      showAlert(t('postcard.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.like_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -66,10 +64,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     try {
       await onLikeComment(commentId);
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        t('postcard.comment_like_error', 'No se pudo reaccionar al comentario');
-      showAlert(t('postcard.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.comment_like_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -80,10 +76,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
       await onAddComment(commentText);
       setCommentText('');
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        t('postcard.comment_error', 'No se pudo publicar el comentario');
-      showAlert(t('postcard.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.comment_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -96,10 +90,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         setSaved(result);
       }
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        t('postcard.save_error', 'No se pudo guardar la publicación');
-      showAlert(t('postcard.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.save_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -111,7 +103,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 
       <div className="post-detail-content" onClick={(e) => e.stopPropagation()}>
         <div className="post-detail-image-side">
-          <img src={post.imageUrl} alt="Post content" />
+          <img src={post.imageUrl} alt={t('postcard.content_alt')} />
         </div>
 
         <div className="post-detail-info-side">
@@ -121,7 +113,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 
               <div className="user-name-wrapper">
                 <span className="user-name-bold">{post.usuario?.nombre}</span>
-                <span className="user-status-online">En Univy</span>
+                <span className="user-status-online">{t('postcard.status_online')}</span>
               </div>
             </div>
 
@@ -148,7 +140,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 typeof c.usuario === 'object'
                   ? c.usuario
                   : {
-                      nombre: 'Usuario',
+                      nombre: t('postcard.default_user'),
                       avatarUrl: '',
                     };
 

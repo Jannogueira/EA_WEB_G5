@@ -46,7 +46,11 @@ const Universidad: React.FC = () => {
         .map((c: any) => c._id);
       setJoinedGroupIds(groupIds);
     } catch (err: any) {
-      showAlert('Error', err.message || t('universities_page.error_loading'), 'error');
+      showAlert(
+        t('common.error'),
+        err.message || t('alerts.universities_page.error_loading'),
+        'error',
+      );
     } finally {
       setLoading(false);
     }
@@ -71,15 +75,15 @@ const Universidad: React.FC = () => {
     try {
       await universidadService.joinChat(uniId);
       showAlert(
-        t('universities_page.join_success_title'),
-        t('universities_page.join_success_msg'),
+        t('alerts.universities_page.join_success_title'),
+        t('alerts.universities_page.join_success_msg'),
         'success',
       );
       fetchData(); // reload
     } catch (err: any) {
       showAlert(
-        'Error',
-        err.response?.data?.message || err.message || t('universities_page.join_error'),
+        t('common.error'),
+        err.response?.data?.message || err.message || t('alerts.universities_page.join_error'),
         'error',
       );
     }
@@ -91,15 +95,15 @@ const Universidad: React.FC = () => {
     try {
       await universidadService.leaveChat(uniId);
       showAlert(
-        t('universities_page.leave_success_title'),
-        t('universities_page.leave_success_msg'),
+        t('alerts.universities_page.leave_success_title'),
+        t('alerts.universities_page.leave_success_msg'),
         'success',
       );
       fetchData();
     } catch (err: any) {
       showAlert(
-        'Error',
-        err.response?.data?.message || err.message || t('universities_page.leave_error'),
+        t('common.error'),
+        err.response?.data?.message || err.message || t('alerts.universities_page.leave_error'),
         'error',
       );
     }

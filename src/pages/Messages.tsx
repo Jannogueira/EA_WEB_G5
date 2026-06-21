@@ -106,8 +106,8 @@ const Messages: React.FC = () => {
         })
         .catch(() => {
           showAlert(
-            t('messages.error_title', 'Error'),
-            t('messages.group.error_loading_followed'),
+            t('messages.error_title'),
+            t('alerts.messages.error_loading_followed'),
             'error',
           );
         })
@@ -128,8 +128,8 @@ const Messages: React.FC = () => {
       } else {
         if (prev.length >= 7) {
           showAlert(
-            t('messages.group.limit_title', 'Group Limit'),
-            t('messages.group.error_members_limit'),
+            t('messages.group.limit_title'),
+            t('alerts.messages.error_members_limit'),
             'warning',
           );
           return prev;
@@ -144,8 +144,8 @@ const Messages: React.FC = () => {
 
     if (!groupName.trim()) {
       showAlert(
-        t('messages.validation_title', 'Validation Error'),
-        t('messages.group.error_name_required'),
+        t('messages.validation_title'),
+        t('alerts.messages.error_name_required'),
         'warning',
       );
       return;
@@ -154,8 +154,8 @@ const Messages: React.FC = () => {
     const totalMiembros = selectedMembers.length + 1;
     if (totalMiembros < 3 || totalMiembros > 8) {
       showAlert(
-        t('messages.validation_title', 'Validation Error'),
-        t('messages.group.error_members_limit'),
+        t('messages.validation_title'),
+        t('alerts.messages.error_members_limit'),
         'warning',
       );
       return;
@@ -173,14 +173,14 @@ const Messages: React.FC = () => {
       setIsGroupModalOpen(false);
 
       showAlert(
-        t('messages.group.success_title', 'Success'),
-        t('messages.group.success_created', 'Group chat created successfully!'),
+        t('messages.group.success_title'),
+        t('messages.group.success_created'),
         'success',
         3000,
       );
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || t('messages.group.error_create');
-      showAlert(t('messages.error_title', 'Error'), errorMessage, 'error');
+      const errorMessage = err.response?.data?.message || t('alerts.messages.error_create');
+      showAlert(t('messages.error_title'), errorMessage, 'error');
     }
   };
 

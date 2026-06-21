@@ -128,8 +128,8 @@ const Explore: React.FC = () => {
         const rawData = postRes.data as any;
         setDiscoveryPosts(Array.isArray(rawData) ? rawData : (rawData?.docs ?? []));
       } catch (error: any) {
-        const errorMsg = error.data || 'Error connecting with server';
-        showAlert('Error', errorMsg, 'error');
+        const errorMsg = error.data || t('alerts.explore_filter.connection_error');
+        showAlert(t('alerts.explore_filter.error_title'), errorMsg, 'error');
       } finally {
         if (mounted.current) setLoadingDiscovery(false);
       }
@@ -164,7 +164,12 @@ const Explore: React.FC = () => {
           didInitialSearch.current = true;
         }
       } catch (error) {
-        if (mounted.current) showAlert('Error', 'Search failed', 'error');
+        if (mounted.current)
+          showAlert(
+            t('alerts.explore_filter.error_title'),
+            t('alerts.explore_filter.search_error'),
+            'error',
+          );
       } finally {
         if (mounted.current) setLoading(false);
       }
@@ -258,14 +263,14 @@ const Explore: React.FC = () => {
               ) : (
                 <div className="users-list">
                   {loading && page === 1 ? (
-                    <div className="state-message">Searching...</div>
+                    <div className="state-message">{t('explore.searching')}</div>
                   ) : (
                     <>
                       {users.map((u) => (
                         <UserCard key={u._id} user={u} />
                       ))}
                       <div ref={observerTarget} className="scroll-sentinel">
-                        {loading && <p>Loading more...</p>}
+                        {loading && <p>{t('explore.loading_more')}</p>}
                       </div>
                     </>
                   )}

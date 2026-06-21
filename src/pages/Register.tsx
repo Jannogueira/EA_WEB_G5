@@ -31,7 +31,11 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      showAlert(t('register.validation_error'), t('register.password_mismatch'), 'error');
+      showAlert(
+        t('alerts.register.validation_error'),
+        t('alerts.register.password_mismatch'),
+        'error',
+      );
       return;
     }
 
@@ -40,8 +44,8 @@ const Register = () => {
       await register(dataToSubmit);
     } catch (error: any) {
       const msg =
-        error.response?.data?.message || error.message || 'Error al contactar con el servidor';
-      showAlert(t('register.failed_title'), msg, 'error');
+        error.response?.data?.message || error.message || t('alerts.register.server_error');
+      showAlert(t('alerts.register.failed_title'), msg, 'error');
     }
   };
 

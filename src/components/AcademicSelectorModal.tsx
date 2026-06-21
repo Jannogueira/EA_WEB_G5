@@ -39,7 +39,6 @@ const AcademicSelectorModal: React.FC<Props> = ({
     if (open) {
       fetchUniversidades();
       setStep(1);
-      // Sincronizar con los valores del padre por si han cambiado
       setSelectedUni(initialUni || null);
       setSelectedGrado(initialGrado || null);
     }
@@ -58,8 +57,8 @@ const AcademicSelectorModal: React.FC<Props> = ({
       const res = await request;
       setUniversidades(res.data.docs || []);
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Error al cargar las universidades';
-      showAlert(t('academic_modal.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.academic_modal.error_uni');
+      showAlert(t('alerts.academic_modal.error_title'), errorMsg, 'error');
     } finally {
       setLoading(false);
     }
@@ -72,17 +71,17 @@ const AcademicSelectorModal: React.FC<Props> = ({
       const res = await gradoService.getByUniversidad(selectedUni._id);
       setGrados(res.data || []);
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Error al cargar los grados académicos';
-      showAlert(t('academic_modal.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.academic_modal.error_degree');
+      showAlert(t('alerts.academic_modal.error_title'), errorMsg, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSelectUni = (id: string) => {
-    const uni = universidades.find((u) => u._id === id);
-    if (uni) {
-      setSelectedUni(uni);
+    const foundUni = universidades.find((u) => u._id === id);
+    if (foundUni) {
+      setSelectedUni(foundUni);
       setSelectedGrado(null);
       setStep(2);
     }

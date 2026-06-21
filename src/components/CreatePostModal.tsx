@@ -33,8 +33,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       const res = await uploadImage(file);
       setFormData((prev) => ({ ...prev, imageUrl: res.url }));
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || t('edit_profile.upload_error');
-      showAlert(t('create_post.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.create_post.upload_error');
+      showAlert(t('alerts.create_post.error_title'), errorMsg, 'error');
     } finally {
       setUploading(false);
     }
@@ -48,7 +48,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     e.preventDefault();
 
     if (!formData.imageUrl) {
-      showAlert(t('create_post.error_title'), t('create_post.image_required'), 'warning');
+      showAlert(
+        t('alerts.create_post.error_title'),
+        t('alerts.create_post.image_required'),
+        'warning',
+      );
       return;
     }
 
@@ -57,8 +61,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       onPostCreated();
       onClose();
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || t('create_post.error');
-      showAlert(t('create_post.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.create_post.error_sharing');
+      showAlert(t('alerts.create_post.error_title'), errorMsg, 'error');
     }
   };
 
@@ -67,7 +71,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       <div className="create-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header-modern">
           <h2>{t('create_post.title')}</h2>
-          <button className="close-x-btn" aria-label={t('edit_profile.cancel')} onClick={onClose}>
+          <button className="close-x-btn" aria-label={t('create_post.cancel')} onClick={onClose}>
             <X size={20} />
           </button>
         </header>

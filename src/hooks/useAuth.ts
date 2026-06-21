@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import authService from '../services/auth';
 
 export default function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const login = async (email: string, password: string) => {
     setLoading(true);
@@ -15,7 +17,7 @@ export default function useAuth() {
       const data = await authService.login(email, password);
       return data;
     } catch (err) {
-      setError('Error en login');
+      setError(t('alerts.login.general_error'));
       throw err;
     } finally {
       setLoading(false);
@@ -30,7 +32,7 @@ export default function useAuth() {
       const data = await authService.googleLogin(token);
       return data;
     } catch (err) {
-      setError('Error en login con Google');
+      setError(t('alerts.login.google_general_error'));
       throw err;
     } finally {
       setLoading(false);
@@ -45,7 +47,7 @@ export default function useAuth() {
       await authService.register(data);
       navigate('/select-university');
     } catch (err) {
-      setError('Error en registro');
+      setError(t('alerts.register.general_error'));
       throw err;
     } finally {
       setLoading(false);
@@ -57,7 +59,7 @@ export default function useAuth() {
       await authService.logout();
       navigate('/login');
     } catch (err) {
-      setError('Error al cerrar sesión');
+      setError(t('alerts.navbar.logout_error'));
     }
   };
 

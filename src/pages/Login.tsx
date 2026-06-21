@@ -35,14 +35,14 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate('/home');
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
-      showAlert(t('login.error_title'), errorMsg, 'error');
+      const errorMsg = error.response?.data?.message || t('alerts.login.server_error');
+      showAlert(t('alerts.login.error_title'), errorMsg, 'error');
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     if (!credentialResponse.credential) {
-      showAlert(t('login.google_error_title'), t('login.google_error_msg'), 'error');
+      showAlert(t('alerts.login.google_error_title'), t('alerts.login.google_error_msg'), 'error');
       return;
     }
 
@@ -50,8 +50,8 @@ const Login = () => {
       await loginWithGoogle(credentialResponse.credential);
       navigate('/home');
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error';
-      showAlert(t('login.error_title'), errorMsg, 'error');
+      const errorMsg = error.response?.data?.message || t('alerts.login.error_title');
+      showAlert(t('alerts.login.error_title'), errorMsg, 'error');
     }
   };
 
@@ -120,7 +120,11 @@ const Login = () => {
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => {
-              showAlert(t('login.google_error_title'), t('login.error_title'), 'error');
+              showAlert(
+                t('alerts.login.google_error_title'),
+                t('alerts.login.error_title'),
+                'error',
+              );
             }}
             theme={theme === 'dark' ? 'filled_black' : 'outline'}
             size="large"

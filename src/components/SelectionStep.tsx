@@ -37,7 +37,6 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
   const { showAlert } = useGlobalAlert();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Función para normalizar texto (quitar acentos)
   const normalize = (text: string) => {
     return text
       .normalize('NFD')
@@ -51,7 +50,6 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
     return items.filter((item) => normalize(item.nombre).includes(query));
   }, [items, searchQuery]);
 
-  // Función para resaltar el texto coincidente
   const highlightMatch = (text: string, query: string) => {
     if (!query) return text;
     const normalizedText = normalize(text);
@@ -77,10 +75,8 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
     try {
       onSelect(id);
     } catch (err: any) {
-      const errorMsg =
-        err.response?.data?.message ||
-        t('selection_step.select_error', 'No se pudo procesar la selección');
-      showAlert(t('selection_step.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.selection_step.select_error');
+      showAlert(t('alerts.selection_step.error_title'), errorMsg, 'error');
     }
   };
 

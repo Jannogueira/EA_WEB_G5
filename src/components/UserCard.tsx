@@ -15,11 +15,7 @@ const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
     try {
       navigate(`/profile/${user._id}`);
     } catch (err: any) {
-      showAlert(
-        t('user_card.error_title', 'Error'),
-        t('user_card.navigation_error', 'No se pudo acceder al perfil del usuario'),
-        'error',
-      );
+      showAlert(t('alerts.user_card.error_title'), t('alerts.user_card.navigation_error'), 'error');
     }
   };
 

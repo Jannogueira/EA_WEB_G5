@@ -1,4 +1,131 @@
 {
+  "theme": {
+    "switch_dark": "Switch to Dark Mode",
+    "switch_light": "Switch to Light Mode"
+  },
+  "alerts": {
+    "login": {
+      "error_title": "Login Error",
+      "google_error_title": "Google OAuth Error",
+      "google_error_msg": "No credentials received from Google",
+      "server_error": "Connection error with the server",
+      "general_error": "Error logging in",
+      "google_general_error": "Error logging in with Google"
+    },
+    "register": {
+      "validation_error": "Validation Error",
+      "password_mismatch": "Passwords do not match",
+      "failed_title": "Action Failed",
+      "server_error": "Connection error with the server",
+      "general_error": "Error registering"
+    },
+    "select_university": {
+      "success_title": "Registration Complete!",
+      "success_msg": "Your academic profile has been configured successfully.",
+      "save_error": "Save Error",
+      "save_error_subjects": "Could not save the subjects"
+    },
+    "edit_profile": {
+      "success": "Profile updated successfully!",
+      "upload_error": "Error uploading avatar. Please try again.",
+      "save_success_title": "Success!",
+      "save_success_msg": "Your profile has been updated correctly.",
+      "update_error": "Error updating profile"
+    },
+    "create_post": {
+      "error_title": "Error creating post",
+      "upload_error": "Image could not be uploaded successfully",
+      "image_required": "You must select an image to publish",
+      "error_sharing": "There was a problem saving the post"
+    },
+    "messages": {
+      "error_loading_followed": "Error loading following list",
+      "error_name_required": "Group name is required",
+      "error_members_limit": "The group must have between 3 and 8 members in total. Select between 2 and 7 followed accounts.",
+      "error_create": "Error creating group chat",
+      "error_delivery_title": "Delivery Error",
+      "error_delivery_msg": "Failed to dispatch event.",
+      "error_connection_title": "Connection Error",
+      "error_connection_msg": "Error connecting to server.",
+      "error_disconnected_title": "Disconnected",
+      "error_disconnected_msg": "Lost connection to the chat server.",
+      "error_history_title": "Error Loading History",
+      "error_history_msg": "Could not retrieve conversation history."
+    },
+    "share": {
+      "success": "Sent successfully!",
+      "error_title": "Sharing Error",
+      "load_error": "Could not retrieve your contacts list",
+      "send_error": "Could not share this post with selected users"
+    },
+    "explore_filter": {
+      "error_title": "Filtering Error",
+      "server_error": "Could not load filter data",
+      "search_error": "Search failed",
+      "connection_error": "Error connecting with server"
+    },
+    "universities_page": {
+      "error_loading": "Error loading data.",
+      "join_success_title": "You joined!",
+      "join_success_msg": "You have joined the general chat. You can find it now in your Messages section.",
+      "join_error": "Could not join chat.",
+      "leave_success_title": "You left the chat",
+      "leave_success_msg": "You have left the general chat of this university.",
+      "leave_error": "Could not leave chat."
+    },
+    "academic_modal": {
+      "error_title": "Academic Error",
+      "error_uni": "Error loading universities",
+      "error_degree": "Error loading academic degrees",
+      "error_subjects": "Error loading subjects"
+    },
+    "match": {
+      "error_title": "Navigation Error",
+      "navigation_error": "Could not open the messages section directly"
+    },
+    "navbar": {
+      "error_title": "Session Error",
+      "logout_error": "Could not log out successfully"
+    },
+    "unimatch": {
+      "error_title": "Setup Error",
+      "setup_error": "Could not configure UniMatch. Please try again.",
+      "error_loading_profiles": "Could not load UniMatch profiles. Please try again.",
+      "error_swiping": "Could not register your swipe."
+    },
+    "postcard": {
+      "error_title": "Interaction Error",
+      "like_error": "Could not process reaction to this post",
+      "comment_like_error": "Could not react to this comment",
+      "comment_error": "Could not publish comment",
+      "save_error": "Could not bookmark this post"
+    },
+    "selection_step": {
+      "error_title": "Selection Error",
+      "select_error": "Could not register your selection"
+    },
+    "profile": {
+      "error_title": "Error",
+      "action_failed": "Action not completed",
+      "upload_failed": "Upload error",
+      "server_error": "Connection error with the server",
+      "error_linked_post": "Error loading linked post",
+      "error_unimatch_photos": "Error loading UniMatch photos",
+      "error_upload_photo": "Error uploading photo",
+      "error_delete_photo": "Error deleting photo"
+    },
+    "user_card": {
+      "error_title": "Error",
+      "navigation_error": "Could not access user profile"
+    },
+    "map_events": {
+      "error_title": "Event Error",
+      "error_loading_events": "Could not load events. Please try again.",
+      "error_create": "Could not create event. Please try again.",
+      "error_join": "Could not register attendance. Please try again.",
+      "error_delete": "Could not delete event. Please try again."
+    }
+  },
   "sidebar": {
     "home": "Home",
     "create": "Create",
@@ -9,25 +136,27 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "assistant": "Assistant",
-    "map": "Map"
+    "map": "Map",
+    "unimatch": "UniMatch"
   },
   "home": {
     "title": "Feed",
-    "subtitle": "Explore what's happening on Univy",
-    "loading": "Loading more amazing posts...",
-    "end": "You've reached the end! Come back later!",
-    "empty": "No posts yet"
+    "subtitle": "Explore what is happening at Univy",
+    "loading": "Loading more incredible posts...",
+    "end": "You have reached the end. Come back later!",
+    "empty": "No posts yet",
+    "error_loading_posts": "Error loading posts"
   },
   "explore": {
     "title": "Explore Users",
     "subtitle": "Discover new Univy students",
     "filter": "Filter",
     "search_placeholder": "Search by name...",
-    "searching": "Searching for bright minds...",
+    "searching": "Searching for brilliant minds...",
     "loading_more": "Loading more users...",
     "no_more": "No more users to display",
-    "not_found": "No users found with that name",
-    "onboarding_title": "Search for someone to start",
+    "not_found": "No users found with this name",
+    "onboarding_title": "Search for someone to get started",
     "onboarding_subtitle": "Find your classmates or university peers"
   },
   "profile": {
@@ -48,10 +177,11 @@
     "private_subtitle": "Follow this user to view their posts.",
     "add_photo": "Add photo",
     "empty_unimatch": "No UniMatch photos",
-    "no_unimatch_photos": "This user hasn't uploaded photos to UniMatch yet."
+    "no_unimatch_photos": "This user hasn't uploaded any photos to UniMatch yet."
   },
   "saved_posts": {
-    "title": "Saved Posts"
+    "title": "Saved Posts",
+    "error_loading": "Error loading saved posts"
   },
   "login": {
     "title": "Log In",
@@ -61,10 +191,7 @@
     "loading": "Loading...",
     "divider": "or also",
     "no_account": "Don't have an account? ",
-    "register_here": "Register here",
-    "error_title": "Login failed",
-    "google_error_title": "Google OAuth Error",
-    "google_error_msg": "No credentials received from Google"
+    "register_here": "Register here"
   },
   "register": {
     "title": "Join Univy",
@@ -75,60 +202,50 @@
     "next": "Next",
     "processing": "Processing...",
     "has_account": "Already part of our community?",
-    "access_campus": "Access the campus",
-    "validation_error": "Validation error",
-    "password_mismatch": "Passwords do not match",
-    "failed_title": "Action failed"
+    "access_campus": "Access campus"
   },
   "select_university": {
-    "success_title": "Registration completed!",
-    "success_msg": "Your academic profile has been configured successfully.",
-    "save_error": "Error saving",
-    "step1_title": "Where are you studying?",
+    "step1_title": "Where do you study?",
     "step1_subtitle": "Select your university to find your peers",
     "step1_placeholder": "Search university...",
     "step2_title": "What major are you pursuing?",
     "step2_subtitle": "Filter by your academic degree",
     "step2_placeholder": "Search degree...",
-    "step3_title": "Your courses",
+    "step3_title": "Your subjects",
     "step3_subtitle": "Select the subjects you are taking this semester",
-    "step3_placeholder": "Search course...",
+    "step3_placeholder": "Search subject...",
     "back": "Back",
     "next": "Next",
     "saving": "Saving...",
-    "finish": "Finish Registration"
+    "finish": "Finish registration"
   },
   "edit_profile": {
     "title": "Edit Profile",
-    "success": "Profile successfully updated!",
     "label_name": "Name",
     "label_email": "Email",
     "label_avatar": "Avatar URL",
-    "label_avatar_help": "Or upload an image by clicking on the circle",
+    "label_avatar_help": "Or upload an image by clicking the circle",
     "label_bio": "Bio",
-    "placeholder_bio": "Write a short bio about yourself...",
-    "label_subjects": "Courses",
+    "placeholder_bio": "Write a brief description about yourself...",
+    "label_subjects": "Subjects",
     "edit_btn": "Edit",
     "label_privacy": "Private Account",
     "privacy_help": "If your account is private, only your followers will be able to see your posts.",
     "cancel": "Cancel",
     "saving": "Saving...",
     "save": "Save Changes",
-    "upload_error": "Error uploading avatar. Try again.",
-    "save_success_title": "Success!",
-    "save_success_msg": "Your profile has been updated successfully.",
     "label_academic": "Academic Information",
     "label_university": "University",
-    "no_university": "No university selected",
+    "no_university": "No university",
     "label_degree": "Degree",
     "change_academic_btn": "Change University or Degree",
-    "academic_change_warning": "You have changed your university or degree. Don't forget to save changes and update your courses if necessary."
+    "academic_change_warning": "You have changed your university or degree. Don't forget to save changes and update your subjects if necessary."
   },
   "academic_modal": {
     "step_uni": "University",
     "step_degree": "Degree",
     "select_uni_title": "Select University",
-    "select_uni_subtitle": "Find your study center",
+    "select_uni_subtitle": "Search for your study center",
     "change_uni": "Change University",
     "select_degree_title": "Select your Degree",
     "select_degree_subtitle": "Choose your current major",
@@ -151,32 +268,35 @@
     },
     "follow_back": "Follow back",
     "confirm": "Confirm",
-    "reject": "Reject"
+    "reject": "Reject",
+    "server_error": "Connection error with the server",
+    "error_title": "Notification Error"
   },
   "create_post": {
-    "title": "New Post",
-    "img_placeholder": "Your image preview will appear here",
-    "label_img": "Image URL",
-    "label_caption": "Caption",
-    "sharing": "Sharing...",
-    "publish": "Publish",
-    "error": "Error creating post.",
+    "title": "Create new post",
+    "cancel": "Cancel",
     "uploading": "Uploading image...",
-    "image_required": "Please select an image first"
+    "img_placeholder": "Click to select an image",
+    "label_caption": "Description",
+    "publish": "Publish",
+    "sharing": "Sharing..."
   },
   "postcard": {
     "comment_placeholder": "Write a comment...",
     "send_comment": "Send comment",
     "like_comment": "Like",
-    "likes": "Likes",
+    "likes": "Like",
     "share": "Share",
-    "like_post": "Like"
+    "like_post": "Like",
+    "default_user": "User",
+    "content_alt": "Post content",
+    "status_online": "On Univy"
   },
   "messages": {
     "search": "Search chat...",
     "available": "Chat available",
     "loading": "Loading history...",
-    "placeholder": "Type a message...",
+    "placeholder": "Write a message...",
     "title": "Your Messages",
     "empty": "Select a conversation to start.",
     "delete_title": "Delete message?",
@@ -192,6 +312,8 @@
     "someone": "Someone",
     "typing_direct": "{{name}} is typing...",
     "typing_group": "{{name}} is typing...",
+    "validation_title": "Validation Error",
+    "error_title": "Group Chat Error",
     "group": {
       "create_title": "Create group",
       "name_placeholder": "Group name...",
@@ -199,16 +321,14 @@
       "no_followed": "You are not following any users yet.",
       "btn_cancel": "Cancel",
       "btn_create": "Create",
-      "error_loading_followed": "Error loading following list",
-      "error_name_required": "Group name is required",
-      "error_members_limit": "The group must have between 3 and 8 members in total. Select between 2 and 7 followed users.",
-      "error_create": "Error creating group chat"
+      "limit_title": "Group Limit",
+      "success_title": "Success",
+      "success_created": "Group chat created successfully!"
     }
   },
   "share": {
     "title": "Send post",
     "send": "Send",
-    "success": "Sent successfully!",
     "empty": "No friends found"
   },
   "post_detail": {
@@ -218,43 +338,46 @@
   "navbar": {
     "loading": "Loading...",
     "profile": "Profile",
-    "logout": "Log Out"
+    "logout": "Log out"
   },
   "common": {
     "language": "Language",
     "spanish": "Spanish",
     "catalan": "Catalan",
-    "english": "English"
+    "error": "Error"
   },
   "assistant": {
-    "welcome_msg": "Hi! I'm **Toni**, virtual assistant and academic engineer from EETAC. How can I help you today regarding degrees or courses?",
-    "error_msg": "Sorry, I couldn't process your request at this time. Please try again later.",
+    "welcome_msg": "Hi! I am **Toni**, virtual assistant and academic engineer from EETAC. How can I help you today regarding degree tracks or subjects?",
+    "error_msg": "I'm sorry, I couldn't process your request right now. Please try again later.",
     "title": "Virtual Assistant \"Toni\"",
-    "subtitle": "EETAC expert academic engineer",
+    "subtitle": "Expert academic engineer from EETAC",
     "thinking": "Toni is thinking...",
-    "placeholder": "Ask Toni about degrees or courses..."
+    "placeholder": "Ask Toni about degrees or subjects...",
+    "alert_error_msg": "Could not connect with the virtual assistant.",
+    "error_title": "Assistant Error"
   },
   "unimatch": {
     "welcome_title": "Welcome to UniMatch",
     "welcome_description": "Connect with students from your university and discover people with similar interests.",
-    "privacy_notice": "Your photos in this mode will be visible to other UniMatch users. Nobody will know if you swiped ❌ or ❤️ unless it's a mutual Match.",
-    "upload_instruction": "Upload at least 1 photo to start",
+    "privacy_notice": "Your photos in this mode will be visible to other UniMatch users. No one will know if you passed ❌ or liked ❤️ them unless it's a mutual Match.",
+    "upload_instruction": "Upload at least 1 photo to get started",
+    "photo_alt": "Profile photo {{index}}",
     "uploading_photos": "Uploading photos...",
     "start_discovering": "Start discovering"
   },
   "map_events": {
     "title": "Events Map",
-    "subtitle": "Discover and join events around you",
+    "subtitle": "Discover and participate in events around you",
     "create_btn": "Create Event",
     "loading": "Getting location and events...",
     "form_title": "Create New Event",
     "form_click_map": "Click on the map to place the event or use your coordinates.",
-    "form_title_label": "Event Title",
+    "form_title_label": "Event title",
     "form_desc_label": "Description",
     "form_date_label": "Date & Time",
-    "form_loc_label": "Location Name (e.g., Room 101, Campus Nord)",
+    "form_loc_label": "Location name (e.g., Room 101, Campus Nord)",
     "form_max_attendees": "Maximum attendees (optional)",
-    "form_deadline_label": "Deadline Date/Time (optional)",
+    "form_deadline_label": "Deadline (optional)",
     "form_submit": "Create Event",
     "form_cancel": "Cancel",
     "details_title": "Event Details",
@@ -264,32 +387,32 @@
     "details_join": "Join",
     "details_leave": "Cancel Attendance",
     "details_delete": "Delete Event",
-    "list_title": "Nearby Events",
+    "list_title": "Events Nearby",
     "list_empty": "No events created yet. Be the first!",
     "list_distance": "{{distance}}m away from you",
     "error_location": "Could not access your geolocation. Centering on your university."
   },
   "explore_filter": {
-    "error_title": "Error loading filters",
-    "server_error": "Error contacting the server",
-    "no_results": "No results found.",
-    "apply": "Apply",
+    "cancel": "Cancel",
+    "apply": "Apply filters",
+    "loading": "Loading options...",
+    "no_results": "No results found with this filter",
     "tabs": {
       "universidades": "Universities",
       "grados": "Degrees",
-      "asignaturas": "Courses"
+      "asignaturas": "Subjects"
     },
     "search_placeholder": {
-      "universidades": "Search university...",
-      "grados": "Search degree...",
-      "asignaturas": "Search course..."
+      "universidades": "Search by university...",
+      "grados": "Search by academic degree...",
+      "asignaturas": "Search by subject..."
     }
   },
   "unimatch_modal": {
     "title": "It's a Match!",
     "alt_me": "You",
-    "alt_them": "{{name}}'s photo",
-    "subtitle": "Now you follow each other and can chat!",
+    "alt_them": "Photo of {{name}}",
+    "subtitle": "You already follow each other! Why don't you start talking?",
     "send_message": "Send message",
     "continue": "Keep discovering"
   },
@@ -300,20 +423,13 @@
   },
   "unimatch_page": {
     "loading": "Searching profiles...",
-    "empty_title": "You've reached the end of the campus",
+    "empty_title": "You have reached the end of the campus",
     "empty_subtitle": "No more profiles for now.",
     "empty_sub_notice": "Come back later to discover new people!",
     "hint_pass": "Pass",
     "hint_like": "Like"
   },
   "universities_page": {
-    "error_loading": "Error loading data.",
-    "join_success_title": "Joined!",
-    "join_success_msg": "You have joined the general chat. You can now find it in your Messages section.",
-    "join_error": "Could not join the chat.",
-    "leave_success_title": "Left the chat",
-    "leave_success_msg": "You have left the general chat of this university.",
-    "leave_error": "Could not leave the chat.",
     "title": "Universities",
     "subtitle": "Click on a university to view its options and join its general chat.",
     "search_placeholder": "Search by name or location...",

@@ -30,10 +30,8 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
       })
       .catch((err: any) => {
         setLoading(false);
-        const errorMsg =
-          err.response?.data?.message ||
-          t('share.load_error', 'No se pudieron cargar los contactos');
-        showAlert(t('share.error_title'), errorMsg, 'error');
+        const errorMsg = err.response?.data?.message || t('alerts.share.load_error');
+        showAlert(t('alerts.share.error_title'), errorMsg, 'error');
       });
   }, []);
 
@@ -64,8 +62,8 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
         onClose();
       }, 1500);
     } catch (err: any) {
-      const errorMsg = err.message || t('share.send_error', 'No se pudo compartir la publicación');
-      showAlert(t('share.error_title'), errorMsg, 'error');
+      const errorMsg = err.message || t('alerts.share.send_error');
+      showAlert(t('alerts.share.error_title'), errorMsg, 'error');
     }
   };
 
@@ -82,7 +80,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
         {sent ? (
           <div className="share-sent-success">
             <CheckCircle2 size={60} color="#10b981" />
-            <p>{t('share.success')}</p>
+            <p>{t('alerts.share.success')}</p>
           </div>
         ) : (
           <>

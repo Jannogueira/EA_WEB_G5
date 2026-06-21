@@ -37,8 +37,8 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
       onClose();
     } catch (error: any) {
       showAlert(
-        t('select_university.save_error'),
-        error.response?.data?.message || 'No se pudieron guardar las asignaturas',
+        t('alerts.select_university.save_error'),
+        error.response?.data?.message || t('alerts.select_university.save_error_subjects'),
         'error',
       );
     } finally {

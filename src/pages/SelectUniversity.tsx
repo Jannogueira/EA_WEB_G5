@@ -80,8 +80,8 @@ const SelectUniversity = () => {
       const res = await request;
       setUniversidades(res.data.docs || []);
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error al cargar las universidades';
-      showAlert('Error', errorMsg, 'error');
+      const errorMsg = error.response?.data?.message || t('alerts.academic_modal.error_uni');
+      showAlert(t('common.error'), errorMsg, 'error');
     } finally {
       setLoadingData(false);
     }
@@ -93,8 +93,8 @@ const SelectUniversity = () => {
       const res = await gradoService.getByUniversidad(selectedUniId);
       setGrados(res.data || []);
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error al cargar los grados académicos';
-      showAlert('Error', errorMsg, 'error');
+      const errorMsg = error.response?.data?.message || t('alerts.academic_modal.error_degree');
+      showAlert(t('common.error'), errorMsg, 'error');
     } finally {
       setLoadingData(false);
     }
@@ -106,8 +106,8 @@ const SelectUniversity = () => {
       const res = await gradoService.getAsignaturas(selectedGradoId);
       setAsignaturas(res.data || []);
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error al cargar las asignaturas';
-      showAlert('Error', errorMsg, 'error');
+      const errorMsg = error.response?.data?.message || t('alerts.academic_modal.error_subjects');
+      showAlert(t('common.error'), errorMsg, 'error');
     } finally {
       setLoadingData(false);
     }
@@ -157,8 +157,8 @@ const SelectUniversity = () => {
       setUser(updatedUser);
 
       showAlert(
-        t('select_university.success_title'),
-        t('select_university.success_msg'),
+        t('alerts.select_university.success_title'),
+        t('alerts.select_university.success_msg'),
         'success',
       );
 
@@ -167,8 +167,8 @@ const SelectUniversity = () => {
       }, 1500);
     } catch (error: any) {
       showAlert(
-        t('select_university.save_error'),
-        error.response?.data?.message || 'Error al conectar con el servidor',
+        t('alerts.select_university.save_error'),
+        error.response?.data?.message || t('alerts.profile.server_error'),
         'error',
       );
     } finally {

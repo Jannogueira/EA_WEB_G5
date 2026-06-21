@@ -1,4 +1,131 @@
 {
+  "theme": {
+    "switch_dark": "Canviar a mode fosc",
+    "switch_light": "Canviar a mode clar"
+  },
+  "alerts": {
+    "login": {
+      "error_title": "Error en l'inici de sessió",
+      "google_error_title": "Error de Google OAuth",
+      "google_error_msg": "No es van rebre credencials de Google",
+      "server_error": "Error al connectar amb el servidor",
+      "general_error": "Error en iniciar sessió",
+      "google_general_error": "Error en iniciar sessió amb Google"
+    },
+    "register": {
+      "validation_error": "Error de validació",
+      "password_mismatch": "Les contrasenyes no coincideixen",
+      "failed_title": "Acció fallida",
+      "server_error": "Error al connectar amb el servidor",
+      "general_error": "Error en el registre"
+    },
+    "select_university": {
+      "success_title": "¡Registre completat!",
+      "success_msg": "El teu perfil acadèmic s'ha configurat correctament.",
+      "save_error": "Error en guardar",
+      "save_error_subjects": "No s'han pogut desar les assignatures"
+    },
+    "edit_profile": {
+      "success": "Perfil actualitzat amb èxit!",
+      "upload_error": "Error en pujar l'avatar. Torna-ho a intentar.",
+      "save_success_title": "Èxit!",
+      "save_success_msg": "El teu perfil s'ha actualitzat correctament.",
+      "update_error": "Error en actualitzar el perfil"
+    },
+    "create_post": {
+      "error_title": "Error en crear la publicació",
+      "upload_error": "No s'ha pogut pujar la imatge correctament",
+      "image_required": "Has de seleccionar una imatge per poder publicar",
+      "error_sharing": "Hi ha hagut un problema en desar la publicació"
+    },
+    "messages": {
+      "error_loading_followed": "Error en carregar la llista de seguits",
+      "error_name_required": "El nom del grup és obligatori",
+      "error_members_limit": "El grup ha de tenir entre 3 i 8 membres en total. Selecciona entre 2 i 7 seguits.",
+      "error_create": "Error en crear el grup de xat",
+      "error_delivery_title": "Error de lliurament",
+      "error_delivery_msg": "Error en enviar l'esdeveniment.",
+      "error_connection_title": "Error de connexió",
+      "error_connection_msg": "Error al connectar amb el servidor.",
+      "error_disconnected_title": "Desconnectat",
+      "error_disconnected_msg": "S'ha perdut la connexió amb el servidor de xat.",
+      "error_history_title": "Error en carregar historial",
+      "error_history_msg": "No s'ha pogut recuperar l'historial de la conversa."
+    },
+    "share": {
+      "success": "Enviat amb èxit!",
+      "error_title": "Error al compartir",
+      "load_error": "No s'ha pogut carregar la llista de contactes",
+      "send_error": "No s'ha pogut compartir la publicació amb els usuaris"
+    },
+    "explore_filter": {
+      "error_title": "Error de filtrat",
+      "server_error": "No s'han pogut carregar les dades dels filtres",
+      "search_error": "Error en realitzar la cerca",
+      "connection_error": "Error al connectar amb el servidor"
+    },
+    "universities_page": {
+      "error_loading": "Error en carregar les dades.",
+      "join_success_title": "T'has unit!",
+      "join_success_msg": "T'has unit al xat general. Ja el pots trobar a la teva secció de Missatges.",
+      "join_error": "No s'ha pogut unir al xat.",
+      "leave_success_title": "Has abandonat el xat",
+      "leave_success_msg": "Has sortit del xat general d'aquesta universitat.",
+      "leave_error": "No s'ha pogut abandonar el xat."
+    },
+    "academic_modal": {
+      "error_title": "Error acadèmic",
+      "error_uni": "Error en carregar les universitats",
+      "error_degree": "Error en carregar els graus acadèmics",
+      "error_subjects": "Error en carregar les assignatures"
+    },
+    "match": {
+      "error_title": "Error de navegació",
+      "navigation_error": "No s'ha pogut obrir la secció de missatges directament"
+    },
+    "navbar": {
+      "error_title": "Error de sessió",
+      "logout_error": "No s'ha pogut tancar la sessió correctament"
+    },
+    "unimatch": {
+      "error_title": "Error de configuració",
+      "setup_error": "No s'ha pogut configurar UniMatch. Torna-ho a intentar.",
+      "error_loading_profiles": "No s'ha pogut carregar els perfils de UniMatch. Torna-ho a intentar.",
+      "error_swiping": "No s'ha pogut registrar el teu lliscament."
+    },
+    "postcard": {
+      "error_title": "Error d'interacció",
+      "like_error": "No s'ha pogut processar la reacció a la publicació",
+      "comment_like_error": "No s'ha pogut reaccionar al comentari",
+      "comment_error": "No s'ha pogut publicar el comentari",
+      "save_error": "No s'ha pogut desar la publicació"
+    },
+    "selection_step": {
+      "error_title": "Error de selecció",
+      "select_error": "No s'ha pogut processar la selecció"
+    },
+    "profile": {
+      "error_title": "Error",
+      "action_failed": "Acció no completada",
+      "upload_failed": "Error de càrrega",
+      "server_error": "Error al connectar amb el servidor",
+      "error_linked_post": "Error en carregar el post enllaçat",
+      "error_unimatch_photos": "Error en carregar les fotos de UniMatch",
+      "error_upload_photo": "Error en pujar la foto",
+      "error_delete_photo": "Error en eliminar la foto"
+    },
+    "user_card": {
+      "error_title": "Error",
+      "navigation_error": "No s'ha pogut accedir al perfil de l'usuari"
+    },
+    "map_events": {
+      "error_title": "Error d'esdeveniments",
+      "error_loading_events": "No s'han pogut carregar els esdeveniments. Torna-ho a intentar.",
+      "error_create": "No s'ha pogut crear l'esdeveniment. Torna-ho a intentar.",
+      "error_join": "No s'ha pogut registrar l'assistència. Torna-ho a intentar.",
+      "error_delete": "No s'ha pogut eliminar l'esdeveniment. Torna-ho a intentar."
+    }
+  },
   "sidebar": {
     "home": "Inici",
     "create": "Crear",
@@ -9,14 +136,16 @@
     "messages": "Missatges",
     "notifications": "Notificacions",
     "assistant": "Assistent",
-    "map": "Mapa"
+    "map": "Mapa",
+    "unimatch": "UniMatch"
   },
   "home": {
     "title": "Feed",
     "subtitle": "Explora el que està passant a Univy",
     "loading": "Carregant més posts increïbles...",
     "end": "Has arribat al final. Torna més tard!",
-    "empty": "No hi ha posts encara"
+    "empty": "No hi ha posts encara",
+    "error_loading_posts": "Error en carregar les publicacions"
   },
   "explore": {
     "title": "Explorar Usuaris",
@@ -51,7 +180,8 @@
     "no_unimatch_photos": "Aquest usuari encara no ha pujat fotos a UniMatch."
   },
   "saved_posts": {
-    "title": "Publicacions Guardades"
+    "title": "Publicacions Guardades",
+    "error_loading": "Error en carregar les publicacions desades"
   },
   "login": {
     "title": "Iniciar Sessió",
@@ -61,10 +191,7 @@
     "loading": "Carregant...",
     "divider": "o també",
     "no_account": "No tens compte? ",
-    "register_here": "Registra't aquí",
-    "error_title": "Error en l'inici de sessió",
-    "google_error_title": "Error de Google OAuth",
-    "google_error_msg": "No es van rebre credencials de Google"
+    "register_here": "Registra't aquí"
   },
   "register": {
     "title": "Uneix-te a Univy",
@@ -75,15 +202,9 @@
     "next": "Següent",
     "processing": "Processant...",
     "has_account": "Ja ets part de la nostra comunitat?",
-    "access_campus": "Accedir al campus",
-    "validation_error": "Error de validació",
-    "password_mismatch": "Les contrasenyes no coincideixen",
-    "failed_title": "Acció fallida"
+    "access_campus": "Accedir al campus"
   },
   "select_university": {
-    "success_title": "¡Registre completat!",
-    "success_msg": "El teu perfil acadèmic s'ha configurat correctament.",
-    "save_error": "Error en guardar",
     "step1_title": "On estudies?",
     "step1_subtitle": "Selecciona la teva universitat per trobar els teus companys",
     "step1_placeholder": "Buscar universitat...",
@@ -100,7 +221,6 @@
   },
   "edit_profile": {
     "title": "Editar Perfil",
-    "success": "Perfil actualitzat amb èxit!",
     "label_name": "Nom",
     "label_email": "Email",
     "label_avatar": "Avatar URL",
@@ -114,9 +234,6 @@
     "cancel": "Cancel·lar",
     "saving": "Guardant...",
     "save": "Guardar Canvis",
-    "upload_error": "Error en pujar l'avatar. Torna-ho a intentar.",
-    "save_success_title": "Èxit!",
-    "save_success_msg": "El teu perfil s'ha actualitzat correctament.",
     "label_academic": "Informació Acadèmica",
     "label_university": "Universitat",
     "no_university": "Sense universitat",
@@ -147,22 +264,22 @@
       "follow": "ha començat a seguir-te.",
       "follow_request": "vol seguir-te.",
       "follow_accepted": "ha acceptat la teva sol·licitud de seguiment.",
-      "match": "És un Match! Ja podeu fer xats."
+      "match": "És un Match! Ya podeu fer xats."
     },
     "follow_back": "Tornar follow",
     "confirm": "Confirmar",
-    "reject": "Rebutjar"
+    "reject": "Rebutjar",
+    "server_error": "Error al connectar amb el servidor",
+    "error_title": "Error de notificacions"
   },
   "create_post": {
-    "title": "Nova Publicació",
-    "img_placeholder": "La vista prèvia de la teva imatge apareixerà aquí",
-    "label_img": "URL de la imatge",
-    "label_caption": "Peu de foto",
-    "sharing": "Compartint...",
+    "title": "Crear nova publicació",
+    "cancel": "Cancelar",
+    "uploading": "Pujant imatge...",
+    "img_placeholder": "Fes clic per seleccionar una imatge",
+    "label_caption": "Descripció",
     "publish": "Publicar",
-    "error": "Error en crear la publicació.",
-    "uploading": "Pujant la imatge...",
-    "image_required": "Per favor, selecciona una imatge primer"
+    "sharing": "Compartint..."
   },
   "postcard": {
     "comment_placeholder": "Escriu un comentari...",
@@ -170,7 +287,10 @@
     "like_comment": "M'agrada",
     "likes": "M'agrada",
     "share": "Compartir",
-    "like_post": "M'agrada"
+    "like_post": "M'agrada",
+    "default_user": "Usuari",
+    "content_alt": "Contingut de la publicació",
+    "status_online": "A Univy"
   },
   "messages": {
     "search": "Cercar xat...",
@@ -192,6 +312,8 @@
     "someone": "Algú",
     "typing_direct": "{{name}} està escrivint...",
     "typing_group": "{{name}} està escrivint...",
+    "validation_title": "Error de validació",
+    "error_title": "Error del grup de xat",
     "group": {
       "create_title": "Crear grup",
       "name_placeholder": "Nom del grup...",
@@ -199,16 +321,14 @@
       "no_followed": "Encara no segueixes cap usuari.",
       "btn_cancel": "Cancel·lar",
       "btn_create": "Crear",
-      "error_loading_followed": "Error en carregar la llista de seguits",
-      "error_name_required": "El nom del grup és obligatori",
-      "error_members_limit": "El grup ha de tenir entre 3 i 8 membres en total. Selecciona entre 2 i 7 seguits.",
-      "error_create": "Error en crear el grup de xat"
+      "limit_title": "Límit del grup",
+      "success_title": "Èxit",
+      "success_created": "¡Grup de xat creat amb èxit!"
     }
   },
   "share": {
     "title": "Enviar publicació",
     "send": "Enviar",
-    "success": "Enviat amb èxit!",
     "empty": "No s'han trobat amics"
   },
   "post_detail": {
@@ -223,7 +343,8 @@
   "common": {
     "language": "Idioma",
     "spanish": "Espanyol",
-    "catalan": "Català"
+    "catalan": "Català",
+    "error": "Error"
   },
   "assistant": {
     "welcome_msg": "Hola! Sóc en **Toni**, assistent virtual i enginyer acadèmic de la EETAC. En què et puc ajudar avui sobre l'oferta de grau o assignatures?",
@@ -231,13 +352,16 @@
     "title": "Assistent Virtual \"Toni\"",
     "subtitle": "Enginyer acadèmic expert de la EETAC",
     "thinking": "En Toni està pensant...",
-    "placeholder": "Pregunta al Toni sobre graus o assignatures..."
+    "placeholder": "Pregunta al Toni sobre graus o assignatures...",
+    "alert_error_msg": "No s'ha pogut connectar amb l'assistent virtual.",
+    "error_title": "Error de l'Assistent"
   },
   "unimatch": {
     "welcome_title": "Benvingut a UniMatch",
     "welcome_description": "Connecta amb estudiants de la teva universitat i descobreix persones amb interessos similars.",
     "privacy_notice": "Les teves fotos d'aquest mode seran visibles per a altres usuaris de UniMatch. Ningú sabrà si els hi has donat ❌ o ❤️ a menys que sigui un Match mutu.",
     "upload_instruction": "Puja almenys 1 foto per començar",
+    "photo_alt": "Foto de perfil {{index}}",
     "uploading_photos": "Pujant fotos...",
     "start_discovering": "Començar a descobrir"
   },
@@ -269,26 +393,26 @@
     "error_location": "No s'ha pogut accedir a la teva geolocalització. Centrant a la teva universitat."
   },
   "explore_filter": {
-    "error_title": "Error en carregar els filtres",
-    "server_error": "Error al contactar amb el servidor",
-    "no_results": "No s'han trobat resultats.",
-    "apply": "Aplicar",
+    "cancel": "Cancel·lar",
+    "apply": "Aplicar filtres",
+    "loading": "Carregant opcions...",
+    "no_results": "No s'han trobat resultats amb aquest filtre",
     "tabs": {
       "universidades": "Universitats",
       "grados": "Graus",
       "asignaturas": "Assignatures"
     },
     "search_placeholder": {
-      "universidades": "Buscar universitat...",
-      "grados": "Buscar grau...",
-      "asignaturas": "Buscar assignatura..."
+      "universidades": "Cerca per universitat...",
+      "grados": "Cerca per grau acadèmic...",
+      "asignaturas": "Cerca per assignatura..."
     }
   },
   "unimatch_modal": {
     "title": "És un Match!",
     "alt_me": "Tu",
     "alt_them": "Foto de {{name}}",
-    "subtitle": "Ara us seguiu mútuament i podeu xatejar!",
+    "subtitle": "Ja us seguiu! Per què no comenceu a parlar?",
     "send_message": "Enviar missatge",
     "continue": "Seguir descobrint"
   },
@@ -306,13 +430,6 @@
     "hint_like": "Like"
   },
   "universities_page": {
-    "error_loading": "Error en carregar les dades.",
-    "join_success_title": "T'has unit!",
-    "join_success_msg": "T'has unit al xat general. Ja el pots trobar a la teva secció de Missatges.",
-    "join_error": "No s'ha pogut unir al xat.",
-    "leave_success_title": "Has abandonat el xat",
-    "leave_success_msg": "Has sortit del xat general d'aquesta universitat.",
-    "leave_error": "No s'ha pogut abandonar el xat.",
     "title": "Universitats",
     "subtitle": "Fes clic en una universitat per veure les seves opcions i unir-te al seu xat general.",
     "search_placeholder": "Buscar per nom o ubicació...",
@@ -323,6 +440,6 @@
     "members_count_other": "{{count}} membres",
     "btn_go_to_chat": "Anar al xat",
     "btn_leave_chat": "Abandonar xat",
-    "btn_join_chat": "Unir-me ara"
+    "btn_join_chat": "Unir-me agora"
   }
 }

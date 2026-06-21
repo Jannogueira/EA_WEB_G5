@@ -44,8 +44,8 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
     try {
       await likePost();
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || t('postcard.like_error');
-      showAlert(t('postcard.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.like_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -54,8 +54,8 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
     try {
       await toggleSave();
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || t('postcard.save_error');
-      showAlert(t('postcard.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.save_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
     }
   };
 
@@ -64,10 +64,14 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   return (
     <div className="post-card">
       <div className="post-header" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
-        <img src={userAvatar} alt={post.usuario?.nombre || 'Usuario'} className="author-avatar" />
+        <img
+          src={userAvatar}
+          alt={post.usuario?.nombre || t('postcard.default_user')}
+          className="author-avatar"
+        />
 
         <div className="author-info">
-          <h3 className="author-name">{post.usuario?.nombre || 'Usuario'}</h3>
+          <h3 className="author-name">{post.usuario?.nombre || t('postcard.default_user')}</h3>
         </div>
       </div>
 
@@ -77,7 +81,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
           onClick={() => setShowDetailModal(true)}
           style={{ cursor: 'pointer' }}
         >
-          <img src={post.imageUrl} alt="Post content" className="post-image" />
+          <img src={post.imageUrl} alt={t('postcard.content_alt')} className="post-image" />
         </div>
       )}
 

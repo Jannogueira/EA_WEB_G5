@@ -132,8 +132,8 @@ const Profile: React.FC = () => {
           setIsFollowing(amIFollowing);
         }
       } catch (error: any) {
-        const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
-        showAlert('Error', errorMsg, 'error');
+        const errorMsg = error.response?.data?.message || t('alerts.profile.server_error');
+        showAlert(t('alerts.profile.error_title'), errorMsg, 'error');
       } finally {
         setLoading(false);
       }
@@ -155,8 +155,8 @@ const Profile: React.FC = () => {
         PostService.getPostById(postId)
           .then((res) => setSelectedPost(res.data))
           .catch((error: any) => {
-            const errorMsg = error.response?.data?.message || 'Error al cargar el post enlazado';
-            showAlert('Error', errorMsg, 'error');
+            const errorMsg = error.response?.data?.message || t('alerts.profile.error_linked_post');
+            showAlert(t('alerts.profile.error_title'), errorMsg, 'error');
           });
       }
     }
@@ -175,8 +175,8 @@ const Profile: React.FC = () => {
       if (newStatus === 'ACCEPTED') setFollowersCount((prev) => prev + 1);
       else if (!newStatus) setFollowersCount((prev) => (isFollowing ? prev - 1 : prev));
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
-      showAlert('Acción no completada', errorMsg, 'error');
+      const errorMsg = error.response?.data?.message || t('alerts.profile.server_error');
+      showAlert(t('alerts.profile.action_failed'), errorMsg, 'error');
     }
   };
 
@@ -343,8 +343,8 @@ const Profile: React.FC = () => {
                       setUnimatchPhotos(res.data);
                     } catch (error: any) {
                       const errorMsg =
-                        error.response?.data?.message || 'Error al cargar las fotos de UniMatch';
-                      showAlert('Error', errorMsg, 'error');
+                        error.response?.data?.message || t('alerts.profile.error_unimatch_photos');
+                      showAlert(t('alerts.profile.error_title'), errorMsg, 'error');
                     }
                   }}
                 >
@@ -416,8 +416,8 @@ const Profile: React.FC = () => {
                           setUnimatchPhotos((prev) => [...prev, res.data]);
                         } catch (error: any) {
                           const errorMsg =
-                            error.response?.data?.message || 'Error al subir la foto';
-                          showAlert('Error de carga', errorMsg, 'error');
+                            error.response?.data?.message || t('alerts.profile.error_upload_photo');
+                          showAlert(t('alerts.profile.upload_failed'), errorMsg, 'error');
                         } finally {
                           setUploadingUnimatch(false);
                         }
@@ -449,8 +449,9 @@ const Profile: React.FC = () => {
                                 );
                               } catch (error: any) {
                                 const errorMsg =
-                                  error.response?.data?.message || 'Error al eliminar la foto';
-                                showAlert('Error', errorMsg, 'error');
+                                  error.response?.data?.message ||
+                                  t('alerts.profile.error_delete_photo');
+                                showAlert(t('alerts.profile.error_title'), errorMsg, 'error');
                               }
                             }}
                           >

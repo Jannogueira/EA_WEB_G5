@@ -94,7 +94,7 @@ const MapEvents: React.FC = () => {
       const response = await request;
       setEventos(response.data);
     } catch (err) {
-      setErrorMsg(t('explore_filter.server_error'));
+      setErrorMsg(t('alerts.map_events.error_loading_events'));
       setTimeout(() => setErrorMsg(null), 5000);
     } finally {
       setLoading(false);
@@ -351,7 +351,7 @@ const MapEvents: React.FC = () => {
       setTempCoords(null);
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errMsg = axiosError.response?.data?.message || t('create_post.error');
+      const errMsg = axiosError.response?.data?.message || t('alerts.map_events.error_create');
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
@@ -364,7 +364,7 @@ const MapEvents: React.FC = () => {
       setSelectedEvento(response.data);
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errMsg = axiosError.response?.data?.message || t('explore_filter.server_error');
+      const errMsg = axiosError.response?.data?.message || t('alerts.map_events.error_join');
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }
@@ -379,7 +379,7 @@ const MapEvents: React.FC = () => {
       setSelectedEvento(null);
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string } } };
-      const errMsg = axiosError.response?.data?.message || t('create_post.error');
+      const errMsg = axiosError.response?.data?.message || t('alerts.map_events.error_delete');
       setErrorMsg(errMsg);
       setTimeout(() => setErrorMsg(null), 5000);
     }

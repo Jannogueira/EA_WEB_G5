@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import gradoService from '../services/grado';
 import type { Asignatura } from '../models/asignatura';
 import type { Usuario } from '../models/usuario';
 
 export default function useAsignatura(gradoId: string, usuario: Usuario | null) {
+  const { t } = useTranslation();
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,7 @@ export default function useAsignatura(gradoId: string, usuario: Usuario | null) 
         const res = await gradoService.getAsignaturas(gradoId);
         setAsignaturas(res.data);
       } catch (err: any) {
-        setError(err.message || 'Error cargando asignaturas');
+        setError(err.message || t('alerts.academic_modal.error_subjects'));
       } finally {
         setLoading(false);
       }

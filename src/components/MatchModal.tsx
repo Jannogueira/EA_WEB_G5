@@ -111,8 +111,8 @@ const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
       onClose();
       navigate('/messages');
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || t('unimatch_modal.navigation_error');
-      showAlert(t('unimatch_modal.error_title'), errorMsg, 'error');
+      const errorMsg = err.response?.data?.message || t('alerts.match.navigation_error');
+      showAlert(t('alerts.match.error_title'), errorMsg, 'error');
     }
   };
 

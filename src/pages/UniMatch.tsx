@@ -86,8 +86,8 @@ const UniMatch: React.FC = () => {
       setCurrentPhotoIndex(0);
     } catch (err: any) {
       showAlert(
-        'Error',
-        err.response?.data?.message || err.message || t('unimatch_page.error_loading_profiles'),
+        t('common.error'),
+        err.response?.data?.message || err.message || t('alerts.unimatch.error_loading_profiles'),
         'error',
       );
     } finally {
@@ -129,8 +129,8 @@ const UniMatch: React.FC = () => {
         }
       } catch (err: any) {
         showAlert(
-          'Error',
-          err.response?.data?.message || err.message || t('unimatch_page.error_swiping'),
+          t('common.error'),
+          err.response?.data?.message || err.message || t('alerts.unimatch.error_swiping'),
           'error',
         );
       }

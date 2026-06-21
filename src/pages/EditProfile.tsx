@@ -91,8 +91,8 @@ const EditProfile: React.FC = () => {
       setFormData((prev) => ({ ...prev, avatarUrl: res.url }));
     } catch (error: any) {
       const msg =
-        error.response?.data?.message || error.message || t('explore_filter.server_error');
-      showAlert(t('edit_profile.upload_error'), msg, 'error');
+        error.response?.data?.message || error.message || t('alerts.explore_filter.server_error');
+      showAlert(t('alerts.edit_profile.upload_error'), msg, 'error');
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
       setUploading(false);
@@ -108,7 +108,11 @@ const EditProfile: React.FC = () => {
     e.preventDefault();
 
     if (selectedUni && !selectedGrado && selectedUni.nombre !== 'Universidad guardada') {
-      showAlert(t('register.validation_error'), t('edit_profile.academic_change_warning'), 'error');
+      showAlert(
+        t('alerts.register.validation_error'),
+        t('edit_profile.academic_change_warning'),
+        'error',
+      );
       return;
     }
 
@@ -147,8 +151,8 @@ const EditProfile: React.FC = () => {
       }
 
       showAlert(
-        t('edit_profile.save_success_title'),
-        t('edit_profile.save_success_msg'),
+        t('alerts.edit_profile.save_success_title'),
+        t('alerts.edit_profile.save_success_msg'),
         'success',
       );
 
@@ -157,8 +161,8 @@ const EditProfile: React.FC = () => {
       }, 1500);
     } catch (error: any) {
       const msg =
-        error.response?.data?.message || error.message || t('explore_filter.server_error');
-      showAlert(t('select_university.save_error'), msg, 'error');
+        error.response?.data?.message || error.message || t('alerts.explore_filter.server_error');
+      showAlert(t('alerts.select_university.save_error'), msg, 'error');
     } finally {
       setSavingProfile(false);
     }
