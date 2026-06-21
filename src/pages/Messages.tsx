@@ -7,7 +7,18 @@ import useUser from '../hooks/useUser';
 import useChat from '../hooks/useChat';
 import { useSocket } from '../context/SocketContext';
 import { useGlobalAlert } from '../context/AlertContext';
-import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply, Users, Flag } from 'lucide-react';
+import {
+  Send,
+  User,
+  MessageCircle,
+  Search,
+  X,
+  Trash2,
+  Smile,
+  Reply,
+  Users,
+  Flag,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChatContact } from '../models/message';
 import { getFollowing } from '../services/usuario';

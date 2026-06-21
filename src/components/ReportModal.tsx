@@ -20,7 +20,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ tipo, objetivoId, onClose }) 
     'Acoso o bullying',
     'Discurso de odio',
     'Información falsa',
-    'Otros'
+    'Otros',
   ];
 
   const handleReport = async (descripcion: string) => {
@@ -71,11 +71,17 @@ const ReportModal: React.FC<ReportModalProps> = ({ tipo, objetivoId, onClose }) 
           </div>
         ) : (
           <div className="report-modal-body">
-            <p className="report-intro">¿Por qué quieres reportar este contenido? Tu reporte será anónimo.</p>
+            <p className="report-intro">
+              ¿Por qué quieres reportar este contenido? Tu reporte será anónimo.
+            </p>
             {error && <p className="report-error-msg">{error}</p>}
             <ul className="report-reasons-list">
               {reasons.map((reason, idx) => (
-                <li key={idx} className="report-reason-item" onClick={() => !loading && handleReport(reason)}>
+                <li
+                  key={idx}
+                  className="report-reason-item"
+                  onClick={() => !loading && handleReport(reason)}
+                >
                   <span>{reason}</span>
                   <ChevronRight size={18} className="chevron-icon" />
                 </li>

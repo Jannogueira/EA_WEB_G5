@@ -185,11 +185,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         />
       )}
       {showReportModal && (
-        <ReportModal
-          tipo="post"
-          objetivoId={post._id}
-          onClose={() => setShowReportModal(false)}
-        />
+        <ReportModal tipo="post" objetivoId={post._id} onClose={() => setShowReportModal(false)} />
       )}
     </div>
   );

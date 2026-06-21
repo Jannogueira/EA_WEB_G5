@@ -119,7 +119,11 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
               </div>
             </div>
 
-            <button className="post-detail-options" onClick={() => setShowReportModal(true)} title="Reportar">
+            <button
+              className="post-detail-options"
+              onClick={() => setShowReportModal(true)}
+              title="Reportar"
+            >
               <MoreHorizontal size={24} />
             </button>
           </header>
