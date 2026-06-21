@@ -6,21 +6,49 @@ import Navbar from '../components/Navbar';
 import useUser from '../hooks/useUser';
 import useChat from '../hooks/useChat';
 import { useSocket } from '../context/SocketContext';
-import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply } from 'lucide-react';
+import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChatContact } from '../models/message';
+import { getFollowing } from '../services/usuario';
+import { createGroupChat } from '../services/chat';
 
 const Messages: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { usuario } = useUser();
+
+  // Helpers safe for remitente checks
+  const getSenderId = (msg: any) => {
+    if (!msg || !msg.remitente) return '';
+    return typeof msg.remitente === 'string' ? msg.remitente : msg.remitente._id || '';
+  };
+
+  const getSenderName = (msg: any) => {
+    if (!msg || !msg.remitente) return '';
+    return typeof msg.remitente === 'string' ? '' : msg.remitente.nombre || '';
+  };
+
+  const getSenderAvatar = (msg: any) => {
+    if (!msg || !msg.remitente) return '';
+    return typeof msg.remitente === 'string' ? '' : msg.remitente.avatarUrl || '';
+  };
+
+  const getParentSenderName = (msg: any) => {
+    if (!msg || !msg.parentMessage || !msg.parentMessage.remitente) return '';
+    return typeof msg.parentMessage.remitente === 'string'
+      ? ''
+      : msg.parentMessage.remitente.nombre || '';
+  };
+
   const { unreadCounts, markAsRead } = useSocket();
   const {
     contacts,
+    setContacts,
     activeContact,
     messages,
     loadingHistory,
     typingUserId,
+    typingUserName,
     openConversation,
     sendMessage,
     emitTyping,
@@ -41,6 +69,15 @@ const Messages: React.FC = () => {
     messageId: '',
     isOwn: false,
   });
+
+  // States for group creation
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [followedUsers, setFollowedUsers] = useState<any[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [loadingFollowed, setLoadingFollowed] = useState(false);
+  const [groupError, setGroupError] = useState('');
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,6 +90,70 @@ const Messages: React.FC = () => {
       markAsRead(activeContact._id);
     }
   }, [activeContact, markAsRead]);
+
+  // Cargar seguidos para el modal de grupo
+  useEffect(() => {
+    if (isGroupModalOpen && usuario?._id) {
+      setLoadingFollowed(true);
+      setGroupError('');
+      getFollowing(usuario._id)
+        .then((res) => {
+          setFollowedUsers(res.data.seguidos || []);
+        })
+        .catch(() => {
+          setGroupError(t('messages.group.error_loading_followed'));
+        })
+        .finally(() => {
+          setLoadingFollowed(false);
+        });
+    } else {
+      setFollowedUsers([]);
+      setSelectedMembers([]);
+      setGroupName('');
+      setGroupError('');
+    }
+  }, [isGroupModalOpen, usuario?._id, t]);
+
+  const handleToggleMember = (userId: string) => {
+    setSelectedMembers((prev) => {
+      if (prev.includes(userId)) {
+        return prev.filter((id) => id !== userId);
+      } else {
+        if (prev.length >= 7) {
+          return prev;
+        }
+        return [...prev, userId];
+      }
+    });
+  };
+
+  const handleCreateGroupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setGroupError('');
+    if (!groupName.trim()) {
+      setGroupError(t('messages.group.error_name_required'));
+      return;
+    }
+    const totalMiembros = selectedMembers.length + 1;
+    if (totalMiembros < 3 || totalMiembros > 8) {
+      setGroupError(t('messages.group.error_members_limit'));
+      return;
+    }
+
+    try {
+      const res = await createGroupChat(groupName.trim(), selectedMembers);
+      const newGroup = {
+        ...res.data,
+        isGroup: true,
+        unreadCount: 0,
+      };
+      setContacts((prev) => [newGroup, ...prev]);
+      openConversation(newGroup);
+      setIsGroupModalOpen(false);
+    } catch (err: any) {
+      setGroupError(err.response?.data?.message || t('messages.group.error_create'));
+    }
+  };
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +194,17 @@ const Messages: React.FC = () => {
             </div>
           </header>
 
+          <div className="create-group-btn-container">
+            <button
+              type="button"
+              className="create-group-trigger-btn"
+              onClick={() => setIsGroupModalOpen(true)}
+            >
+              <Users size={16} />
+              {t('messages.new_group')}
+            </button>
+          </div>
+
           <div className="contacts-list">
             {filteredContacts.map((contact) => (
               <div
@@ -100,18 +212,30 @@ const Messages: React.FC = () => {
                 className={`contact-item ${activeContact?._id === contact._id ? 'active' : ''}`}
                 onClick={() => openConversation(contact)}
               >
-                <div
-                  className="contact-avatar"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/profile/${contact._id}`);
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <img src={contact.avatarUrl} alt={contact.nombre} />
-                </div>
+                {contact.isGroup ? (
+                  <div className="contact-avatar group-avatar-icon">
+                    <Users size={22} />
+                  </div>
+                ) : (
+                  <div
+                    className="contact-avatar"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/profile/${contact._id}`);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img src={contact.avatarUrl} alt={contact.nombre} />
+                  </div>
+                )}
+
                 <div className="contact-info">
                   <span className="contact-name">{contact.nombre}</span>
+                  {contact.isGroup && (
+                    <span className="group-subtitle-sidebar">
+                      {contact.miembros?.length} {t('messages.members')}
+                    </span>
+                  )}
                 </div>
                 {unreadCounts[contact._id] > 0 && (
                   <div className="unread-badge">{unreadCounts[contact._id]}</div>
@@ -130,13 +254,26 @@ const Messages: React.FC = () => {
                 </button>
                 <div
                   className="active-contact-info"
-                  onClick={() => navigate(`/profile/${activeContact._id}`)}
-                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    !activeContact.isGroup && navigate(`/profile/${activeContact._id}`)
+                  }
+                  style={{ cursor: activeContact.isGroup ? 'default' : 'pointer' }}
                 >
-                  <div className="contact-avatar-small">
-                    <img src={activeContact.avatarUrl} alt={activeContact.nombre} />
+                  {activeContact.isGroup ? (
+                    <div className="contact-avatar-small group-avatar-icon">
+                      <Users size={20} />
+                    </div>
+                  ) : (
+                    <div className="contact-avatar-small">
+                      <img src={activeContact.avatarUrl} alt={activeContact.nombre} />
+                    </div>
+                  )}
+                  <div>
+                    <h3>{activeContact.nombre}</h3>
+                    {activeContact.isGroup && (
+                      <span className="group-badge">{t('messages.group_badge')}</span>
+                    )}
                   </div>
-                  <h3>{activeContact.nombre}</h3>
                 </div>
               </header>
 
@@ -147,20 +284,23 @@ const Messages: React.FC = () => {
                   messages.map((msg) => (
                     <div key={msg._id} id={msg._id} className="message-row">
                       <div
-                        className={`message-wrapper ${msg.remitente._id === usuario?._id ? 'own' : 'received'}`}
+                        className={`message-wrapper ${getSenderId(msg) === usuario?._id ? 'own' : 'received'}`}
                       >
-                        {msg.remitente._id !== usuario?._id && (
+                        {getSenderId(msg) !== usuario?._id && (
                           <div
                             className="msg-sender-avatar"
-                            onClick={() => navigate(`/profile/${msg.remitente._id}`)}
+                            onClick={() => navigate(`/profile/${getSenderId(msg)}`)}
                             style={{ cursor: 'pointer' }}
                           >
-                            <img src={msg.remitente.avatarUrl} alt="" />
+                            <img src={getSenderAvatar(msg)} alt="" />
                           </div>
                         )}
                         <div
-                          className={`message-bubble ${msg.remitente._id === usuario?._id ? 'own' : 'received'} ${msg.eliminadoParaTodos ? 'deleted-msg' : ''} ${msg.post ? 'post-msg' : ''}`}
+                          className={`message-bubble ${getSenderId(msg) === usuario?._id ? 'own' : 'received'} ${msg.eliminadoParaTodos ? 'deleted-msg' : ''} ${msg.post ? 'post-msg' : ''}`}
                         >
+                          {activeContact.isGroup && getSenderId(msg) !== usuario?._id && (
+                            <span className="group-member-name-chat">{getSenderName(msg)}</span>
+                          )}
                           {msg.parentMessage && !msg.eliminadoParaTodos && (
                             <div
                               className="quoted-message-preview"
@@ -173,14 +313,14 @@ const Messages: React.FC = () => {
                                 }
                               }}
                             >
-                              <span className="quoted-author">
-                                {msg.parentMessage.remitente.nombre}
-                              </span>
+                              <span className="quoted-author">{getParentSenderName(msg)}</span>
                               <p className="quoted-text">
                                 {msg.parentMessage.eliminadoParaTodos
                                   ? t('messages.deleted')
                                   : msg.parentMessage.post
-                                    ? '📷 ' + (msg.parentMessage.post.caption || 'Publicación')
+                                    ? '📷 ' +
+                                      (msg.parentMessage.post.caption ||
+                                        t('messages.shared_post_fallback'))
                                     : msg.parentMessage.contenido}
                               </p>
                             </div>
@@ -261,7 +401,7 @@ const Messages: React.FC = () => {
                               <button
                                 className="msg-action-btn"
                                 onClick={() =>
-                                  handleDeleteClick(msg._id, msg.remitente._id === usuario?._id)
+                                  handleDeleteClick(msg._id, getSenderId(msg) === usuario?._id)
                                 }
                               >
                                 <Trash2 size={14} />
@@ -300,7 +440,7 @@ const Messages: React.FC = () => {
               </div>
 
               {/* Indicador de escribiendo flotante */}
-              {typingUserId === activeContact._id && (
+              {typingUserId && typingUserId !== usuario?._id && (
                 <div className="typing-indicator-chat">
                   <div className="typing-dots">
                     <span></span>
@@ -308,7 +448,11 @@ const Messages: React.FC = () => {
                     <span></span>
                   </div>
                   <span>
-                    {activeContact.nombre} {t('messages.typing')}
+                    {activeContact.isGroup
+                      ? t('messages.typing_group', {
+                          name: typingUserName || t('messages.someone'),
+                        })
+                      : t('messages.typing_direct', { name: activeContact.nombre })}
                   </span>
                 </div>
               )}
@@ -317,7 +461,7 @@ const Messages: React.FC = () => {
               {replyingTo && (
                 <div className="reply-preview-container">
                   <div className="reply-preview-content">
-                    <span className="reply-author">{replyingTo.remitente.nombre}</span>
+                    <span className="reply-author">{getSenderName(replyingTo)}</span>
                     <p className="reply-text">{replyingTo.contenido}</p>
                   </div>
                   <button className="cancel-reply-btn" onClick={() => setReplyingTo(null)}>
@@ -388,6 +532,84 @@ const Messages: React.FC = () => {
                 {t('messages.cancel')}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {isGroupModalOpen && (
+        <div className="group-modal-overlay" onClick={() => setIsGroupModalOpen(false)}>
+          <div className="group-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="group-modal-header">
+              <h3>{t('messages.group.create_title')}</h3>
+              <span className="group-members-count">{selectedMembers.length + 1}/8</span>
+            </div>
+
+            <form onSubmit={handleCreateGroupSubmit}>
+              <div className="group-form-group">
+                <input
+                  type="text"
+                  id="group-name"
+                  className="group-input"
+                  placeholder={t('messages.group.name_placeholder')}
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  required
+                  autoComplete="off"
+                />
+              </div>
+
+              <div className="group-form-group" style={{ marginTop: '8px' }}>
+                {loadingFollowed ? (
+                  <div className="group-loading">{t('messages.group.loading_followed')}</div>
+                ) : followedUsers.length === 0 ? (
+                  <div className="group-empty-state">{t('messages.group.no_followed')}</div>
+                ) : (
+                  <div className="member-selection-list">
+                    {followedUsers.map((user) => {
+                      const isSelected = selectedMembers.includes(user._id);
+                      return (
+                        <div
+                          key={user._id}
+                          className={`member-select-item ${isSelected ? 'selected' : ''}`}
+                          onClick={() => handleToggleMember(user._id)}
+                        >
+                          <div className="member-select-avatar">
+                            <img src={user.avatarUrl} alt="" />
+                          </div>
+                          <span className="member-select-name">{user.nombre}</span>
+                          <div className="member-select-checkbox" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {groupError && (
+                <div className="group-rules-hint" style={{ marginTop: '8px' }}>
+                  {groupError}
+                </div>
+              )}
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="group-btn cancel"
+                  onClick={() => setIsGroupModalOpen(false)}
+                >
+                  {t('messages.group.btn_cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className="group-btn create"
+                  disabled={
+                    !groupName.trim() || selectedMembers.length < 2 || selectedMembers.length > 7
+                  }
+                >
+                  {t('messages.group.btn_create')}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

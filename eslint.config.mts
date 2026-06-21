@@ -6,7 +6,7 @@ import { defineConfig } from 'eslint/config';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
-  { ignores: ['node_modules/**', 'dist/**'] },
+  { ignores: ['node_modules/**', 'dist/**', 'public/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,

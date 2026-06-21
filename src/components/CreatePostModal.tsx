@@ -33,7 +33,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       const res = await uploadImage(file);
       setFormData((prev) => ({ ...prev, imageUrl: res.url }));
     } catch (err) {
-      //Error manejado en la pagina
+      setError(t('edit_profile.upload_error'));
     } finally {
       setUploading(false);
     }
@@ -47,7 +47,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     e.preventDefault();
 
     if (!formData.imageUrl) {
-      setError('Por favor selecciona una imagen primero');
+      setError(t('create_post.image_required'));
       return;
     }
 
@@ -79,7 +79,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
             {uploading ? (
               <div className="img-placeholder">
                 <Loader2 size={48} className="animate-spin" />
-                <p>Subiendo a Cloudinary...</p>
+                <p>{t('create_post.uploading')}</p>
               </div>
             ) : formData.imageUrl ? (
               <img src={formData.imageUrl} alt="Preview" className="img-preview" />

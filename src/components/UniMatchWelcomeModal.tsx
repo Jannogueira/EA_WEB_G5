@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { uploadUnimatchPhoto, acceptUnimatchTerms } from '../services/unimatch';
+import { useTranslation } from 'react-i18next';
 import './UniMatchWelcomeModal.css';
 
 interface Props {
@@ -17,6 +18,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
   const [photos, setPhotos] = useState<PreviewPhoto[]>([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -85,20 +87,15 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
           </button>
         )}
         <div className="welcome-icon">🔥</div>
-        <h2>Bienvenido a UniMatch</h2>
-        <p>
-          Conecta con estudiantes de tu universidad y descubre personas con intereses similares.
-        </p>
+        <h2>{t('unimatch.welcome_title')}</h2>
+        <p>{t('unimatch.welcome_description')}</p>
 
         <div className="welcome-privacy-notice">
-          <span>
-            Tus fotos de este modo serán visibles para otros usuarios de UniMatch. Nadie sabrá si
-            les diste ❌ o ❤️ a menos que sea un Match mutuo.
-          </span>
+          <span>{t('unimatch.privacy_notice')}</span>
         </div>
 
         <div className="welcome-photo-section">
-          <h4>Sube al menos 1 foto para empezar</h4>
+          <h4>{t('unimatch.upload_instruction')}</h4>
           <div className="photo-upload-grid">
             {photos.map((photo, index) => (
               <div key={index} className="photo-upload-slot has-photo">
@@ -137,10 +134,10 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
           {uploading ? (
             <span className="welcome-loading">
               <span className="welcome-spinner" />
-              Subiendo fotos...
+              {t('unimatch.uploading_photos')}
             </span>
           ) : (
-            `Empezar a descubrir`
+            t('unimatch.start_discovering')
           )}
         </button>
       </div>

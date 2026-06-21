@@ -1,6 +1,6 @@
 .welcome-modal-overlay {
   position: fixed;
-  top: 0;
+  top: 0px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 10000;
   animation: fadeIn 0.3s ease;
 }
 
@@ -32,6 +32,7 @@
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0px;
 }
 
 @keyframes slideUp {

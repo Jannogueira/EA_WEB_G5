@@ -10,6 +10,9 @@ import {
   Bell,
   Heart,
   Search,
+  Bookmark,
+  Bot,
+  Map,
 } from 'lucide-react';
 import CreatePostModal from './CreatePostModal';
 import { useSocket } from '../context/SocketContext';
@@ -18,7 +21,7 @@ import './Sidebar.css';
 import type { Usuario } from '../models/usuario';
 
 const Sidebar: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { unreadCounts, notificationCount } = useSocket();
@@ -44,11 +47,6 @@ const Sidebar: React.FC = () => {
     }
   };
 
-  const toggleLanguage = () => {
-    const nextLang = i18n.language === 'es' ? 'ca' : 'es';
-    i18n.changeLanguage(nextLang);
-  };
-
   return (
     <>
       <div className="sidebar">
@@ -72,6 +70,22 @@ const Sidebar: React.FC = () => {
           >
             <Search size={20} className="btn-icon" />
             <span className="btn-text">{t('sidebar.explore')}</span>
+          </button>
+
+          <button
+            className={`sidebar-btn ${isActive('/saved') ? 'active' : ''}`}
+            onClick={() => navigate('/saved')}
+          >
+            <Bookmark size={20} className="btn-icon" />
+            <span className="btn-text">{t('sidebar.saved')}</span>
+          </button>
+
+          <button
+            className={`sidebar-btn ${isActive('/map') ? 'active' : ''}`}
+            onClick={() => navigate('/map')}
+          >
+            <Map size={20} className="btn-icon" />
+            <span className="btn-text">{t('sidebar.map')}</span>
           </button>
 
           <button
@@ -115,24 +129,15 @@ const Sidebar: React.FC = () => {
               </div>
             )}
           </button>
-        </nav>
 
-        <div className="sidebar-footer">
-          <div className="lang-segmented-control">
-            <button
-              className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
-              onClick={() => i18n.changeLanguage('es')}
-            >
-              ES
-            </button>
-            <button
-              className={`lang-option ${i18n.language.startsWith('ca') ? 'active' : ''}`}
-              onClick={() => i18n.changeLanguage('ca')}
-            >
-              CA
-            </button>
-          </div>
-        </div>
+          <button
+            className={`sidebar-btn ${isActive('/assistant') ? 'active' : ''}`}
+            onClick={() => navigate('/assistant')}
+          >
+            <Bot size={20} className="btn-icon" />
+            <span className="btn-text">{t('sidebar.assistant')}</span>
+          </button>
+        </nav>
       </div>
 
       {isModalOpen && usuario && (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './SharePostModal.css';
 import { X, Search, Send, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getContacts } from '../services/chat.service';
+import { getContacts } from '../services/chat';
 import type { ChatContact } from '../models/message';
 import { useSocket } from '../context/SocketContext';
 
@@ -58,7 +58,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
     <div className="share-modal-overlay" onClick={onClose}>
       <div className="share-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="share-modal-header">
-          <h2>{t('share.title') || 'Enviar publicación'}</h2>
+          <h2>{t('share.title')}</h2>
           <button className="close-x-btn" onClick={onClose}>
             <X size={20} />
           </button>
@@ -67,7 +67,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
         {sent ? (
           <div className="share-sent-success">
             <CheckCircle2 size={60} color="#10b981" />
-            <p>{t('share.success') || '¡Enviado con éxito!'}</p>
+            <p>{t('share.success')}</p>
           </div>
         ) : (
           <>
@@ -75,7 +75,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
               <Search size={18} className="search-icon" />
               <input
                 type="text"
-                placeholder={t('messages.search') || 'Buscar...'}
+                placeholder={t('messages.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -94,7 +94,10 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
                     onClick={() => toggleContact(contact._id)}
                   >
                     <div className="contact-avatar-small">
-                      <img src={contact.avatarUrl} alt={contact.nombre} />
+                      <img
+                        src={contact.avatarUrl}
+                        alt={t('unimatch_modal.alt_them', { name: contact.nombre })}
+                      />
                     </div>
                     <span className="contact-name">{contact.nombre}</span>
                     <div className="checkbox-indicator">
@@ -103,7 +106,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
                   </div>
                 ))
               ) : (
-                <div className="share-empty">No se encontraron amigos</div>
+                <div className="share-empty">{t('share.empty')}</div>
               )}
             </div>
 
@@ -113,7 +116,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
                 disabled={selectedContacts.length === 0}
                 onClick={handleShare}
               >
-                <span>{t('share.send') || 'Enviar'}</span>
+                <span>{t('share.send')}</span>
                 <Send size={18} />
               </button>
             </footer>

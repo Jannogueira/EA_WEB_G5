@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Library, GraduationCap, X, ChevronRight, ChevronLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import SelectionStep from './SelectionStep';
 import universidadService from '../services/universidad';
 import gradoService from '../services/grado';
@@ -29,6 +30,7 @@ const AcademicSelectorModal: React.FC<Props> = ({
   const [selectedUni, setSelectedUni] = useState<Universidad | null>(initialUni || null);
   const [selectedGrado, setSelectedGrado] = useState<Grado | null>(initialGrado || null);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (open) {
@@ -106,17 +108,21 @@ const AcademicSelectorModal: React.FC<Props> = ({
 
         <div className="academic-modal-content">
           <div className="academic-step-indicator">
-            <div className={`step-pill ${step === 1 ? 'active' : ''}`}>1. Universidad</div>
+            <div className={`step-pill ${step === 1 ? 'active' : ''}`}>
+              1. {t('academic_modal.step_uni')}
+            </div>
             <div className="step-arrow">
               <ChevronRight size={14} />
             </div>
-            <div className={`step-pill ${step === 2 ? 'active' : ''}`}>2. Grado</div>
+            <div className={`step-pill ${step === 2 ? 'active' : ''}`}>
+              2. {t('academic_modal.step_degree')}
+            </div>
           </div>
 
           {step === 1 ? (
             <SelectionStep
-              title="Selecciona Universidad"
-              subtitle="Busca tu centro de estudios"
+              title={t('academic_modal.select_uni_title')}
+              subtitle={t('academic_modal.select_uni_subtitle')}
               items={universidades}
               selectedIds={selectedUni ? [selectedUni._id] : []}
               onSelect={handleSelectUni}
@@ -126,11 +132,11 @@ const AcademicSelectorModal: React.FC<Props> = ({
           ) : (
             <div className="grado-selection-wrapper">
               <button className="back-to-uni" onClick={() => setStep(1)}>
-                <ChevronLeft size={16} /> Cambiar Universidad
+                <ChevronLeft size={16} /> {t('academic_modal.change_uni')}
               </button>
               <SelectionStep
-                title="Selecciona tu Grado"
-                subtitle="Elige tu carrera actual"
+                title={t('academic_modal.select_degree_title')}
+                subtitle={t('academic_modal.select_degree_subtitle')}
                 items={grados}
                 selectedIds={selectedGrado ? [selectedGrado._id] : []}
                 onSelect={handleSelectGrado}
@@ -143,11 +149,11 @@ const AcademicSelectorModal: React.FC<Props> = ({
 
         <div className="academic-modal-footer">
           <button className="academic-cancel-btn" onClick={onClose}>
-            Cancelar
+            {t('academic_modal.cancel')}
           </button>
           {step === 2 && (
             <button className="academic-save-btn" disabled={!selectedGrado} onClick={handleConfirm}>
-              Confirmar Selección
+              {t('academic_modal.confirm')}
             </button>
           )}
         </div>

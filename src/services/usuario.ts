@@ -68,6 +68,10 @@ export const rejectFollowRequest = (followerId: string) => {
   return apiClient.post(`/usuarios/requests/reject/${followerId}`);
 };
 
+export const updateFcmToken = (fcmToken: string | null) => {
+  return apiClient.put('/usuarios/fcm-token', { fcmToken });
+};
+
 const exportedService = {
   ...service,
   updateSelf,
@@ -80,6 +84,7 @@ const exportedService = {
   updateAsignaturas,
   acceptFollowRequest,
   rejectFollowRequest,
+  updateFcmToken,
 };
 
 export default exportedService;

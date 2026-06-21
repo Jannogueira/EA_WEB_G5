@@ -13,13 +13,25 @@
   height: 70px;
 }
 
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.navbar-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
 .brand-name {
   font-size: 1.5rem;
   font-weight: 800;
   background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  cursor: pointer;
   letter-spacing: -0.5px;
 }
 
@@ -27,6 +39,68 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+/* --- LANGUAGE SEGMENTED CONTROL (Updated for 3 options) --- */
+.lang-segmented-control {
+  display: flex;
+  position: relative;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  width: 130px;
+  overflow: hidden;
+}
+
+.lang-indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(33.333% - 5.333px);
+  background: var(--accent-purple);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.lang-indicator.es {
+  transform: translateX(0);
+}
+
+.lang-indicator.ca {
+  transform: translateX(calc(100% + 4px));
+}
+
+.lang-indicator.en {
+  transform: translateX(calc(200% + 8px));
+}
+
+.lang-option {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.lang-option:hover:not(.active) {
+  color: var(--text-main);
+}
+
+.lang-option.active {
+  color: white !important;
 }
 
 /* --- THEME TOGGLE SWITCH --- */
@@ -108,7 +182,7 @@
   cursor: pointer;
   box-shadow: 0 0 10px var(--accent-glow);
   transition: transform 0.2s;
-  overflow: hidden; /* Important for the img inside */
+  overflow: hidden;
 }
 
 .nav-avatar-img {
@@ -271,5 +345,15 @@
 
   .brand-name {
     font-size: 1.25rem;
+  }
+
+  .lang-segmented-control {
+    width: 105px; /* Increased from 75px in mobile view */
+    padding: 2px;
+  }
+
+  .lang-option {
+    padding: 4px 0;
+    font-size: 0.75rem;
   }
 }

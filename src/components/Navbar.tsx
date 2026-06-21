@@ -13,7 +13,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -38,13 +38,38 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left">
-        <span className="brand-name" onClick={() => navigate('/home')}>
-          Univy
-        </span>
+      <div className="navbar-left" onClick={() => navigate('/home')}>
+        <span className="brand-name">Univy</span>
       </div>
 
       <div className="navbar-right">
+        {/* Language slider updated to supporting 3 languages */}
+        <div className="lang-segmented-control">
+          <div
+            className={`lang-indicator ${
+              i18n.language.startsWith('es') ? 'es' : i18n.language.startsWith('ca') ? 'ca' : 'en'
+            }`}
+          />
+          <button
+            className={`lang-option ${i18n.language.startsWith('es') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('es')}
+          >
+            ES
+          </button>
+          <button
+            className={`lang-option ${i18n.language.startsWith('ca') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('ca')}
+          >
+            CA
+          </button>
+          <button
+            className={`lang-option ${i18n.language.startsWith('en') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            EN
+          </button>
+        </div>
+
         <ThemeToggle />
 
         <div className="profile-container">
@@ -89,8 +114,6 @@ const Navbar: React.FC<NavbarProps> = ({ usuario: propUsuario }) => {
           )}
         </div>
       </div>
-
-      {/*menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />*/}
     </nav>
   );
 };

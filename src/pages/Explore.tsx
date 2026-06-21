@@ -20,6 +20,7 @@ import type { Asignatura } from '../models/asignatura';
 import type { Post } from '../models/post';
 import PostDetailModal from '../components/PostDetailModal';
 import usePost from '../hooks/usePost';
+import SharePostModal from '../components/SharePostModal';
 
 const DiscoveryPostItem: React.FC<{ post: Post; onClick: () => void }> = ({ post, onClick }) => {
   return (
@@ -36,6 +37,41 @@ const DiscoveryPostItem: React.FC<{ post: Post; onClick: () => void }> = ({ post
         </div>
       </div>
     </div>
+  );
+};
+
+const ExplorePostModal: React.FC<{
+  post: Post;
+  onClose: () => void;
+  currentUserId: string | null;
+}> = ({ post, onClose, currentUserId }) => {
+  const {
+    post: p,
+    likePost,
+    likeComment,
+    addComment,
+    loadingComment,
+    toggleSave,
+    isSaved,
+  } = usePost(post);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  return (
+    <>
+      <PostDetailModal
+        post={p}
+        currentUserId={currentUserId}
+        onClose={onClose}
+        onLike={likePost}
+        onLikeComment={likeComment}
+        onAddComment={addComment}
+        loadingComment={loadingComment}
+        onShare={() => setShowShareModal(true)}
+        onToggleSave={toggleSave}
+        isSaved={isSaved}
+      />
+      {showShareModal && <SharePostModal postId={p._id} onClose={() => setShowShareModal(false)} />}
+    </>
   );
 };
 
@@ -90,7 +126,8 @@ const Explore: React.FC = () => {
         if (!mounted.current) return;
         setGrados(gRes.data);
         setAsignaturas(aRes.data);
-        setDiscoveryPosts(postRes.data.docs ?? postRes.data ?? []);
+        const rawData = postRes.data as any;
+        setDiscoveryPosts(Array.isArray(rawData) ? rawData : (rawData?.docs ?? []));
       } catch (error: any) {
         const errorMsg = error.data || 'Error connecting with server';
         setAlert({ type: 'error', title: 'Error', message: errorMsg });
@@ -167,7 +204,10 @@ const Explore: React.FC = () => {
   const handlePostClick = async (post: Post) => {
     try {
       const res = await postService.getPostById(post._id);
-      setSelectedPost(res.data);
+      setSelectedPost({
+        ...res.data,
+        isSaved: post.isSaved,
+      });
     } catch (error) {
       setSelectedPost(post);
     }
@@ -239,15 +279,10 @@ const Explore: React.FC = () => {
       </div>
 
       {selectedPost && (
-        <PostDetailModal
+        <ExplorePostModal
           post={selectedPost}
           currentUserId={usuario?._id || null}
           onClose={() => setSelectedPost(null)}
-          onLike={() => {}} // Could implement local like updates if needed
-          onLikeComment={() => {}}
-          onAddComment={() => {}}
-          loadingComment={false}
-          onShare={() => {}}
         />
       )}
 

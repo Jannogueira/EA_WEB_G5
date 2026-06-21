@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useUser from '../hooks/useUser';
 import useAsignatura from '../hooks/useAsignatura';
 import usuarioService from '../services/usuario';
@@ -22,6 +23,7 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
 
   const [saving, setSaving] = useState(false);
   const [alert, setAlert] = useState<AlertState | null>(null);
+  const { t } = useTranslation();
 
   if (!open || !usuario) return null;
 
@@ -37,7 +39,7 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
     } catch (error: any) {
       setAlert({
         type: 'error',
-        title: 'Error al guardar',
+        title: t('select_university.save_error'),
         message: error.response?.data?.message || 'No se pudieron guardar las asignaturas',
       });
     } finally {
@@ -63,8 +65,8 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
 
         <div className="academic-modal-content">
           <SelectionStep
-            title="Tus Asignaturas"
-            subtitle="Selecciona las materias que cursas"
+            title={t('select_university.step3_title')}
+            subtitle={t('select_university.step3_subtitle')}
             items={asignaturas}
             selectedIds={selected}
             onSelect={toggle}
@@ -76,10 +78,10 @@ const AsignaturasModal: React.FC<Props> = ({ gradoId, open, onClose, onUpdated }
 
         <div className="academic-modal-footer">
           <button className="academic-cancel-btn" onClick={onClose} disabled={saving}>
-            Cancelar
+            {t('edit_profile.cancel')}
           </button>
           <button className="academic-save-btn" onClick={handleSave} disabled={saving}>
-            {saving ? 'Guardando...' : 'Guardar Selección'}
+            {saving ? t('select_university.saving') : t('edit_profile.save')}
           </button>
         </div>
       </div>

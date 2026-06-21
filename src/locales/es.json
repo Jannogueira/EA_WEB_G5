@@ -3,16 +3,19 @@
     "home": "Inicio",
     "create": "Crear",
     "explore": "Explorar",
+    "saved": "Guardados",
     "university": "Universidad",
     "classes": "Clases",
     "messages": "Mensajes",
-    "notifications": "Notificaciones"
+    "notifications": "Notificaciones",
+    "assistant": "Asistente",
+    "map": "Mapa"
   },
   "home": {
     "title": "Feed",
     "subtitle": "Explora lo que está pasando en Univy",
     "loading": "Cargando más posts increíbles...",
-    "end": "Has llegado al final. ¡Vuelve más tarde!",
+    "end": "¡Has llegado al final! ¡Vuelve más tarde!",
     "empty": "No hay posts todavía"
   },
   "explore": {
@@ -42,7 +45,58 @@
     "pending": "Solicitado",
     "following": "Siguiendo",
     "private_title": "Esta cuenta es privada",
-    "private_subtitle": "Sigue a este usuario para ver sus publicaciones."
+    "private_subtitle": "Sigue a este usuario para ver sus publicaciones.",
+    "add_photo": "Añadir foto",
+    "empty_unimatch": "Sin fotos de UniMatch",
+    "no_unimatch_photos": "Este usuario aún no ha subido fotos a UniMatch."
+  },
+  "saved_posts": {
+    "title": "Posts Guardados"
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "password": "Contraseña",
+    "submit": "Entrar",
+    "email_placeholder": "correo@ejemplo.com",
+    "loading": "Cargando...",
+    "divider": "o también",
+    "no_account": "¿No tienes cuenta? ",
+    "register_here": "Regístrate aquí",
+    "error_title": "Fallo de inicio de sesión",
+    "google_error_title": "Error de Google OAuth",
+    "google_error_msg": "No se recibieron credenciales de Google"
+  },
+  "register": {
+    "title": "Únete a Univy",
+    "subtitle": "Crea tu cuenta universitaria hoy mismo",
+    "full_name": "Nombre Completo",
+    "academic_email": "Email Académico",
+    "repeat_password": "Repetir Contraseña",
+    "next": "Siguiente",
+    "processing": "Procesando...",
+    "has_account": "¿Ya eres parte de nuestra comunidad?",
+    "access_campus": "Acceder al campus",
+    "validation_error": "Error de validación",
+    "password_mismatch": "Las contraseñas no coinciden",
+    "failed_title": "Acción fallida"
+  },
+  "select_university": {
+    "success_title": "¡Registro completado!",
+    "success_msg": "Tu perfil académico se ha configurado correctamente.",
+    "save_error": "Error al guardar",
+    "step1_title": "¿Dónde estás estudiando?",
+    "step1_subtitle": "Selecciona tu universidad para encontrar a tus compañeros",
+    "step1_placeholder": "Buscar universidad...",
+    "step2_title": "¿Qué carrera cursas?",
+    "step2_subtitle": "Filtra por tu grado académico",
+    "step2_placeholder": "Buscar grado...",
+    "step3_title": "Tus asignaturas",
+    "step3_subtitle": "Selecciona las materias que estás cursando este semestre",
+    "step3_placeholder": "Buscar asignatura...",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "saving": "Guardando...",
+    "finish": "Finalizar Registro"
   },
   "edit_profile": {
     "title": "Editar Perfil",
@@ -65,9 +119,21 @@
     "save_success_msg": "Tu perfil se ha actualizado correctamente.",
     "label_academic": "Información Académica",
     "label_university": "Universidad",
+    "no_university": "Sin universidad",
     "label_degree": "Grado",
     "change_academic_btn": "Cambiar Universidad o Grado",
     "academic_change_warning": "Has cambiado tu universidad o grado. No olvides guardar los cambios y actualizar tus asignaturas si es necesario."
+  },
+  "academic_modal": {
+    "step_uni": "Universidad",
+    "step_degree": "Grado",
+    "select_uni_title": "Selecciona Universidad",
+    "select_uni_subtitle": "Busca tu centro de estudios",
+    "change_uni": "Cambiar Universidad",
+    "select_degree_title": "Selecciona tu Grado",
+    "select_degree_subtitle": "Elige tu carrera actual",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar Selección"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -80,7 +146,8 @@
       "comment": "ha comentado: ",
       "follow": "ha empezado a seguirte.",
       "follow_request": "quiere seguirte.",
-      "follow_accepted": "ha aceptado tu solicitud de seguimiento."
+      "follow_accepted": "ha aceptado tu solicitud de seguimiento.",
+      "match": "¡Es un Match! Ya podéis chatear."
     },
     "follow_back": "Devolver follow",
     "confirm": "Confirmar",
@@ -93,7 +160,9 @@
     "label_caption": "Pie de foto",
     "sharing": "Compartiendo...",
     "publish": "Publicar",
-    "error": "Error al crear la publicación."
+    "error": "Error al crear la publicación.",
+    "uploading": "Subiendo la imagen...",
+    "image_required": "Por favor, selecciona una imagen primero"
   },
   "postcard": {
     "comment_placeholder": "Escribe un comentario...",
@@ -106,8 +175,7 @@
   "messages": {
     "search": "Buscar chat...",
     "available": "Chat disponible",
-    "loading": "Cargando...",
-    "typing": "está escribiendo...",
+    "loading": "Cargando historial...",
     "placeholder": "Escribe un mensaje...",
     "title": "Tus Mensajes",
     "empty": "Selecciona una conversación para empezar.",
@@ -116,7 +184,26 @@
     "delete_everyone": "Eliminar para todos",
     "cancel": "Cancelar",
     "deleted": "El mensaje ha sido eliminado",
-    "private_post": "Esta publicación es privada y no puedes verla."
+    "private_post": "Esta publicación es privada y no puedes verla.",
+    "shared_post_fallback": "Publicación",
+    "new_group": "Nuevo Grupo",
+    "members": "miembros",
+    "group_badge": "Grupo",
+    "someone": "Alguien",
+    "typing_direct": "{{name}} está escribiendo...",
+    "typing_group": "{{name}} está escribiendo...",
+    "group": {
+      "create_title": "Crear grupo",
+      "name_placeholder": "Nombre del grupo...",
+      "loading_followed": "Cargando seguidos...",
+      "no_followed": "No sigues a ningún usuario aún.",
+      "btn_cancel": "Cancelar",
+      "btn_create": "Crear",
+      "error_loading_followed": "Error al cargar la lista de seguidos",
+      "error_name_required": "El nombre del grupo es obligatorio",
+      "error_members_limit": "El grupo debe tener entre 3 y 8 miembros en total. Selecciona entre 2 y 7 seguidos.",
+      "error_create": "Error al crear el grupo de chat"
+    }
   },
   "share": {
     "title": "Enviar publicación",
@@ -137,5 +224,105 @@
     "language": "Idioma",
     "spanish": "Español",
     "catalan": "Catalán"
+  },
+  "assistant": {
+    "welcome_msg": "¡Hola! Soy **Toni**, asistente virtual e ingeniero académico de la EETAC. ¿En qué puedo ayudarte hoy sobre la oferta de grado o asignaturas?",
+    "error_msg": "Lo siento, no he podido procesar tu solicitud en este momento. Por favor, vuelve a intentarlo más tarde.",
+    "title": "Asistente Virtual \"Toni\"",
+    "subtitle": "Ingeniero académico experto de la EETAC",
+    "thinking": "Toni está pensando...",
+    "placeholder": "Pregunta a Toni sobre grados o asignaturas..."
+  },
+  "unimatch": {
+    "welcome_title": "Bienvenido a UniMatch",
+    "welcome_description": "Conecta con estudiantes de tu universidad y descubre personas con intereses similares.",
+    "privacy_notice": "Tus fotos de este modo serán visibles para otros usuarios de UniMatch. Nadie sabrá si les diste ❌ o ❤️ a menos que sea un Match mutuo.",
+    "upload_instruction": "Sube al menos 1 foto para empezar",
+    "uploading_photos": "Subiendo fotos...",
+    "start_discovering": "Empezar a descubrir"
+  },
+  "map_events": {
+    "title": "Mapa de Eventos",
+    "subtitle": "Descubre y participa en eventos a tu alrededor",
+    "create_btn": "Crear Evento",
+    "loading": "Obteniendo ubicación y eventos...",
+    "form_title": "Crear Nuevo Evento",
+    "form_click_map": "Haz clic en el mapa para situar el evento o usa tus coordenadas.",
+    "form_title_label": "Título del evento",
+    "form_desc_label": "Descripción",
+    "form_date_label": "Fecha y Hora",
+    "form_loc_label": "Nombre de la ubicación (ej: Aula 101, Campus Nord)",
+    "form_max_attendees": "Asistentes máximos (opcional)",
+    "form_deadline_label": "Fecha/Hora Límite (opcional)",
+    "form_submit": "Crear Evento",
+    "form_cancel": "Cancelar",
+    "details_title": "Detalles del Evento",
+    "details_created_by": "Creado por",
+    "details_attendees": "Asistentes",
+    "details_deadline": "Fecha Límite",
+    "details_join": "Asistir",
+    "details_leave": "Cancelar Asistencia",
+    "details_delete": "Eliminar Evento",
+    "list_title": "Eventos Cercanos",
+    "list_empty": "No hay eventos creados todavía. ¡Sé el primero!",
+    "list_distance": "a {{distance}}m de ti",
+    "error_location": "No se pudo acceder a tu geolocalización. Centrando en tu universidad."
+  },
+  "explore_filter": {
+    "error_title": "Error al cargar filtros",
+    "server_error": "Error al contactar con el servidor",
+    "no_results": "No se encontraron resultados.",
+    "apply": "Aplicar",
+    "tabs": {
+      "universidades": "Universidades",
+      "grados": "Grados",
+      "asignaturas": "Asignaturas"
+    },
+    "search_placeholder": {
+      "universidades": "Buscar universidad...",
+      "grados": "Buscar grado...",
+      "asignaturas": "Buscar asignatura..."
+    }
+  },
+  "unimatch_modal": {
+    "title": "¡Es un Match!",
+    "alt_me": "Tú",
+    "alt_them": "Foto de {{name}}",
+    "subtitle": "¡Ahora os seguís mutuamente y podéis chatear!",
+    "send_message": "Enviar mensaje",
+    "continue": "Seguir descubriendo"
+  },
+  "selection_step": {
+    "default_placeholder": "Buscar...",
+    "loading": "Cargando opciones...",
+    "no_matches": "No se encontraron coincidencias para \"{{query}}\""
+  },
+  "unimatch_page": {
+    "loading": "Buscando perfiles...",
+    "empty_title": "Has llegado al final del campus",
+    "empty_subtitle": "No hay más perfiles por ahora.",
+    "empty_sub_notice": "¡Vuelve más tarde para descubrir nuevas personas!",
+    "hint_pass": "Pasar",
+    "hint_like": "Like"
+  },
+  "universities_page": {
+    "error_loading": "Error al cargar los datos.",
+    "join_success_title": "¡Te has unido!",
+    "join_success_msg": "Te has unido al chat general. Ya puedes encontrarlo en tu sección de Mensajes.",
+    "join_error": "No se pudo unir al chat.",
+    "leave_success_title": "Has abandonado el chat",
+    "leave_success_msg": "Has salido del chat general de esta universidad.",
+    "leave_error": "No se pudo abandonar el chat.",
+    "title": "Universidades",
+    "subtitle": "Haz clic en una universidad para ver sus opciones y unirte a su chat general.",
+    "search_placeholder": "Buscar por nombre o ubicación...",
+    "loading_state": "Cargando directorio de universidades...",
+    "empty_state": "No se encontraron universidades registradas.",
+    "member_tag": "Miembro",
+    "members_count_one": "{{count}} miembro",
+    "members_count_other": "{{count}} miembros",
+    "btn_go_to_chat": "Ir al chat",
+    "btn_leave_chat": "Abandonar chat",
+    "btn_join_chat": "Unirme ahora"
   }
 }

@@ -1,12 +1,9 @@
-/* src/pages/Login.css */
-
 .login-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  /* background removed to use global ThemedBackground */
   width: 100%;
 }
 
@@ -102,6 +99,59 @@
   filter: brightness(1.1);
 }
 
+.login-controls-absolute {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 1000;
+}
+
+/* --- CONTROL SEGMENTADO MINI ACTUALIZADO --- */
+.lang-segmented-control.mini {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  width: 130px;
+}
+
+.lang-segmented-control.mini .lang-option {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.lang-segmented-control.mini .lang-option:hover:not(.active) {
+  color: var(--text-main);
+  background: var(--border-subtle);
+}
+
+.lang-segmented-control.mini .lang-option.active {
+  background: var(--accent-purple);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+@media (max-width: 768px) {
+  .login-controls-absolute {
+    top: 15px;
+    right: 15px;
+    gap: 10px;
+  }
+}
+
 .register-link-section {
   margin-top: 2rem;
   font-size: 0.95rem;
@@ -121,7 +171,6 @@
   text-decoration: underline;
 }
 
-/* Google Login Styles */
 .oauth-divider {
   display: flex;
   align-items: center;
@@ -151,4 +200,18 @@
   justify-content: center;
   width: 100%;
   margin-top: 0.5rem;
+}
+
+.login-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-logo {
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
 }

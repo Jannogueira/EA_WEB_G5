@@ -41,8 +41,20 @@ class PostService {
     return apiClient.get<Post>(`${this.endpoint}/${postId}`);
   }
 
-  getDiscoveryFeed() {
-    return apiClient.get<{ docs: Post[]; hasNextPage: boolean }>(`${this.endpoint}/discovery`);
+  getDiscoveryFeed(page: number = 1, limit: number = 10) {
+    return apiClient.get<{ docs: Post[]; hasNextPage: boolean }>(`${this.endpoint}/discovery`, {
+      params: { page, limit },
+    });
+  }
+
+  toggleSave(postId: string) {
+    return apiClient.patch(`${this.endpoint}/${postId}/save`);
+  }
+
+  getSaved(page: number = 1, limit: number = 10) {
+    return apiClient.get(`${this.endpoint}/saved`, {
+      params: { page, limit },
+    });
   }
 }
 

@@ -9,7 +9,7 @@ export interface Usuario {
   email: string;
   password: string;
   rol: 'admin' | 'user';
-  universidad?: Universidad;
+  universidad?: string | Universidad;
   activo: boolean;
   seguidores?: string[];
   seguidos?: string[];
@@ -18,4 +18,6 @@ export interface Usuario {
   privado: boolean;
   hasAcceptedUnimatchTerms?: boolean;
   followStatus?: 'PENDING' | 'ACCEPTED' | null;
+  savedPosts?: string[];
+  fcmToken?: string | null;
 }
