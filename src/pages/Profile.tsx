@@ -24,6 +24,7 @@ import {
   Flame,
   Plus,
   Trash2,
+  Flag,
 } from 'lucide-react';
 import {
   getMyPhotos,
@@ -36,6 +37,7 @@ import { useTranslation } from 'react-i18next';
 import Alert from '../components/Alert';
 import type { AlertState } from '../components/Alert';
 import SharePostModal from '../components/SharePostModal';
+import ReportModal from '../components/ReportModal';
 
 const ProfilePostModal: React.FC<{
   post: Post;
@@ -92,6 +94,7 @@ const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'posts' | 'unimatch'>('posts');
   const [unimatchPhotos, setUnimatchPhotos] = useState<UnimatchPhoto[]>([]);
   const [uploadingUnimatch, setUploadingUnimatch] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const isOwnProfile = !id || id === currentUser?._id;
 
@@ -261,24 +264,48 @@ const Profile: React.FC = () => {
                         {t('profile.edit_btn')}
                       </button>
                     ) : (
-                      <button
-                        className={`follow-btn-premium ${isFollowing ? 'following' : ''}`}
-                        onClick={handleToggleFollow}
-                      >
-                        {isFollowing ? (
-                          <>
-                            <UserMinus size={18} /> {t('profile.unfollow')}
-                          </>
-                        ) : isPending ? (
-                          <>
-                            <Clock size={18} /> {t('profile.pending')}
-                          </>
-                        ) : (
-                          <>
-                            <UserPlus size={18} /> {t('profile.follow')}
-                          </>
-                        )}
-                      </button>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <button
+                          className={`follow-btn-premium ${isFollowing ? 'following' : ''}`}
+                          onClick={handleToggleFollow}
+                        >
+                          {isFollowing ? (
+                            <>
+                              <UserMinus size={18} /> {t('profile.unfollow')}
+                            </>
+                          ) : isPending ? (
+                            <>
+                              <Clock size={18} /> {t('profile.pending')}
+                            </>
+                          ) : (
+                            <>
+                              <UserPlus size={18} /> {t('profile.follow')}
+                            </>
+                          )}
+                        </button>
+                        <button
+                          className="report-btn-premium"
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                            color: '#ef4444',
+                            borderRadius: '12px',
+                            padding: '10px 14px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: '0.9rem',
+                            fontWeight: '600',
+                            marginLeft: '10px',
+                            transition: 'all 0.2s',
+                          }}
+                          onClick={() => setShowReportModal(true)}
+                          title="Reportar perfil"
+                        >
+                          <Flag size={18} />
+                        </button>
+                      </div>
                     )}
                   </div>
 
@@ -490,6 +517,13 @@ const Profile: React.FC = () => {
           post={selectedPost}
           onClose={() => setSelectedPost(null)}
           currentUserId={currentUserId || null}
+        />
+      )}
+      {showReportModal && profileUser && (
+        <ReportModal
+          tipo="user"
+          objetivoId={profileUser._id}
+          onClose={() => setShowReportModal(false)}
         />
       )}
     </div>

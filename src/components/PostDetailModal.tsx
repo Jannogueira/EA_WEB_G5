@@ -4,6 +4,7 @@ import type { Post } from '../models/post';
 import { X, Heart, MessageCircle, Send, MoreHorizontal, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import ReportModal from './ReportModal';
 
 interface PostDetailModalProps {
   post: Post;
@@ -35,6 +36,7 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 
   const [commentText, setCommentText] = useState('');
   const [saved, setSaved] = useState(isSaved);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     setSaved(isSaved);
@@ -89,10 +91,18 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
               </div>
             </div>
 
-            <button className="post-detail-options">
+            <button className="post-detail-options" onClick={() => setShowReportModal(true)} title="Reportar">
               <MoreHorizontal size={24} />
             </button>
           </header>
+
+          {showReportModal && (
+            <ReportModal
+              tipo="post"
+              objetivoId={post._id}
+              onClose={() => setShowReportModal(false)}
+            />
+          )}
 
           <div className="post-detail-comments-list">
             <div className="comment-item-row detail-caption">

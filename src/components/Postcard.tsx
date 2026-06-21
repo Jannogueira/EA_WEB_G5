@@ -4,11 +4,12 @@ import type { Post } from '../models/post';
 import usePost from '../hooks/usePost';
 import { useNavigate } from 'react-router-dom';
 // Added Bookmark here
-import { Heart, MessageCircle, Send, Bookmark } from 'lucide-react';
+import { Heart, MessageCircle, Send, Bookmark, Flag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import SharePostModal from './SharePostModal';
 import PostDetailModal from './PostDetailModal';
+import ReportModal from './ReportModal';
 
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
 
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const currentUserId = (() => {
     try {
@@ -109,7 +111,18 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
           </div>
 
           {/* New Bookmark Button Added Here */}
-          <div className="secondary-actions">
+          <div className="secondary-actions" style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowReportModal(true);
+              }}
+              className="post-report-btn"
+              title="Reportar"
+            >
+              <Flag size={20} />
+            </button>
+
             <button onClick={handleBookmarkClick} className="share-btn-action">
               <Bookmark
                 size={24}
@@ -154,6 +167,13 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
           onShare={() => setShowShareModal(true)}
           onToggleSave={toggleSave}
           isSaved={isSaved}
+        />
+      )}
+      {showReportModal && (
+        <ReportModal
+          tipo="post"
+          objetivoId={post._id}
+          onClose={() => setShowReportModal(false)}
         />
       )}
     </div>

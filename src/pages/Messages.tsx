@@ -6,11 +6,12 @@ import Navbar from '../components/Navbar';
 import useUser from '../hooks/useUser';
 import useChat from '../hooks/useChat';
 import { useSocket } from '../context/SocketContext';
-import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply, Users } from 'lucide-react';
+import { Send, User, MessageCircle, Search, X, Trash2, Smile, Reply, Users, Flag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChatContact } from '../models/message';
 import { getFollowing } from '../services/usuario';
 import { createGroupChat } from '../services/chat';
+import ReportModal from '../components/ReportModal';
 
 const Messages: React.FC = () => {
   const { t } = useTranslation();
@@ -68,6 +69,13 @@ const Messages: React.FC = () => {
     isOpen: false,
     messageId: '',
     isOwn: false,
+  });
+  const [reportModal, setReportModal] = useState<{
+    isOpen: boolean;
+    messageId: string;
+  }>({
+    isOpen: false,
+    messageId: '',
   });
 
   // States for group creation
@@ -174,6 +182,10 @@ const Messages: React.FC = () => {
   const confirmDelete = (type: 'me' | 'everyone') => {
     deleteMessage(deleteModal.messageId, type);
     setDeleteModal({ isOpen: false, messageId: '', isOwn: false });
+  };
+
+  const handleReportClick = (msgId: string) => {
+    setReportModal({ isOpen: true, messageId: msgId });
   };
 
   return (
@@ -398,6 +410,16 @@ const Messages: React.FC = () => {
                                 <Smile size={14} />
                               </button>
 
+                              {getSenderId(msg) !== usuario?._id && (
+                                <button
+                                  className="msg-action-btn"
+                                  onClick={() => handleReportClick(msg._id)}
+                                  title="Reportar"
+                                >
+                                  <Flag size={14} />
+                                </button>
+                              )}
+
                               <button
                                 className="msg-action-btn"
                                 onClick={() =>
@@ -612,6 +634,13 @@ const Messages: React.FC = () => {
             </form>
           </div>
         </div>
+      )}
+      {reportModal.isOpen && (
+        <ReportModal
+          tipo="chat"
+          objetivoId={reportModal.messageId}
+          onClose={() => setReportModal({ isOpen: false, messageId: '' })}
+        />
       )}
     </div>
   );

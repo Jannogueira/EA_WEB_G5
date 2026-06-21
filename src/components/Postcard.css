@@ -131,3 +131,26 @@
   font-size: 0.8rem;
   margin-top: 5px;
 }
+
+.post-report-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.post-card:hover .post-report-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.post-report-btn:hover {
+  transform: scale(1.1);
+  color: #dc2626;
+}
