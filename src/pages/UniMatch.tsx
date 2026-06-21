@@ -13,6 +13,7 @@ import { useSocket } from '../context/SocketContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useUser from '../hooks/useUser';
+import { useGlobalAlert } from '../context/AlertContext';
 import './UniMatch.css';
 
 const UniMatch: React.FC = () => {
@@ -20,6 +21,7 @@ const UniMatch: React.FC = () => {
   const { usuario, refreshUser } = useUser();
   const { socket } = useSocket();
   const navigate = useNavigate();
+  const { showAlert } = useGlobalAlert();
 
   const [profiles, setProfiles] = useState<DiscoverProfile[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,8 +84,12 @@ const UniMatch: React.FC = () => {
       setProfiles(res.data);
       setCurrentIndex(0);
       setCurrentPhotoIndex(0);
-    } catch (err) {
-      console.error('Error loading profiles:', err);
+    } catch (err: any) {
+      showAlert(
+        t('common.error'),
+        err.response?.data?.message || err.message || t('alerts.unimatch.error_loading_profiles'),
+        'error',
+      );
     } finally {
       setLoading(false);
     }
@@ -97,7 +103,7 @@ const UniMatch: React.FC = () => {
       } else if (usuario?.avatarUrl) {
         setMyFirstPhoto(usuario.avatarUrl);
       }
-    } catch (err) {
+    } catch (err: any) {
       if (usuario?.avatarUrl) setMyFirstPhoto(usuario.avatarUrl);
     }
   };
@@ -121,24 +127,31 @@ const UniMatch: React.FC = () => {
             unimatchPhoto: profile.unimatchPhotos?.[0]?.imageUrl || profile.avatarUrl,
           });
         }
-      } catch (err) {
-        console.error('Error swiping:', err);
+      } catch (err: any) {
+        showAlert(
+          t('common.error'),
+          err.response?.data?.message || err.message || t('alerts.unimatch.error_swiping'),
+          'error',
+        );
       }
 
       // Wait for animation to finish
       setTimeout(() => {
         setSwiping(null);
-        setCurrentIndex((prev) => prev + 1);
-        setCurrentPhotoIndex(0);
         setDragOffset(0);
+        setCurrentPhotoIndex(0);
 
-        // If running low on profiles, load more
-        if (currentIndex >= profiles.length - 3) {
-          loadProfiles();
-        }
+        setCurrentIndex((prevIndex) => {
+          const nextIndex = prevIndex + 1;
+          // If running low on profiles relative to the upcoming index, load more
+          if (nextIndex >= profiles.length - 3) {
+            loadProfiles();
+          }
+          return nextIndex;
+        });
       }, 400);
     },
-    [swiping, currentIndex, profiles, matchData],
+    [swiping, currentIndex, profiles, matchData, t, showAlert],
   );
 
   const handleWelcomeComplete = async () => {

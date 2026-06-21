@@ -4,8 +4,7 @@ import gradoService from '../services/grado';
 import type { Grado } from '../models/grado';
 import type { Asignatura } from '../models/asignatura';
 import './ExploreFilterModal.css';
-import Alert from './Alert';
-import type { AlertState } from './Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import { BrushCleaning } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,20 +19,16 @@ type FilterTab = 'universidades' | 'grados' | 'asignaturas';
 const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<FilterTab>('universidades');
-
   const [localSelected, setLocalSelected] = useState<string[]>(selected);
 
   // Data States
   const { universidades, loading: loadingUnis } = useUnis();
-
   const [grados, setGrados] = useState<Grado[]>([]);
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
 
   const [loadingItems, setLoadingItems] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState('');
-
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -49,13 +44,8 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
         setAsignaturas(asignaturasRes.data);
       } catch (error: any) {
         const msg =
-          error.response?.data?.message || error.message || t('explore_filter.server_error');
-
-        setAlert({
-          type: 'error',
-          title: t('explore_filter.error_title'),
-          message: msg,
-        });
+          error.response?.data?.message || error.message || t('alerts.explore_filter.server_error');
+        showAlert(t('alerts.explore_filter.error_title'), msg, 'error');
       } finally {
         setLoadingItems(false);
       }
@@ -74,7 +64,7 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
     let list: any[] = [];
 
     if (activeTab === 'universidades') {
-      list = universidades;
+      list = universidades || [];
     }
 
     if (activeTab === 'grados') {
@@ -92,15 +82,6 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
 
   return (
     <div className="filter-overlay">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
-
       <div className="filter-modal">
         <div className="filter-tabs">
           {(['universidades', 'grados', 'asignaturas'] as FilterTab[]).map((tab) => (
@@ -137,7 +118,9 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
         </div>
 
         <div className="filter-content">
-          {(loadingUnis || loadingItems) && <p className="loading-text">{t('navbar.loading')}</p>}
+          {(loadingUnis || loadingItems) && (
+            <p className="loading-text">{t('explore_filter.loading')}</p>
+          )}
 
           <div className="uni-tags">
             {currentFilteredList.map((item) => (
@@ -162,7 +145,7 @@ const ExploreFilter: React.FC<Props> = ({ selected, onApply, onClose }) => {
 
         <div className="filter-actions">
           <button className="cancel-btn" onClick={onClose}>
-            {t('edit_profile.cancel')}
+            {t('explore_filter.cancel')}
           </button>
 
           <button

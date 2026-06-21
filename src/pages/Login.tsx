@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import useAuth from '../hooks/useAuth';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
 import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import './Login.css';
 import ThemeToggle from '../components/ThemeToggle';
 
@@ -14,13 +13,12 @@ const Login = () => {
   const { theme } = useTheme();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { showAlert } = useGlobalAlert();
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
-  const [alert, setAlert] = useState<AlertState | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -37,23 +35,14 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate('/home');
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error al conectar con el servidor';
-
-      setAlert({
-        type: 'error',
-        title: t('login.error_title'),
-        message: errorMsg,
-      });
+      const errorMsg = error.response?.data?.message || t('alerts.login.server_error');
+      showAlert(t('alerts.login.error_title'), errorMsg, 'error');
     }
   };
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     if (!credentialResponse.credential) {
-      setAlert({
-        type: 'error',
-        title: t('login.google_error_title'),
-        message: t('login.google_error_msg'),
-      });
+      showAlert(t('alerts.login.google_error_title'), t('alerts.login.google_error_msg'), 'error');
       return;
     }
 
@@ -61,12 +50,8 @@ const Login = () => {
       await loginWithGoogle(credentialResponse.credential);
       navigate('/home');
     } catch (error: any) {
-      const errorMsg = error.response?.data?.message || 'Error';
-      setAlert({
-        type: 'error',
-        title: t('login.error_title'),
-        message: errorMsg,
-      });
+      const errorMsg = error.response?.data?.message || t('alerts.login.error_title');
+      showAlert(t('alerts.login.error_title'), errorMsg, 'error');
     }
   };
 
@@ -98,15 +83,6 @@ const Login = () => {
       </div>
 
       <div className="login-container">
-        {alert && (
-          <Alert
-            type={alert.type}
-            title={alert.title}
-            message={alert.message}
-            onClose={() => setAlert(null)}
-          />
-        )}
-
         <h2>{t('login.title')}</h2>
 
         <form onSubmit={handleLogin} className="login-form">
@@ -144,11 +120,11 @@ const Login = () => {
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => {
-              setAlert({
-                type: 'error',
-                title: t('login.google_error_title'),
-                message: t('login.error_title'),
-              });
+              showAlert(
+                t('alerts.login.google_error_title'),
+                t('alerts.login.error_title'),
+                'error',
+              );
             }}
             theme={theme === 'dark' ? 'filled_black' : 'outline'}
             size="large"

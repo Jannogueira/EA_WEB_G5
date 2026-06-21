@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import universidadService from '../services/universidad';
 import type { Universidad } from '../models/universidad';
 
 export default function useUnis() {
+  const { t } = useTranslation();
   const [universidades, setUniversidades] = useState<Universidad[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export default function useUnis() {
         setUniversidades(response.data.docs || []);
       } catch (err: any) {
         if (err.name !== 'CanceledError') {
-          setError(err.message || 'Error cargando universidades');
+          setError(err.message || t('alerts.academic_modal.error_uni'));
         }
       } finally {
         setLoading(false);

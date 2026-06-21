@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import './CreatePostModal.css';
 import useCreatePost from '../hooks/useCreatePost';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import { uploadImage } from '../services/upload';
 
 import { ImagePlus, Send, X, Loader2 } from 'lucide-react';
@@ -14,6 +15,7 @@ interface CreatePostModalProps {
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreated }) => {
   const { t } = useTranslation();
   const { createPost, loading: creatingPost } = useCreatePost();
+  const { showAlert } = useGlobalAlert();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -21,7 +23,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     caption: '',
   });
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,11 +30,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
 
     try {
       setUploading(true);
-      setError(null);
       const res = await uploadImage(file);
       setFormData((prev) => ({ ...prev, imageUrl: res.url }));
-    } catch (err) {
-      setError(t('edit_profile.upload_error'));
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.create_post.upload_error');
+      showAlert(t('alerts.create_post.error_title'), errorMsg, 'error');
     } finally {
       setUploading(false);
     }
@@ -47,17 +48,21 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
     e.preventDefault();
 
     if (!formData.imageUrl) {
-      setError(t('create_post.image_required'));
+      showAlert(
+        t('alerts.create_post.error_title'),
+        t('alerts.create_post.image_required'),
+        'warning',
+      );
       return;
     }
 
     try {
-      setError(null);
       await createPost(formData);
       onPostCreated();
       onClose();
-    } catch {
-      setError(t('create_post.error'));
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.create_post.error_sharing');
+      showAlert(t('alerts.create_post.error_title'), errorMsg, 'error');
     }
   };
 
@@ -66,7 +71,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
       <div className="create-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header-modern">
           <h2>{t('create_post.title')}</h2>
-          <button className="close-x-btn" aria-label={t('edit_profile.cancel')} onClick={onClose}>
+          <button className="close-x-btn" aria-label={t('create_post.cancel')} onClick={onClose}>
             <X size={20} />
           </button>
         </header>
@@ -99,11 +104,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ onClose, onPostCreate
           </div>
 
           <div className="input-section">
-            {error && (
-              <div className="form-error-banner" style={{ marginBottom: '15px' }}>
-                {error}
-              </div>
-            )}
             <div className="form-group-modern">
               <label>{t('create_post.label_caption')}</label>
               <textarea

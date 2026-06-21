@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, CheckCircle2 } from 'lucide-react';
 import './SelectionStep.css';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 interface SelectionItem {
   _id: string;
@@ -33,9 +34,9 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
   icon,
 }) => {
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Función para normalizar texto (quitar acentos)
   const normalize = (text: string) => {
     return text
       .normalize('NFD')
@@ -49,7 +50,6 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
     return items.filter((item) => normalize(item.nombre).includes(query));
   }, [items, searchQuery]);
 
-  // Función para resaltar el texto coincidente
   const highlightMatch = (text: string, query: string) => {
     if (!query) return text;
     const normalizedText = normalize(text);
@@ -69,6 +69,15 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
         {after}
       </>
     );
+  };
+
+  const handleItemSelect = (id: string) => {
+    try {
+      onSelect(id);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.selection_step.select_error');
+      showAlert(t('alerts.selection_step.error_title'), errorMsg, 'error');
+    }
   };
 
   return (
@@ -106,7 +115,7 @@ const SelectionStep: React.FC<SelectionStepProps> = ({
                 <div
                   key={item._id}
                   className={`selection-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => onSelect(item._id)}
+                  onClick={() => handleItemSelect(item._id)}
                 >
                   <div className="card-content">
                     <span className="card-name">{highlightMatch(item.nombre, searchQuery)}</span>

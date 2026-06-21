@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import './Register.css';
 import ThemeToggle from '../components/ThemeToggle';
 
 const Register = () => {
   const { register, loading } = useAuth();
   const { t, i18n } = useTranslation();
+  const { showAlert } = useGlobalAlert();
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -17,8 +17,6 @@ const Register = () => {
     password: '',
     confirmPassword: '',
   });
-
-  const [alert, setAlert] = useState<AlertState | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,11 +31,11 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      setAlert({
-        type: 'error',
-        title: t('register.validation_error'),
-        message: t('register.password_mismatch'),
-      });
+      showAlert(
+        t('alerts.register.validation_error'),
+        t('alerts.register.password_mismatch'),
+        'error',
+      );
       return;
     }
 
@@ -46,13 +44,8 @@ const Register = () => {
       await register(dataToSubmit);
     } catch (error: any) {
       const msg =
-        error.response?.data?.message || error.message || 'Error al contactar con el servidor';
-
-      setAlert({
-        type: 'error',
-        title: t('register.failed_title'),
-        message: msg,
-      });
+        error.response?.data?.message || error.message || t('alerts.register.server_error');
+      showAlert(t('alerts.register.failed_title'), msg, 'error');
     }
   };
 
@@ -82,15 +75,6 @@ const Register = () => {
         </div>
         <ThemeToggle className="theme-toggle-inline" />
       </div>
-
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
 
       <div className="register-container">
         <h2 className="register-title">{t('register.title')}</h2>

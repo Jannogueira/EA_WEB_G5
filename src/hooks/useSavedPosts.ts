@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import PostService from '../services/post';
 import type { Post } from '../models/post';
 
 export default function useSavedPostsFeed() {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ export default function useSavedPostsFeed() {
 
       pageRef.current += 1;
     } catch (err) {
-      setError('Error cargando posts guardados');
+      setError(t('saved_posts.error_loading'));
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EditProfile.css';
 import Sidebar from '../components/Sidebar';
@@ -9,8 +9,7 @@ import AsignaturasModal from '../components/AsignaturasModal';
 import AcademicSelectorModal from '../components/AcademicSelectorModal';
 import { uploadImage } from '../services/upload';
 import { Loader2, Camera, GraduationCap, Library } from 'lucide-react';
-import Alert from '../components/Alert';
-import type { AlertState } from '../components/Alert';
+import { useGlobalAlert } from '../context/AlertContext';
 import type { Universidad } from '../models/universidad';
 import type { Grado } from '../models/grado';
 
@@ -23,7 +22,7 @@ const EditProfile: React.FC = () => {
   const [academicModalOpen, setAcademicModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
-  const [alert, setAlert] = useState<AlertState | null>(null);
+  const { showAlert } = useGlobalAlert();
 
   const [selectedUni, setSelectedUni] = useState<Universidad | null>(null);
   const [selectedGrado, setSelectedGrado] = useState<Grado | null>(null);
@@ -92,14 +91,10 @@ const EditProfile: React.FC = () => {
       setFormData((prev) => ({ ...prev, avatarUrl: res.url }));
     } catch (error: any) {
       const msg =
-        error.response?.data?.message || error.message || t('explore_filter.server_error');
-
-      setAlert({
-        type: 'error',
-        title: t('edit_profile.upload_error'),
-        message: msg,
-      });
+        error.response?.data?.message || error.message || t('alerts.explore_filter.server_error');
+      showAlert(t('alerts.edit_profile.upload_error'), msg, 'error');
     } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
       setUploading(false);
     }
   };
@@ -113,11 +108,11 @@ const EditProfile: React.FC = () => {
     e.preventDefault();
 
     if (selectedUni && !selectedGrado && selectedUni.nombre !== 'Universidad guardada') {
-      setAlert({
-        type: 'error',
-        title: t('register.validation_error'),
-        message: t('edit_profile.academic_change_warning'),
-      });
+      showAlert(
+        t('alerts.register.validation_error'),
+        t('edit_profile.academic_change_warning'),
+        'error',
+      );
       return;
     }
 
@@ -155,24 +150,19 @@ const EditProfile: React.FC = () => {
         setUserAsignaturas(updatedUser.asignaturas || []);
       }
 
-      setAlert({
-        type: 'success',
-        title: t('edit_profile.save_success_title'),
-        message: t('edit_profile.save_success_msg'),
-      });
+      showAlert(
+        t('alerts.edit_profile.save_success_title'),
+        t('alerts.edit_profile.save_success_msg'),
+        'success',
+      );
 
       setTimeout(() => {
         navigate('/profile');
       }, 1500);
     } catch (error: any) {
       const msg =
-        error.response?.data?.message || error.message || t('explore_filter.server_error');
-
-      setAlert({
-        type: 'error',
-        title: t('select_university.save_error'),
-        message: msg,
-      });
+        error.response?.data?.message || error.message || t('alerts.explore_filter.server_error');
+      showAlert(t('alerts.select_university.save_error'), msg, 'error');
     } finally {
       setSavingProfile(false);
     }
@@ -181,29 +171,20 @@ const EditProfile: React.FC = () => {
   const handleAcademicSelect = (uni: Universidad, grado: Grado) => {
     setSelectedUni(uni);
     setSelectedGrado(grado);
-
-    setAlert({
-      type: 'info',
-      title: t('academic_modal.confirm'),
-      message: `${uni.nombre} - ${grado.nombre}.`,
-    });
+    showAlert(t('academic_modal.confirm'), `${uni.nombre} - ${grado.nombre}.`, 'info');
   };
 
   const handleUserUpdated = (updatedUser: any) => {
-    setUserAsignaturas(updatedUser.asignaturas || []);
-    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+    try {
+      setUserAsignaturas(updatedUser.asignaturas || []);
+      localStorage.setItem('usuario', JSON.stringify(updatedUser));
+    } catch {
+      // Fallo silencioso de localStorage para evitar interrumpir el renderizado
+    }
   };
 
   return (
     <div className="edit-profile-wrapper">
-      {alert && (
-        <Alert
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClose={() => setAlert(null)}
-        />
-      )}
       <Navbar usuario={usuario || undefined} />
       <div className="main-layout">
         <Sidebar aria-label="Navegación principal" />

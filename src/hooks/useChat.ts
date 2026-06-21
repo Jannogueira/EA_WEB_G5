@@ -1,9 +1,16 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSocket } from '../context/SocketContext';
 import { getContacts, getConversation } from '../services/chat';
 import type { Message, ChatContact } from '../models/message';
 
-export default function useChat(currentUserId: string) {
+// Extend options interface to accept an optional onError proxy
+interface UseChatOptions {
+  onError?: (title: string, message: string) => void;
+}
+
+export default function useChat(currentUserId: string, options?: UseChatOptions) {
+  const { t } = useTranslation();
   const { socket } = useSocket();
   const [contacts, setContacts] = useState<ChatContact[]>([]);
   const [activeContact, setActiveContact] = useState<ChatContact | null>(null);
@@ -139,7 +146,7 @@ export default function useChat(currentUserId: string) {
               if (type === 'everyone') {
                 return {
                   ...msg,
-                  contenido: 'El mensaje ha sido eliminado',
+                  contenido: t('messages.deleted'),
                   eliminadoParaTodos: true,
                 };
               }
@@ -155,12 +162,45 @@ export default function useChat(currentUserId: string) {
       setMessages((prev) => prev.map((m) => (m._id === msg._id ? msg : m)));
     };
 
+    // Listener for socket level errors thrown by the pipeline
+    const handleSocketError = (err: { message: string }) => {
+      if (options?.onError) {
+        options.onError(
+          t('alerts.messages.error_delivery_title'),
+          err.message || t('alerts.messages.error_delivery_msg'),
+        );
+      }
+    };
+
+    const handleConnectError = (error: any) => {
+      if (options?.onError) {
+        options.onError(
+          t('alerts.messages.error_connection_title'),
+          t('alerts.messages.error_connection_msg'),
+        );
+      }
+    };
+
+    const handleDisconnect = (reason: string) => {
+      if (reason === 'io server disconnect' || reason === 'transport close') {
+        if (options?.onError) {
+          options.onError(
+            t('alerts.messages.error_disconnected_title'),
+            t('alerts.messages.error_disconnected_msg'),
+          );
+        }
+      }
+    };
+
     socket.on('receive_message', handleReceiveMessage);
     socket.on('message_sent', handleMessageSent);
     socket.on('user_typing', handleTyping);
     socket.on('user_stop_typing', handleStopTyping);
     socket.on('messages_deleted', handleMessagesDeleted);
     socket.on('message_updated', handleMessageUpdated);
+    socket.on('message_error', handleSocketError);
+    socket.on('connect_error', handleConnectError);
+    socket.on('disconnect', handleDisconnect);
 
     return () => {
       socket.off('receive_message', handleReceiveMessage);
@@ -169,28 +209,39 @@ export default function useChat(currentUserId: string) {
       socket.off('user_stop_typing', handleStopTyping);
       socket.off('messages_deleted', handleMessagesDeleted);
       socket.off('message_updated', handleMessageUpdated);
+      socket.off('message_error', handleSocketError);
+      socket.off('connect_error', handleConnectError);
+      socket.off('disconnect', handleDisconnect);
       clearTimeout(typingTimeout);
     };
-  }, [socket, activeContact, currentUserId, typingUserId]);
+  }, [socket, activeContact, currentUserId, typingUserId, options]);
 
-  // Cargar historial al cambiar de contacto
-  const openConversation = useCallback(async (contact: ChatContact | null) => {
-    setActiveContact(contact);
-    if (!contact) {
+  // Forward conversation history API failure events to context alerts
+  const openConversation = useCallback(
+    async (contact: ChatContact | null) => {
+      setActiveContact(contact);
+      if (!contact) {
+        setMessages([]);
+        return;
+      }
       setMessages([]);
-      return;
-    }
-    setMessages([]);
-    setLoadingHistory(true);
-    try {
-      const res = await getConversation(contact._id);
-      setMessages(res.data);
-    } catch (err) {
-      // Error
-    } finally {
-      setLoadingHistory(false);
-    }
-  }, []);
+      setLoadingHistory(true);
+      try {
+        const res = await getConversation(contact._id);
+        setMessages(res.data);
+      } catch (err: any) {
+        if (options?.onError) {
+          options.onError(
+            t('alerts.messages.error_history_title'),
+            err.response?.data?.message || t('alerts.messages.error_history_msg'),
+          );
+        }
+      } finally {
+        setLoadingHistory(false);
+      }
+    },
+    [options],
+  );
 
   // Enviar mensaje
   const sendMessage = useCallback(

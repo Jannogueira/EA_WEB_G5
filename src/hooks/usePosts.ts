@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import PostService from '../services/post';
 import type { Post } from '../models/post';
 
 export default function usePosts() {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export default function usePosts() {
         setHasNextPage(more);
         setPage(pageNum);
       } catch (err) {
-        setError('Error cargando posts');
+        setError(t('home.error_loading_posts'));
       } finally {
         setLoading(false);
       }

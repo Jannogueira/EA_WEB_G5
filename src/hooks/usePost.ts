@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import PostService from '../services/post';
 import CommentService from '../services/comment';
 import type { Post } from '../models/post';
 
 export default function usePost(initialPost: Post) {
+  const { t } = useTranslation();
   const [post, setPost] = useState<Post>({
     ...initialPost,
     comments: initialPost.comments ?? [],
@@ -50,7 +52,7 @@ export default function usePost(initialPost: Post) {
         likes: res.data.likes,
       }));
     } catch {
-      setError('Error al dar like');
+      setError(t('alerts.postcard.like_error'));
     }
   };
 
@@ -71,7 +73,7 @@ export default function usePost(initialPost: Post) {
         comments: [...prev.comments, { ...res.data, likes: [] }],
       }));
     } catch {
-      setError('Error al crear comentario');
+      setError(t('alerts.postcard.comment_error'));
     } finally {
       setLoadingComment(false);
     }
@@ -88,11 +90,12 @@ export default function usePost(initialPost: Post) {
         ),
       }));
     } catch {
-      setError('Error al dar like al comentario');
+      setError(t('alerts.postcard.comment_like_error'));
     }
   };
 
   const toggleSave = async () => {
+    setError(null);
     try {
       const res = await PostService.toggleSave(post._id);
 
@@ -113,11 +116,12 @@ export default function usePost(initialPost: Post) {
           localStorage.setItem('usuario', JSON.stringify(u));
         }
       } catch (e) {
-        console.error('Error updating localStorage user:', e);
+        setError(t('alerts.profile.action_failed'));
       }
 
       return res.data.saved;
     } catch (err) {
+      setError(t('alerts.postcard.save_error'));
       return null;
     }
   };

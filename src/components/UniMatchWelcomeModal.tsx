@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { uploadUnimatchPhoto, acceptUnimatchTerms } from '../services/unimatch';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import './UniMatchWelcomeModal.css';
 
 interface Props {
@@ -19,6 +20,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -34,7 +36,6 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
     }
 
     setPhotos((prev) => [...prev, ...newPhotos]);
-    // Reset input
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -52,15 +53,11 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
 
     setUploading(true);
     try {
-      // Subir todas las fotos
       for (const photo of photos) {
         await uploadUnimatchPhoto(photo.file);
       }
-
-      // Aceptar términos
       await acceptUnimatchTerms();
 
-      // Actualizar localStorage
       const userJson = localStorage.getItem('usuario');
       if (userJson) {
         const user = JSON.parse(userJson);
@@ -69,8 +66,9 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
       }
 
       onComplete();
-    } catch (err) {
-      console.error('Error setting up UniMatch:', err);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.unimatch.setup_error');
+      showAlert(t('alerts.unimatch.error_title'), errorMsg, 'error');
     } finally {
       setUploading(false);
     }
@@ -99,7 +97,7 @@ const UniMatchWelcomeModal: React.FC<Props> = ({ onComplete, onClose }) => {
           <div className="photo-upload-grid">
             {photos.map((photo, index) => (
               <div key={index} className="photo-upload-slot has-photo">
-                <img src={photo.preview} alt={`Foto ${index + 1}`} />
+                <img src={photo.preview} alt={t('unimatch.photo_alt', { index: index + 1 })} />
                 <button className="remove-photo-btn" onClick={() => removePhoto(index)}>
                   <X size={12} />
                 </button>

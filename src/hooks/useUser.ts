@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import usuarioService from '../services/usuario';
 import type { Usuario } from '../models/usuario';
 import apiClient from '../services/api-client';
 
 export default function useUser() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ export default function useUser() {
       setUsuario(res.data);
       return res.data;
     } catch (err) {
-      console.error('Error fetching me:', err);
+      setError(t('alerts.profile.server_error'));
       return null;
     }
   };
@@ -53,7 +55,7 @@ export default function useUser() {
 
       return response.data;
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al actualizar el perfil');
+      setError(err.response?.data?.message || t('alerts.edit_profile.update_error'));
       throw err;
     } finally {
       setLoading(false);

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getContacts } from '../services/chat';
 import type { ChatContact } from '../models/message';
 import { useSocket } from '../context/SocketContext';
+import { useGlobalAlert } from '../context/AlertContext';
 
 interface SharePostModalProps {
   postId: string;
@@ -14,44 +15,73 @@ interface SharePostModalProps {
 const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
+  const { showAlert } = useGlobalAlert();
   const [contacts, setContacts] = useState<ChatContact[]>([]);
+  const [selectedContacts, setSelectedContacts] = useState<ChatContact[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    getContacts().then((res) => {
-      setContacts(res.data);
-      setLoading(false);
-    });
-  }, []);
+    const loadContacts = async () => {
+      try {
+        const res = await getContacts();
+        setContacts(res.data);
+      } catch (err: any) {
+        showAlert(
+          t('alerts.share.error_title'),
+          err.response?.data?.message || t('alerts.share.load_error'),
+          'error',
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadContacts();
+  }, [showAlert, t]);
 
-  const filteredContacts = contacts.filter((c) =>
-    c.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredContacts = contacts.filter((contact) =>
+    contact.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const toggleContact = (id: string) => {
-    setSelectedContacts((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
-    );
+  const toggleContact = (contact: ChatContact) => {
+    setSelectedContacts((prev) => {
+      const exists = prev.some((c) => c._id === contact._id);
+      if (exists) {
+        return prev.filter((c) => c._id !== contact._id);
+      }
+      return [...prev, contact];
+    });
   };
 
+  const isSelected = (id: string) => selectedContacts.some((c) => c._id === id);
+
   const handleShare = () => {
-    if (!socket || selectedContacts.length === 0) return;
+    if (!socket) return;
+    if (selectedContacts.length === 0) return;
 
-    selectedContacts.forEach((destinatarioId) => {
-      socket.emit('send_message', {
-        destinatarioId,
-        postId,
-        contenido: '', // Opcional: podrías añadir un mensaje personalizado
+    try {
+      selectedContacts.forEach((contact) => {
+        socket.emit('send_message', {
+          destinatarioId: contact._id,
+          contenido: '',
+          postId,
+          isGroup: contact.isGroup === true,
+        });
       });
-    });
 
-    setSent(true);
-    setTimeout(() => {
-      onClose();
-    }, 1500);
+      setSent(true);
+
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+    } catch (err: any) {
+      showAlert(
+        t('alerts.share.error_title'),
+        err.message || t('alerts.share.send_error'),
+        'error',
+      );
+    }
   };
 
   return (
@@ -67,7 +97,7 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
         {sent ? (
           <div className="share-sent-success">
             <CheckCircle2 size={60} color="#10b981" />
-            <p>{t('share.success')}</p>
+            <p>{t('alerts.share.success')}</p>
           </div>
         ) : (
           <>
@@ -84,24 +114,24 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
             <div className="share-contacts-list">
               {loading ? (
                 <div className="share-loading">{t('messages.loading')}</div>
-              ) : filteredContacts.length > 0 ? (
+              ) : filteredContacts.length ? (
                 filteredContacts.map((contact) => (
                   <div
                     key={contact._id}
-                    className={`share-contact-item ${
-                      selectedContacts.includes(contact._id) ? 'selected' : ''
-                    }`}
-                    onClick={() => toggleContact(contact._id)}
+                    className={`share-contact-item ${isSelected(contact._id) ? 'selected' : ''}`}
+                    onClick={() => toggleContact(contact)}
                   >
                     <div className="contact-avatar-small">
-                      <img
-                        src={contact.avatarUrl}
-                        alt={t('unimatch_modal.alt_them', { name: contact.nombre })}
-                      />
+                      <img src={contact.avatarUrl} alt={contact.nombre} />
                     </div>
-                    <span className="contact-name">{contact.nombre}</span>
+
+                    <div className="contact-name">
+                      {contact.nombre}
+                      {contact.isGroup && <small> • Group</small>}
+                    </div>
+
                     <div className="checkbox-indicator">
-                      {selectedContacts.includes(contact._id) && <div className="check-dot" />}
+                      {isSelected(contact._id) && <div className="check-dot" />}
                     </div>
                   </div>
                 ))

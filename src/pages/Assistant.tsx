@@ -5,6 +5,7 @@ import useUser from '../hooks/useUser';
 import { askAssistant } from '../services/assistant';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 import './Assistant.css';
 
 interface Message {
@@ -17,6 +18,7 @@ interface Message {
 const Assistant: React.FC = () => {
   const { usuario } = useUser();
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
   const [pregunta, setPregunta] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -71,14 +73,21 @@ const Assistant: React.FC = () => {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, toniMessage]);
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessageText = t('assistant.error_msg', 'Hubo un error al procesar tu solicitud.');
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'toni',
-        text: t('assistant.error_msg'),
+        text: errorMessageText,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
+
+      const apiErrorMsg =
+        error.response?.data?.message ||
+        t('assistant.alert_error_msg', 'No se pudo conectar con el asistente virtual.');
+      showAlert(t('assistant.error_title', 'Error del Asistente'), apiErrorMsg, 'error');
     } finally {
       setLoading(false);
     }

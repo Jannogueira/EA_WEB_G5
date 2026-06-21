@@ -3,9 +3,9 @@ import './Postcard.css';
 import type { Post } from '../models/post';
 import usePost from '../hooks/usePost';
 import { useNavigate } from 'react-router-dom';
-// Added Bookmark here
 import { Heart, MessageCircle, Send, Bookmark, Flag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 import SharePostModal from './SharePostModal';
 import PostDetailModal from './PostDetailModal';
@@ -14,6 +14,7 @@ import ReportModal from './ReportModal';
 const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { showAlert } = useGlobalAlert();
   const { post, likePost, likeComment, addComment, loadingComment, error, toggleSave, isSaved } =
     usePost(postProp);
 
@@ -40,9 +41,24 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
     }
   };
 
+  const handleLikeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await likePost();
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.like_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
+    }
+  };
+
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    await toggleSave();
+    try {
+      await toggleSave();
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.postcard.save_error');
+      showAlert(t('alerts.postcard.error_title'), errorMsg, 'error');
+    }
   };
 
   const postLiked = currentUserId && post.likes?.some((u: any) => (u._id || u) === currentUserId);
@@ -50,10 +66,14 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
   return (
     <div className="post-card">
       <div className="post-header" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
-        <img src={userAvatar} alt={post.usuario?.nombre || 'Usuario'} className="author-avatar" />
+        <img
+          src={userAvatar}
+          alt={post.usuario?.nombre || t('postcard.default_user')}
+          className="author-avatar"
+        />
 
         <div className="author-info">
-          <h3 className="author-name">{post.usuario?.nombre || 'Usuario'}</h3>
+          <h3 className="author-name">{post.usuario?.nombre || t('postcard.default_user')}</h3>
         </div>
       </div>
 
@@ -63,7 +83,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
           onClick={() => setShowDetailModal(true)}
           style={{ cursor: 'pointer' }}
         >
-          <img src={post.imageUrl} alt="Post content" className="post-image" />
+          <img src={post.imageUrl} alt={t('postcard.content_alt')} className="post-image" />
         </div>
       )}
 
@@ -74,10 +94,7 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
         >
           <div className="main-actions">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                likePost();
-              }}
+              onClick={handleLikeClick}
               className="like-button"
               title={t('postcard.like_post')}
             >
@@ -110,7 +127,6 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             </button>
           </div>
 
-          {/* New Bookmark Button Added Here */}
           <div className="secondary-actions" style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={(e) => {
@@ -122,7 +138,6 @@ const Postcard: React.FC<{ post: Post }> = ({ post: postProp }) => {
             >
               <Flag size={20} />
             </button>
-
             <button onClick={handleBookmarkClick} className="share-btn-action">
               <Bookmark
                 size={24}

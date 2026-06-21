@@ -4,13 +4,19 @@ import type { Usuario } from '../models/usuario';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, NotebookPen, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { showAlert } = useGlobalAlert();
 
   const handleClick = () => {
-    navigate(`/profile/${user._id}`);
+    try {
+      navigate(`/profile/${user._id}`);
+    } catch (err: any) {
+      showAlert(t('alerts.user_card.error_title'), t('alerts.user_card.navigation_error'), 'error');
+    }
   };
 
   return (
@@ -26,7 +32,6 @@ const UserCard: React.FC<{ user: Usuario }> = ({ user }) => {
           <h3 className="user-name">{user.nombre}</h3>
 
           <p className="user-uni">
-            {' '}
             <GraduationCap size={18} className="btn-icon" />
             {typeof user.universidad === 'object'
               ? user.universidad?.nombre

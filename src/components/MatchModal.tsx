@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MatchModal.css';
 import { useTranslation } from 'react-i18next';
+import { useGlobalAlert } from '../context/AlertContext';
 
 interface MatchUser {
   _id: string;
@@ -19,10 +20,10 @@ interface Props {
 const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { showAlert } = useGlobalAlert();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // Simple confetti effect using canvas
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -75,7 +76,7 @@ const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.05; // gravity
+        p.vy += 0.05;
         p.rotation += p.rotationSpeed;
 
         if (p.y > canvas.height) {
@@ -104,6 +105,16 @@ const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
   }, []);
 
   const theirPhoto = matchedUser.unimatchPhoto || matchedUser.avatarUrl || '';
+
+  const handleSendMessage = () => {
+    try {
+      onClose();
+      navigate('/messages');
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('alerts.match.navigation_error');
+      showAlert(t('alerts.match.error_title'), errorMsg, 'error');
+    }
+  };
 
   return (
     <>
@@ -134,13 +145,7 @@ const MatchModal: React.FC<Props> = ({ matchedUser, myPhoto, onClose }) => {
           <p className="match-subtitle">{t('unimatch_modal.subtitle')}</p>
 
           <div className="match-actions">
-            <button
-              className="match-btn primary"
-              onClick={() => {
-                onClose();
-                navigate('/messages');
-              }}
-            >
+            <button className="match-btn primary" onClick={handleSendMessage}>
               💬 {t('unimatch_modal.send_message')}
             </button>
             <button className="match-btn secondary" onClick={onClose}>
