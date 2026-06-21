@@ -6,10 +6,12 @@ import MatchModal from '../components/MatchModal';
 import { discoverProfiles, recordSwipe, getMyPhotos, type DiscoverProfile } from '../services/unimatch';
 import { useSocket } from '../context/SocketContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import useUser from '../hooks/useUser';
 import './UniMatch.css';
 
 const UniMatch: React.FC = () => {
+    const { t } = useTranslation();
     const { usuario, refreshUser } = useUser();
     const { socket } = useSocket();
     const navigate = useNavigate();
@@ -173,7 +175,7 @@ const UniMatch: React.FC = () => {
             // Si es un toque rápido y corto, es un cambio de foto
             if (distance < 10 && duration < 300) {
                 setDragOffset(0);
-                handlePhotoNav(e as any);
+                handlePhotoNav();
                 return;
             }
 
@@ -221,15 +223,15 @@ const UniMatch: React.FC = () => {
                         {loading ? (
                             <div className="unimatch-loading">
                                 <div className="unimatch-loading-spinner" />
-                                <p>Buscando perfiles...</p>
+                                <p>{t('unimatch_page.loading')}</p>
                             </div>
                         ) : !currentProfile ? (
                             <div className="unimatch-empty">
                                 <div className="empty-icon">🎓</div>
-                                <h3>Has llegado al final del campus</h3>
+                                <h3>{t('unimatch_page.empty_title')}</h3>
                                 <p>
-                                    No hay más perfiles por ahora.<br />
-                                    ¡Vuelve más tarde para descubrir nuevas personas!
+                                    {t('unimatch_page.empty_subtitle')}<br />
+                                    {t('unimatch_page.empty_sub_notice')}
                                 </p>
                             </div>
                         ) : (
@@ -342,9 +344,9 @@ const UniMatch: React.FC = () => {
                                 </div>
 
                                 <div className="keyboard-hint">
-                                    <span className="key-badge">←</span> Pasar
+                                    <span className="key-badge">←</span> {t('unimatch_page.hint_pass')}
                                     <span style={{ margin: '0 0.5rem' }}>|</span>
-                                    <span className="key-badge">→</span> Like
+                                    <span className="key-badge">→</span> {t('unimatch_page.hint_like')}
                                 </div>
                             </>
                         )}

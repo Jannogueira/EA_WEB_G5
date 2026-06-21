@@ -9,7 +9,7 @@ export interface Usuario {
     email: string;
     password: string;
     rol: 'admin' | 'user';
-    universidad?: Universidad;
+    universidad?: string | Universidad;
     activo: boolean;
     seguidores?: string[];
     seguidos?: string[];

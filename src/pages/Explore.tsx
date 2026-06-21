@@ -113,7 +113,8 @@ const Explore: React.FC = () => {
                 if (!mounted.current) return;
                 setGrados(gRes.data);
                 setAsignaturas(aRes.data);
-                setDiscoveryPosts(postRes.data.docs ?? postRes.data ?? []);
+                const rawData = postRes.data as any;
+                setDiscoveryPosts(Array.isArray(rawData) ? rawData : (rawData?.docs ?? []));
             } catch (error: any) {
                 const errorMsg = error.data || "Error connecting with server"
                 setAlert({ type: "error", title: "Error", message: errorMsg });

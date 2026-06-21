@@ -74,7 +74,7 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      {/* Controles superiores con la estética de Univy */}
+      {/* Controles superiores con soporte para 3 idiomas */}
       <div className="login-controls-absolute">
         <div className="lang-segmented-control mini">
           <button 
@@ -88,6 +88,12 @@ const Login = () => {
             onClick={() => i18n.changeLanguage('ca')}
           >
             CA
+          </button>
+          <button 
+            className={`lang-option ${i18n.language.startsWith('en') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            EN
           </button>
         </div>
         <ThemeToggle className="theme-toggle-inline" />
@@ -113,7 +119,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               disabled={loading}
-              placeholder="correo@ejemplo.com"
+              placeholder={t('login.email_placeholder')}
             />
           </div>
 

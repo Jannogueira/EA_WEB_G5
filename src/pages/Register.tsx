@@ -61,7 +61,7 @@ const Register = () => {
 
   return (
     <div className="register-page">
-      {/* Controles de accesibilidad integrados arriba a la derecha */}
+      {/* Controles de accesibilidad actualizados con soporte para 3 idiomas */}
       <div className="login-controls-absolute">
         <div className="lang-segmented-control mini">
           <button 
@@ -75,6 +75,12 @@ const Register = () => {
             onClick={() => i18n.changeLanguage('ca')}
           >
             CA
+          </button>
+          <button 
+            className={`lang-option ${i18n.language.startsWith('en') ? 'active' : ''}`}
+            onClick={() => i18n.changeLanguage('en')}
+          >
+            EN
           </button>
         </div>
         <ThemeToggle className="theme-toggle-inline" />
