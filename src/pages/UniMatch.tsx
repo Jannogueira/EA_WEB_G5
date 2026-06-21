@@ -399,7 +399,7 @@ const UniMatch: React.FC = () => {
       {showWelcome && (
         <UniMatchWelcomeModal
           onComplete={handleWelcomeComplete}
-          onClose={() => navigate('/explore')}
+          onClose={() => navigate('/home')}
         />
       )}
 

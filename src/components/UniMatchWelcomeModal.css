@@ -23,6 +23,7 @@
 }
 
 .welcome-modal {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 28px;
