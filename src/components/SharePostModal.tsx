@@ -17,53 +17,70 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
   const { socket } = useSocket();
   const { showAlert } = useGlobalAlert();
   const [contacts, setContacts] = useState<ChatContact[]>([]);
+  const [selectedContacts, setSelectedContacts] = useState<ChatContact[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
-    getContacts()
-      .then((res) => {
+    const loadContacts = async () => {
+      try {
+        const res = await getContacts();
         setContacts(res.data);
+      } catch (err: any) {
+        showAlert(
+          t('alerts.share.error_title'),
+          err.response?.data?.message || t('alerts.share.load_error'),
+          'error',
+        );
+      } finally {
         setLoading(false);
-      })
-      .catch((err: any) => {
-        setLoading(false);
-        const errorMsg = err.response?.data?.message || t('alerts.share.load_error');
-        showAlert(t('alerts.share.error_title'), errorMsg, 'error');
-      });
-  }, []);
+      }
+    };
+    loadContacts();
+  }, [showAlert, t]);
 
-  const filteredContacts = contacts.filter((c) =>
-    c.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredContacts = contacts.filter((contact) =>
+    contact.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const toggleContact = (id: string) => {
-    setSelectedContacts((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
-    );
+  const toggleContact = (contact: ChatContact) => {
+    setSelectedContacts((prev) => {
+      const exists = prev.some((c) => c._id === contact._id);
+      if (exists) {
+        return prev.filter((c) => c._id !== contact._id);
+      }
+      return [...prev, contact];
+    });
   };
 
+  const isSelected = (id: string) => selectedContacts.some((c) => c._id === id);
+
   const handleShare = () => {
-    if (!socket || selectedContacts.length === 0) return;
+    if (!socket) return;
+    if (selectedContacts.length === 0) return;
 
     try {
-      selectedContacts.forEach((destinatarioId) => {
+      selectedContacts.forEach((contact) => {
         socket.emit('send_message', {
-          destinatarioId,
-          postId,
+          destinatarioId: contact._id,
           contenido: '',
+          postId,
+          isGroup: contact.isGroup === true,
         });
       });
 
       setSent(true);
+
       setTimeout(() => {
         onClose();
       }, 1500);
     } catch (err: any) {
-      const errorMsg = err.message || t('alerts.share.send_error');
-      showAlert(t('alerts.share.error_title'), errorMsg, 'error');
+      showAlert(
+        t('alerts.share.error_title'),
+        err.message || t('alerts.share.send_error'),
+        'error',
+      );
     }
   };
 
@@ -97,24 +114,24 @@ const SharePostModal: React.FC<SharePostModalProps> = ({ postId, onClose }) => {
             <div className="share-contacts-list">
               {loading ? (
                 <div className="share-loading">{t('messages.loading')}</div>
-              ) : filteredContacts.length > 0 ? (
+              ) : filteredContacts.length ? (
                 filteredContacts.map((contact) => (
                   <div
                     key={contact._id}
-                    className={`share-contact-item ${
-                      selectedContacts.includes(contact._id) ? 'selected' : ''
-                    }`}
-                    onClick={() => toggleContact(contact._id)}
+                    className={`share-contact-item ${isSelected(contact._id) ? 'selected' : ''}`}
+                    onClick={() => toggleContact(contact)}
                   >
                     <div className="contact-avatar-small">
-                      <img
-                        src={contact.avatarUrl}
-                        alt={t('unimatch_modal.alt_them', { name: contact.nombre })}
-                      />
+                      <img src={contact.avatarUrl} alt={contact.nombre} />
                     </div>
-                    <span className="contact-name">{contact.nombre}</span>
+
+                    <div className="contact-name">
+                      {contact.nombre}
+                      {contact.isGroup && <small> • Group</small>}
+                    </div>
+
                     <div className="checkbox-indicator">
-                      {selectedContacts.includes(contact._id) && <div className="check-dot" />}
+                      {isSelected(contact._id) && <div className="check-dot" />}
                     </div>
                   </div>
                 ))
